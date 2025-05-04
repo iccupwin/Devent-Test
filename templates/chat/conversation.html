@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="chat-container">
+    <div class="chat-messages" id="chatMessages">
+        {% for message in messages %}
+        <div class="message {{ message.role }}">
+            {% if message.role == 'assistant' %}
+            <div class="assistant-avatar">C</div>
+            <div class="message-content-wrapper">
+            {% endif %}
+                <div class="message-role">
+                    {% if message.role == 'user' %}
+                    Вы
+                    {% else %}
+                    Claude
+                    {% endif %}
+                </div>
+                <div class="message-content">{{ message.content }}</div>
+            {% if message.role == 'assistant' %}
+            </div>
+            {% endif %}
+        </div>
+        {% empty %}
+        <div class="welcome-message">
+            <h1>Привет! Я Claude.</h1>
+            <p>Задайте мне вопрос, и я постараюсь помочь.</p>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <div class="chat-input-container">
+        <form id="messageForm" class="message-form">
+            <textarea 
+                id="messageInput" 
+                class="message-input" 
+                placeholder="Введите сообщение..."
+                rows="1"
+                autocomplete="off"
+            ></textarea>
+            <button type="submit" class="send-button">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M22 2L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Передаем ID разговора в JavaScript (использует глобальную переменную)
+    window.conversationId = "{{ conversation.id }}";
+</script>
+<script src="{% static 'js/chat.js' %}"></script>
+{% endblock %}

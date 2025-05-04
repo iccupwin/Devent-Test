@@ -1,0 +1,44 @@
+{% extends 'base_without_sidebar.html' %}
+{% load static %}
+
+{% block content %}
+<div class="planfix-container">
+    <div class="planfix-header">
+        <h1>Задачи Planfix</h1>
+        <p class="subtitle">Управление задачами и интеграция с Claude</p>
+    </div>
+    
+    <div class="debug-info">
+        <h3>Отладочная информация:</h3>
+        <p>Количество задач: {{ tasks|length }}</p>
+        <p>Общее количество: {{ total_count }}</p>
+        <p>Текущая страница: {{ current_page }}</p>
+        <p>Фильтр статуса: {{ status_filter }}</p>
+    </div>
+    
+    <div class="table-container">
+        <table class="tasks-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Название</th>
+                    <th>Статус</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for task in tasks %}
+                <tr>
+                    <td>{{ task.id }}</td>
+                    <td>{{ task.name }}</td>
+                    <td>{{ task.status.name }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="3" style="text-align:center;">Нет задач</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

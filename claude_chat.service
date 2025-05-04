@@ -1,0 +1,15 @@
+[Unit]
+Description=Claude Chat Django Application
+After=network.target
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/path/to/your/project
+ExecStart=/path/to/your/project/venv/bin/gunicorn claude_chat.wsgi:application --bind 0.0.0.0:8000 --workers 3
+Environment="DJANGO_ENV=production"
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target
