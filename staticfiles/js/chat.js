@@ -4,19 +4,28 @@ document.addEventListener('DOMContentLoaded', function() {
     const chatMessages = document.getElementById('chatMessages');
     const newChatButton = document.getElementById('newChatButton');
     
-    // Получаем ID разговора из шаблона или устанавливаем null для нового чата
-    let currentConversationId = typeof currentConversationId !== 'undefined' ? currentConversationId : null;
+    // Получаем ID беседы из data-атрибута
+    let currentConversationId = null;
+    const chatContainer = document.querySelector('.chat-container');
+    if (chatContainer && chatContainer.getAttribute('data-conversation-id')) {
+        currentConversationId = chatContainer.getAttribute('data-conversation-id');
+    }
     
-    // Автоматическое увеличение высоты textarea
+    console.log('Текущий ID беседы:', currentConversationId);
+    
+    // Автоматически регулируем высоту текстового поля
     messageInput.addEventListener('input', function() {
         this.style.height = 'auto';
         this.style.height = (this.scrollHeight) + 'px';
     });
     
-    // Прокрутка чата вниз при загрузке страницы
-    if (chatMessages.lastElementChild) {
-        chatMessages.lastElementChild.scrollIntoView();
+    // Прокручиваем чат вниз при загрузке
+    function scrollToBottom() {
+        if (chatMessages) {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
     }
+    scrollToBottom();
     
     // Обработчик кнопки "Новый чат"
     if (newChatButton) {
@@ -26,59 +35,65 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Обработчик отправки формы
-    messageForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        const message = messageInput.value.trim();
-        if (!message) return;
-        
-        // Добавляем сообщение пользователя в чат
-        addMessageToChat('user', message);
-        
-        // Очищаем поле ввода
-        messageInput.value = '';
-        messageInput.style.height = 'auto';
-        
-        // Показываем индикатор набора текста
-        const typingIndicator = addTypingIndicator();
-        
-        // Отправляем сообщение на сервер
-        sendMessageToServer(message)
-            .then(response => {
-                // Удаляем индикатор набора текста
-                if (typingIndicator) {
-                    typingIndicator.remove();
-                }
-                
-                // Добавляем ответ от Claude в чат
-                addMessageToChat('assistant', response.message);
-                
-                // Сохраняем ID разговора и обновляем URL, если это новый чат
-                if (response.conversation_id && !currentConversationId) {
-                    currentConversationId = response.conversation_id;
-                    // Обновляем URL без перезагрузки страницы
-                    window.history.pushState(
-                        {}, 
-                        '', 
-                        `/conversation/${currentConversationId}/`
-                    );
+    if (messageForm) {
+        messageForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const message = messageInput.value.trim();
+            if (!message) return;
+            
+            // Добавляем сообщение пользователя в чат
+            addMessageToChat('user', message);
+            
+            // Очищаем поле ввода
+            messageInput.value = '';
+            messageInput.style.height = 'auto';
+            
+            // Показываем индикатор набора текста
+            const typingIndicator = addTypingIndicator();
+            
+            // Отправляем сообщение на сервер
+            sendMessageToServer(message)
+                .then(response => {
+                    // Удаляем индикатор набора текста
+                    if (typingIndicator) {
+                        typingIndicator.remove();
+                    }
                     
-                    // Обновляем список чатов
-                    updateConversationsList();
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                
-                // Удаляем индикатор набора текста
-                if (typingIndicator) {
-                    typingIndicator.remove();
-                }
-                
-                // Показываем сообщение об ошибке
-                addMessageToChat('assistant', 'Извините, произошла ошибка. Пожалуйста, попробуйте еще раз.');
-            });
-    });
+                    // Добавляем ответ от Claude в чат
+                    addMessageToChat('assistant', response.message);
+                    
+                    // Если это новая беседа, обновляем ID и URL
+                    if (response.conversation_id && !currentConversationId) {
+                        currentConversationId = response.conversation_id;
+                        
+                        // Обновляем URL без перезагрузки страницы
+                        const newUrl = `/conversation/${currentConversationId}/`;
+                        window.history.pushState({}, '', newUrl);
+                        
+                        // Обновляем боковую панель
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1000);
+                    }
+                    
+                    // Прокручиваем чат вниз
+                    scrollToBottom();
+                })
+                .catch(error => {
+                    console.error('Ошибка:', error);
+                    
+                    // Удаляем индикатор набора текста
+                    if (typingIndicator) {
+                        typingIndicator.remove();
+                    }
+                    
+                    // Показываем сообщение об ошибке
+                    addMessageToChat('assistant', 'Извините, произошла ошибка. Пожалуйста, попробуйте еще раз.');
+                    scrollToBottom();
+                });
+        });
+    }
     
     // Функция для добавления сообщения в чат
     function addMessageToChat(role, content) {
@@ -88,40 +103,43 @@ document.addEventListener('DOMContentLoaded', function() {
             welcomeMessage.remove();
         }
         
+        // Создаем элемент сообщения
         const messageElement = document.createElement('div');
         messageElement.classList.add('message', role);
         
-        const roleElement = document.createElement('div');
-        roleElement.classList.add('message-role');
-        roleElement.textContent = role === 'user' ? 'Вы' : 'Claude';
+        // Разная структура HTML в зависимости от роли
+        if (role === 'assistant') {
+            messageElement.innerHTML = `
+                <div class="assistant-avatar">C</div>
+                <div class="message-content-wrapper">
+                    <div class="message-role">Claude</div>
+                    <div class="message-content">${formatMessageContent(content)}</div>
+                </div>
+            `;
+        } else {
+            messageElement.innerHTML = `
+                <div class="message-role">Вы</div>
+                <div class="message-content">${formatMessageContent(content)}</div>
+            `;
+        }
         
-        const contentElement = document.createElement('div');
-        contentElement.classList.add('message-content');
-        contentElement.textContent = content;
-        
-        messageElement.appendChild(roleElement);
-        messageElement.appendChild(contentElement);
-        
+        // Добавляем в DOM
         chatMessages.appendChild(messageElement);
         
-        // Прокручиваем чат до последнего сообщения
-        messageElement.scrollIntoView({ behavior: 'smooth' });
+        // Прокручиваем в видимую область
+        scrollToBottom();
         
         return messageElement;
     }
     
-    // Функция для обновления списка чатов (для AJAX)
-    function updateConversationsList() {
-        // Эта функция будет использоваться в будущем для динамического обновления списка
-        // Пока просто перезагружаем страницу после определенного времени
-        if (typeof conversationsListElement !== 'undefined') {
-            setTimeout(() => {
-                window.location.reload();
-            }, 1000);
-        }
+    // Функция форматирования содержимого сообщения
+    function formatMessageContent(content) {
+        // Пока просто экранируем HTML и сохраняем переносы строк
+        const escaped = escapeHtml(content);
+        return escaped.replace(/\n/g, '<br>');
     }
     
-    // Функция для добавления индикатора набора текста
+    // Функция добавления индикатора набора текста
     function addTypingIndicator() {
         const indicator = document.createElement('div');
         indicator.classList.add('typing-indicator');
@@ -133,12 +151,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         chatMessages.appendChild(indicator);
-        indicator.scrollIntoView({ behavior: 'smooth' });
+        scrollToBottom();
         
         return indicator;
     }
     
-    // Функция для отправки сообщения на сервер
+    // Функция отправки сообщения на сервер
     async function sendMessageToServer(message) {
         const response = await fetch('/api/message/', {
             method: 'POST',
@@ -153,13 +171,24 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         if (!response.ok) {
-            throw new Error('Network response was not ok');
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Ошибка сети');
         }
         
         return response.json();
     }
     
-    // Функция для получения CSRF токена из cookies
+    // Вспомогательная функция для экранирования HTML
+    function escapeHtml(unsafe) {
+        return unsafe
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+    
+    // Получение CSRF токена из cookies
     function getCookie(name) {
         let cookieValue = null;
         if (document.cookie && document.cookie !== '') {

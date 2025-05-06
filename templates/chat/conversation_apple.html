@@ -1,0 +1,87 @@
+{% extends 'base_apple.html' %}
+{% load static %}
+
+{% block title %}Беседа с Claude{% endblock %}
+
+{% block content %}
+<div class="app-layout">
+    <div class="sidebar">
+        <button id="newChatButton" class="new-chat-button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Новая беседа
+        </button>
+        <div class="style-switcher">
+            <a href="{% url 'chat:toggle_style' %}?next={{ request.path }}" class="style-toggle">
+                {% if request.COOKIES.use_apple_style == 'true' %}
+                    Вернуться к обычному стилю
+                {% else %}
+                    Включить Apple-стиль
+                {% endif %}
+            </a>
+        </div>
+        <div class="conversations-list">
+            {% for conv in conversations %}
+            <a href="{% url 'chat:conversation' conversation_id=conv.id %}" class="conversation-item {% if conv.id == conversation.id %}active{% endif %}">
+                {{ conv.title }}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <div class="content">
+        <div class="chat-container" data-conversation-id="{{ conversation.id }}">
+            <div class="chat-messages" id="chatMessages">
+                {% for message in messages %}
+                <div class="message {{ message.role }}">
+                    {% if message.role == 'assistant' %}
+                    <div class="assistant-avatar">C</div>
+                    <div class="message-content-wrapper">
+                    {% endif %}
+                        <div class="message-role">
+                            {% if message.role == 'user' %}
+                            Вы
+                            {% else %}
+                            Claude
+                            {% endif %}
+                        </div>
+                        <div class="message-content">{{ message.content }}</div>
+                    {% if message.role == 'assistant' %}
+                    </div>
+                    {% endif %}
+                </div>
+                {% empty %}
+                <div class="welcome-message">
+                    <h1>Привет! Я Claude.</h1>
+                    <p>Задайте мне вопрос, и я постараюсь помочь.</p>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <div class="chat-input-container">
+                <form id="messageForm" class="message-form">
+                    <textarea 
+                        id="messageInput" 
+                        class="message-input" 
+                        placeholder="Введите сообщение..."
+                        rows="1"
+                        autocomplete="off"
+                    ></textarea>
+                    <button type="submit" class="send-button">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M22 2L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{% static 'js/chat.js' %}"></script>
+{% endblock %}

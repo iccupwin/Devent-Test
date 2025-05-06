@@ -49877,23 +49877,23 @@
   },
   {
     "id": 2280,
-    "name": "Узнать общую сумму затрат по проекту",
+    "name": "Узнать общую сумму затрат по проекту на дату 6 мая 2025",
     "description": "<h3><strong>Задача ставится согласно Процессу постановки, контроля и выполнения задач. </strong></h3>\n<h3><strong>Просьба ознакомиться:&nbsp;</strong><a href=\"https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy\">https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy</a></h3>\n<p>&nbsp;</p>",
     "status": {
-      "id": 1,
-      "name": "Новая",
-      "color": "#00b4b4",
+      "id": 2,
+      "name": "В работе",
+      "color": "#3377C3",
       "isActive": true,
       "hasDeadline": true,
       "isAppliedIndividually": false,
       "texts": [
         {
           "lang": "Ru",
-          "name": "Новая"
+          "name": "В работе"
         },
         {
           "lang": "En",
-          "name": "New"
+          "name": "In progress"
         }
       ]
     },
@@ -50001,8 +50001,8 @@
     },
     "endDateTime": {
       "date": "06-05-2025",
-      "time": "06:00",
-      "datetime": "2025-05-06T06:00Z"
+      "time": "12:00",
+      "datetime": "2025-05-06T12:00Z"
     },
     "assignees": {
       "users": [
@@ -50143,13 +50143,13 @@
     },
     "startDateTime": {
       "date": "06-05-2025",
-      "time": "10:30",
-      "datetime": "2025-05-06T10:30Z"
+      "time": "10:00",
+      "datetime": "2025-05-06T10:00Z"
     },
     "endDateTime": {
       "date": "06-05-2025",
-      "time": "11:00",
-      "datetime": "2025-05-06T11:00Z"
+      "time": "10:30",
+      "datetime": "2025-05-06T10:30Z"
     },
     "assignees": {
       "users": [
@@ -50478,6 +50478,167 @@
     "assigner": {
       "id": "user:5",
       "name": "Алексей Шульга"
+    }
+  },
+  {
+    "id": 2293,
+    "name": "Подписать договор на 40га",
+    "description": "<h3><strong>Задача ставится согласно Процессу постановки, контроля и выполнения задач. </strong></h3>\n<h3><strong>Просьба ознакомиться: </strong><a href=\"https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy\">https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy</a></h3>\n<p>&nbsp;</p>",
+    "status": {
+      "id": 1,
+      "name": "Новая",
+      "color": "#00b4b4",
+      "isActive": true,
+      "hasDeadline": true,
+      "isAppliedIndividually": false,
+      "texts": [
+        {
+          "lang": "Ru",
+          "name": "Новая"
+        },
+        {
+          "lang": "En",
+          "name": "New"
+        }
+      ]
+    },
+    "assigner": {
+      "id": "user:5",
+      "name": "Алексей Шульга"
+    }
+  },
+  {
+    "id": 2294,
+    "name": "Диаграмма Ганта. Поларис",
+    "description": "<h3><strong>Задача ставится согласно Процессу постановки, контроля и выполнения задач. </strong></h3>\n<h3><strong>Просьба ознакомиться: </strong><a href=\"https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy\">https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy</a></h3>\n<p>&nbsp;</p>",
+    "status": {
+      "id": 1,
+      "name": "Новая",
+      "color": "#00b4b4",
+      "isActive": true,
+      "hasDeadline": true,
+      "isAppliedIndividually": false,
+      "texts": [
+        {
+          "lang": "Ru",
+          "name": "Новая"
+        },
+        {
+          "lang": "En",
+          "name": "New"
+        }
+      ]
+    },
+    "assigner": {
+      "id": "user:5",
+      "name": "Алексей Шульга"
+    }
+  },
+  {
+    "id": 2295,
+    "name": "Диаграмма Ганта. Эллюзиум",
+    "description": "<h3><strong>Задача ставится согласно Процессу постановки, контроля и выполнения задач. </strong></h3>\n<h3><strong>Просьба ознакомиться: </strong><a href=\"https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy\">https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy</a></h3>\n<p>&nbsp;</p>",
+    "status": {
+      "id": 1,
+      "name": "Новая",
+      "color": "#00b4b4",
+      "isActive": true,
+      "hasDeadline": true,
+      "isAppliedIndividually": false,
+      "texts": [
+        {
+          "lang": "Ru",
+          "name": "Новая"
+        },
+        {
+          "lang": "En",
+          "name": "New"
+        }
+      ]
+    },
+    "assigner": {
+      "id": "user:5",
+      "name": "Алексей Шульга"
+    }
+  },
+  {
+    "id": 2296,
+    "name": "Rest API Test",
+    "description": "<h3><strong>Задача ставится согласно Процессу постановки, контроля и выполнения задач. </strong></h3>\n<h3><strong>Просьба ознакомиться:&nbsp;</strong><a href=\"https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy\">https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy</a></h3>\n<p>&nbsp;</p>",
+    "status": {
+      "id": 1,
+      "name": "Новая",
+      "color": "#00b4b4",
+      "isActive": true,
+      "hasDeadline": true,
+      "isAppliedIndividually": false,
+      "texts": [
+        {
+          "lang": "Ru",
+          "name": "Новая"
+        },
+        {
+          "lang": "En",
+          "name": "New"
+        }
+      ]
+    },
+    "assigner": {
+      "id": "user:9",
+      "name": "Бахтияр Ибрагимов"
+    }
+  },
+  {
+    "id": 2297,
+    "name": "Провести тендер на разработку концепции",
+    "description": "<p><span style=\"color: rgb(52, 52, 52); font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, roboto, &quot;Helvetica Neue&quot;, helvetica, arial, sans-serif; font-size: 16px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; ; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; display: inline !important\">Задача ставится согласно процесса проведения тендера:&nbsp;</span><a href=\"https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.tb52epwccm61\">https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.tb52epwccm61</a></p>",
+    "status": {
+      "id": 155,
+      "name": "Утверждение результатов",
+      "color": "#0D47A1",
+      "isActive": true,
+      "hasDeadline": true,
+      "isAppliedIndividually": false,
+      "texts": [
+        {
+          "lang": "Ru",
+          "name": "Утверждение результатов"
+        },
+        {
+          "lang": "En",
+          "name": "Утверждение результатов"
+        }
+      ]
+    },
+    "assigner": {
+      "id": "user:5",
+      "name": "Алексей Шульга"
+    },
+    "project": {
+      "id": 1647,
+      "name": "Elysium Иссык-Куль"
+    },
+    "endDateTime": {
+      "date": "10-05-2025",
+      "time": "09:48",
+      "datetime": "2025-05-10T09:48Z"
+    },
+    "assignees": {
+      "users": [
+        {
+          "id": "user:10",
+          "name": "Сергей Храпунов"
+        },
+        {
+          "id": "user:1",
+          "name": "Константин Осипов"
+        },
+        {
+          "id": "user:7",
+          "name": "Оксана Янковская"
+        }
+      ],
+      "groups": []
     }
   }
 ]
