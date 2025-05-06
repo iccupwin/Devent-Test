@@ -19,7 +19,7 @@ PROJECT_REQUEST = {
                 'value': ''
             }
         ],
-        'fields': 'id,name,status,dateBegin,dateEnd'
+        'fields': 'id,name,status,startDateTime,endDateTime,description'  # Обновлены поля дат
     }
 }
 
@@ -31,6 +31,6 @@ TASKS_REQUEST = {
     'baseBody': {
         'offset': 0,
         'pageSize': 100,
-        'fields': 'id,name,status,project,dateBegin,dateEnd,description'
+        'fields': 'id,name,status,project,startDateTime,endDateTime,description,assignees,assigner'  # Заменено owner на assigner
     }
 }

@@ -1,11 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.contrib.auth.models import User
+from django.contrib import messages  # Добавлен импорт для сообщений
 import json
 import logging
 
-from .models import Conversation, Message
+from .models import Conversation, Message, User
 from .planfix_service import (
     get_active_tasks, 
     get_completed_tasks, 
@@ -36,6 +36,10 @@ def planfix_tasks(request):
             tasks = get_all_tasks()
             total_count = len(tasks)
         
+        # Вычисляем общее количество страниц
+        page_size = 25
+        total_pages = (total_count + page_size - 1) // page_size
+        
         # Логируем информацию о запросе
         logger.info(f"Запрос задач Planfix: страница={page+1}, статус={status_filter}, всего={total_count}")
         
@@ -43,7 +47,8 @@ def planfix_tasks(request):
             'tasks': tasks,
             'total_count': total_count,
             'current_page': page + 1,
-            'status_filter': status_filter
+            'status_filter': status_filter,
+            'total_pages': total_pages
         })
     
     except Exception as e:
@@ -53,23 +58,37 @@ def planfix_tasks(request):
             'total_count': 0,
             'current_page': 1,
             'status_filter': 'all',
-            'error': str(e)
+            'error': str(e),
+            'total_pages': 1
         })
 
 def planfix_task_detail(request, task_id):
     """Отображение детальной информации о задаче"""
     try:
+        # Получаем задачу из Planfix по ID
         task = get_task_by_id(task_id)
         
+        # Добавляем логирование для отладки
+        logger.info(f"Получена задача с ID {task_id}: {task}")
+        
         if not task:
+            # Добавляем обработку случая, когда задача не найдена
+            logger.error(f"Задача с ID {task_id} не найдена")
+            # Вместо сообщения в messages, просто переходим на страницу со списком задач
+            # или можно использовать встроенный механизм сообщений Django
             return redirect('chat:planfix_tasks')
         
+        # Передаем задачу в шаблон
         return render(request, 'chat/planfix_task_detail.html', {
-            'task': task
+            'task': task,
+            'debug': False  # Можно установить в True для отладки
         })
     
     except Exception as e:
+        # Логируем ошибку
         logger.error(f"Ошибка при получении деталей задачи {task_id}: {str(e)}", exc_info=True)
+        
+        # Переходим на страницу со списком задач без сообщения об ошибке
         return redirect('chat:planfix_tasks')
 
 @csrf_exempt

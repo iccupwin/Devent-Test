@@ -48,7 +48,16 @@ def get_projects():
             PROJECT_REQUEST['method'],
             PROJECT_REQUEST['body']
         )
-        return response.get('projects', []) or response.get('data', []) or []
+        
+        # Получаем проекты из ответа
+        projects = response.get('projects', []) or response.get('data', []) or []
+        
+        # Логируем для отладки
+        logger.info(f"Получено проектов: {len(projects)}")
+        for project in projects[:3]:  # Логируем первые 3 проекта для отладки
+            logger.info(f"Проект: {project}")
+        
+        return projects
     except Exception as e:
         logger.error(f"Ошибка при получении проектов: {e}")
         return []

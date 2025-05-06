@@ -92,6 +92,46 @@ def update_tasks_cache(force=False):
                 if len(tasks) < 100:  # 100 - максимальное количество задач на странице
                     more_pages = False
         
+        # Отладочный вывод
+        logger.info(f"Загружено всего задач: {len(all_tasks)}")
+        if all_tasks:
+            task_sample = all_tasks[0]
+            logger.info(f"Пример задачи: {json.dumps(task_sample, ensure_ascii=False)}")
+            if 'project' in task_sample:
+                logger.info(f"Информация о проекте: {json.dumps(task_sample['project'], ensure_ascii=False)}")
+
+        # Получаем актуальный список проектов
+        all_projects = get_projects()
+        logger.info(f"Получено проектов: {len(all_projects)}")
+        
+        # Создаем карту проектов для быстрого доступа по ID
+        project_map = {}
+        for project in all_projects:
+            if 'id' in project and 'name' in project and project['name']:
+                project_map[str(project['id'])] = project['name']
+        
+        logger.info(f"Создана карта проектов с {len(project_map)} элементами")
+        
+        # Проверяем, что данные проектов корректны
+        projects_fixed = 0
+        for task in all_tasks:
+            if 'project' in task and task['project'] is not None:
+                project = task['project']
+                
+                # Если у проекта нет имени или имя в формате "Проект ID", исправляем его
+                if 'name' not in project or project['name'] is None or project['name'].startswith('Проект '):
+                    # Если ID проекта есть в карте, устанавливаем правильное имя
+                    if 'id' in project and str(project['id']) in project_map:
+                        project['name'] = project_map[str(project['id'])]
+                        projects_fixed += 1
+                        logger.debug(f"Исправлен проект {project['id']}: {project['name']}")
+                    # Иначе используем ID как часть имени
+                    elif 'id' in project:
+                        project['name'] = f"Проект {project['id']}"
+                        logger.debug(f"Создано имя для проекта {project['id']}")
+        
+        logger.info(f"Исправлено проектов: {projects_fixed}")
+        
         # Сохраняем задачи в кэш
         with open(TASKS_CACHE_FILE, 'w', encoding='utf-8') as f:
             json.dump(all_tasks, f, ensure_ascii=False, indent=2)
@@ -164,14 +204,36 @@ def get_task_by_id(task_id):
     :param task_id: ID задачи
     :return: Задача или None, если не найдена
     """
+    # Преобразуем task_id в строку для сравнения
+    task_id_str = str(task_id)
+    
+    # Логирование запроса
+    logger.info(f"Запрос задачи с ID {task_id_str}")
+    
     # Сначала пытаемся найти в кэше
     all_tasks = get_all_tasks()
+    logger.debug(f"Поиск задачи {task_id_str} в кэше, всего задач: {len(all_tasks)}")
+    
     for task in all_tasks:
-        if str(task.get('id')) == str(task_id):
+        if str(task.get('id')) == task_id_str:
+            logger.info(f"Задача {task_id_str} найдена в кэше")
             return task
     
-    # Если в кэше нет, запрашиваем напрямую
-    return get_task_detail(task_id)
+    # Если в кэше нет, запрашиваем напрямую через API
+    try:
+        logger.info(f"Задача {task_id_str} не найдена в кэше, запрашиваем из API")
+        task = get_task_detail(task_id)
+        
+        if task:
+            logger.info(f"Задача {task_id_str} успешно получена из API")
+            return task
+        else:
+            logger.warning(f"API вернул пустой результат для задачи {task_id_str}")
+            return None
+            
+    except Exception as e:
+        logger.error(f"Ошибка при получении задачи {task_id_str} через API: {str(e)}", exc_info=True)
+        return None
 
 def format_task_for_claude(task):
     """

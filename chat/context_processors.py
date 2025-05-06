@@ -1,5 +1,4 @@
-from django.contrib.auth.models import User
-from .models import Conversation
+from .models import Conversation, User
 
 def conversations_list(request):
     """
