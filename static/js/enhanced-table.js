@@ -853,3 +853,137 @@ function setupGlobalSearch() {
         });
     }
 }
+
+function renderTaskRow(task) {
+    // Calculate hash based on assigner name
+    let nameHash = 0;
+    if (task.assigner && task.assigner.name) {
+        const name = task.assigner.name;
+        // Use a more complex hash function
+        nameHash = name.split('').reduce((hash, char) => {
+            const charCode = char.charCodeAt(0);
+            return ((hash << 5) - hash) + charCode;
+        }, 0);
+        // Ensure positive number and get value between 0-9
+        nameHash = Math.abs(nameHash) % 10;
+    }
+    
+    // Get color for the avatar
+    const color = getAvatarColor(nameHash);
+    
+    // Create the row HTML
+    const rowHtml = `
+        <tr>
+            <td class="column-id">${task.id}</td>
+            <td class="column-name">
+                <a href="#" class="task-name-link" data-task-id="${task.id}">
+                    ${task.name || 'Без названия'}
+                    ${task.description ? '<span class="has-description" title="Есть описание">📝</span>' : ''}
+                </a>
+            </td>
+            <td class="column-status">
+                <span class="task-status ${task.status.name.toLowerCase().replace(/\s+/g, '')}">
+                    ${task.status.name || 'Без статуса'}
+                </span>
+            </td>
+            <td class="column-project">
+                ${task.project && task.project.name ? `
+                    <div class="project-badge">
+                        <div style="background-color: ${getProjectColor(task.project.id)}">
+                            ${task.project.name.charAt(0).toUpperCase()}
+                        </div>
+                        <span class="project-name">${task.project.name}</span>
+                    </div>
+                ` : '<span class="empty-value">Не указан</span>'}
+            </td>
+            <td class="column-dates">
+                <div class="task-dates">
+                    ${task.startDateTime && task.startDateTime.date ? `
+                        <div class="date-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                            ${task.startDateTime.date}
+                        </div>
+                    ` : ''}
+                    ${task.endDateTime && task.endDateTime.date ? `
+                        <div class="date-end">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                            ${task.endDateTime.date}
+                        </div>
+                    ` : ''}
+                    ${(!task.startDateTime || !task.startDateTime.date) && (!task.endDateTime || !task.endDateTime.date) ? 
+                        '<span class="empty-value">Не указаны</span>' : ''}
+                </div>
+            </td>
+            <td class="column-assignee">
+                ${task.assigner && task.assigner.name ? `
+                    <div class="assignee-wrapper">
+                        <div class="assignee-avatar" data-color="${nameHash}" style="background-color: ${color}">
+                            ${task.assigner.name.charAt(0).toUpperCase()}
+                        </div>
+                        <span class="assignee-name">${task.assigner.name}</span>
+                    </div>
+                ` : '<span class="empty-value">Не указан</span>'}
+            </td>
+            <td class="column-actions">
+                <div class="table-actions">
+                    <button class="btn-icon btn-view" onclick="openTaskModal(${task.id})" title="Просмотр">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
+                    <button class="btn-icon btn-integrate" onclick="integrateTask(${task.id})" title="Интегрировать с Claude">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                    </button>
+                </div>
+            </td>
+        </tr>
+    `;
+    
+    return rowHtml;
+}
+
+function getProjectColor(projectId) {
+    const colors = [
+        '#6366f1', // Indigo
+        '#8b5cf6', // Purple
+        '#ec4899', // Pink
+        '#f43f5e', // Red
+        '#f59e0b', // Orange
+        '#10b981', // Green
+        '#06b6d4', // Cyan
+        '#3b82f6'  // Blue
+    ];
+    return colors[projectId % colors.length];
+}
+
+// Function to get avatar color
+function getAvatarColor(hash) {
+    const colors = [
+        '#3b82f6', // Blue
+        '#8b5cf6', // Purple
+        '#ec4899', // Pink
+        '#f43f5e', // Red
+        '#f59e0b', // Orange
+        '#10b981', // Green
+        '#06b6d4', // Cyan
+        '#6366f1', // Indigo
+        '#0ea5e9', // Sky
+        '#14b8a6'  // Teal
+    ];
+    return colors[hash];
+}

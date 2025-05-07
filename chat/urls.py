@@ -42,4 +42,7 @@ urlpatterns = [
     
     # Переключатель стиля (оставлен для обратной совместимости)
     path('toggle-style/', views.toggle_style, name='toggle_style'),
+    
+    # Cache refresh endpoint
+    path('refresh-cache/', views.refresh_cache, name='refresh_cache'),
 ]

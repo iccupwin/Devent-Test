@@ -21,3 +21,13 @@ def index(list_data, index):
         return list_data[int(index)]
     except (IndexError, ValueError, TypeError):
         return ''
+
+@register.filter
+def ord(value):
+    """
+    Возвращает Unicode-код первого символа строки
+    """
+    try:
+        return ord(str(value)[0])
+    except Exception:
+        return 0

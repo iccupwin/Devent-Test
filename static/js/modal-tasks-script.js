@@ -143,7 +143,16 @@ function openTaskModal(taskId) {
             // Assignee
             if (modalTaskAssignee) {
                 if (task.assignees && task.assignees.users && task.assignees.users.length > 0) {
-                    modalTaskAssignee.textContent = task.assignees.users.map(a => a.name).join(', ');
+                    const assigneeNames = task.assignees.users.map(assignee => {
+                        const nameHash = (assignee.name.length + assignee.name.charCodeAt(0)) % 10;
+                        return `<div class="assignee-wrapper">
+                            <div class="assignee-avatar" data-color="${nameHash}">
+                                ${assignee.name.charAt(0).toUpperCase()}
+                            </div>
+                            <span class="assignee-name">${assignee.name}</span>
+                        </div>`;
+                    }).join(', ');
+                    modalTaskAssignee.innerHTML = assigneeNames;
                 } else {
                     modalTaskAssignee.textContent = 'Не назначен';
                 }

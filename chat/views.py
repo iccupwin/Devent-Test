@@ -1,7 +1,14 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse, HttpResponseRedirect
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
 from .models import Conversation, Message, User
 from .agent_views import agent_dashboard, agent_conversation, new_agent_conversation
+from .planfix_cache_service import planfix_cache
+import logging
+
+# Configure logging
+logger = logging.getLogger(__name__)
 
 def index(request):
     """
@@ -140,3 +147,19 @@ def should_use_apple_style(request):
     
     # По умолчанию используем Apple стиль
     return True
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def refresh_cache(request):
+    """
+    Endpoint to refresh the Planfix cache
+    """
+    logger.info("Received cache refresh request")
+    try:
+        logger.info("Starting cache refresh")
+        planfix_cache.refresh_all_caches()
+        logger.info("Cache refresh completed successfully")
+        return JsonResponse({'status': 'success'})
+    except Exception as e:
+        logger.error(f"Error refreshing cache: {str(e)}", exc_info=True)
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
