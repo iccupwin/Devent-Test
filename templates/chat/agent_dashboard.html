@@ -188,8 +188,8 @@
     <div class="welcome-section">
         <h1 class="welcome-title">Planfix AI Agent</h1>
         <p class="welcome-text">
-            Welcome to the Planfix AI Agent, an intelligent assistant that can help you make sense of your Planfix data.
-            Ask questions about tasks, projects, and team performance, and get insights powered by Planfix data and Claude AI.
+            Добро пожаловать в Planfix AI Agent - интеллектуальный помощник, который поможет вам разобраться в данных ПланФикса. 
+            Задавайте вопросы о задачах, проектах и работе команды и получайте информацию, основанную на данных ПланФикса и искусственном интеллекте Клода.
         </p>
         
         <a href="{% url 'chat:new_agent_conversation' %}" class="start-conversation-button">
@@ -198,13 +198,13 @@
                 <line x1="9" y1="9" x2="15" y2="9"></line>
                 <line x1="9" y1="13" x2="15" y2="13"></line>
             </svg>
-            Start a conversation
+            Начать беседу
         </a>
         
         <div class="cache-status">
             <div class="cache-status-indicator {% if cache_valid %}valid{% else %}invalid{% endif %}"></div>
             <span>
-                Cache status: 
+                Статус кэша: 
                 {% if cache_valid %}
                     Valid ({{ stats.cache_age_minutes|floatformat:1 }} minutes old)
                 {% else %}
@@ -218,57 +218,57 @@
                     <path d="M1 20v-6h6"></path>
                     <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
                 </svg>
-                Refresh cache
+                Обновить кэш
             </button>
         </div>
     </div>
     
     <div class="stats-container">
         <div class="stat-card">
-            <div class="stat-title">Total Tasks</div>
+            <div class="stat-title">Всего задач</div>
             <div class="stat-value">{{ stats.total_tasks }}</div>
-            <div class="stat-info">Total number of tasks in Planfix</div>
+            <div class="stat-info">Общее количество задач в Планфиксе</div>
         </div>
         
         <div class="stat-card">
-            <div class="stat-title">Active Tasks</div>
+            <div class="stat-title">Активные задачи</div>
             <div class="stat-value">{{ stats.active_tasks }}</div>
-            <div class="stat-info">Tasks currently in progress</div>
+            <div class="stat-info">Текущие задачи</div>
         </div>
         
         <div class="stat-card">
-            <div class="stat-title">Overdue Tasks</div>
+            <div class="stat-title">Просроченные задания</div>
             <div class="stat-value {% if stats.overdue_tasks > 0 %}danger{% endif %}">{{ stats.overdue_tasks }}</div>
-            <div class="stat-info">Tasks past their due date</div>
+            <div class="stat-info">Просроченные задания</div>
         </div>
         
         <div class="stat-card">
-            <div class="stat-title">Completed Tasks</div>
+            <div class="stat-title">Завершенные задачи</div>
             <div class="stat-value success">{{ stats.completed_tasks }}</div>
-            <div class="stat-info">Tasks marked as completed</div>
+            <div class="stat-info">Выполненые задачи</div>
         </div>
         
         <div class="stat-card">
-            <div class="stat-title">Due This Week</div>
+            <div class="stat-title">На этой неделе</div>
             <div class="stat-value {% if stats.tasks_due_this_week > 5 %}warning{% endif %}">{{ stats.tasks_due_this_week }}</div>
-            <div class="stat-info">Tasks due in the next 7 days</div>
+            <div class="stat-info">В течение следующих 7 дней</div>
         </div>
         
         <div class="stat-card">
-            <div class="stat-title">Total Projects</div>
+            <div class="stat-title">Всего проектов</div>
             <div class="stat-value">{{ stats.total_projects }}</div>
-            <div class="stat-info">Number of active projects</div>
+            <div class="stat-info">Количество действующих проектов</div>
         </div>
         
         <div class="stat-card">
-            <div class="stat-title">Completion Rate</div>
+            <div class="stat-title">Показатель завершения</div>
             <div class="stat-value {% if stats.completion_rate > 75 %}success{% elif stats.completion_rate > 50 %}warning{% else %}danger{% endif %}">{{ stats.completion_rate|floatformat:1 }}%</div>
-            <div class="stat-info">Percentage of completed tasks</div>
+            <div class="stat-info">Процент выполненных заданий</div>
         </div>
     </div>
     
     <div class="welcome-section">
-        <h2 class="welcome-title" style="font-size: 24px;">Recent Conversations</h2>
+        <h2 class="welcome-title" style="font-size: 24px;">Последние беседы</h2>
         
         <div class="conversations-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; margin-top: 20px;">
             {% for conversation in conversations|slice:":6" %}
@@ -279,8 +279,8 @@
             {% empty %}
             <div class="stat-card" style="grid-column: 1 / -1;">
                 <div style="text-align: center; padding: 20px;">
-                    <p style="font-size: 16px; color: #6e6e73; margin-bottom: 16px;">You don't have any conversations yet.</p>
-                    <a href="{% url 'chat:new_agent_conversation' %}" class="start-conversation-button">Start your first conversation</a>
+                    <p style="font-size: 16px; color: #6e6e73; margin-bottom: 16px;">У вас пока нет никаких бесед.</p>
+                    <a href="{% url 'chat:new_agent_conversation' %}" class="start-conversation-button">Начните первую беседу</a>
                 </div>
             </div>
             {% endfor %}

@@ -263,32 +263,32 @@
 <div class="app-layout">
     <div class="agent-sidebar">
         <div class="agent-status">
-            <div class="agent-status-title">Planfix Stats</div>
+            <div class="agent-status-title">Статистика Планфикса</div>
             
             <div class="agent-status-item">
-                <span class="agent-status-label">Active Tasks</span>
+                <span class="agent-status-label">Активные задачи</span>
                 <span class="agent-status-value">{{ stats.active_tasks }}</span>
             </div>
             
             <div class="agent-status-item">
-                <span class="agent-status-label">Overdue Tasks</span>
+                <span class="agent-status-label">Просроченные задачи</span>
                 <span class="agent-status-value {% if stats.overdue_tasks > 0 %}danger{% endif %}">{{ stats.overdue_tasks }}</span>
             </div>
             
             <div class="agent-status-item">
-                <span class="agent-status-label">Due This Week</span>
+                <span class="agent-status-label">На этой неделе</span>
                 <span class="agent-status-value {% if stats.tasks_due_this_week > 5 %}warning{% endif %}">{{ stats.tasks_due_this_week }}</span>
             </div>
             
             <div class="agent-status-item">
-                <span class="agent-status-label">Completion Rate</span>
+                <span class="agent-status-label">Коэффициент завершения</span>
                 <span class="agent-status-value {% if stats.completion_rate > 75 %}success{% elif stats.completion_rate > 50 %}warning{% else %}danger{% endif %}">{{ stats.completion_rate|floatformat:1 }}%</span>
             </div>
             
             <div class="cache-status">
                 <div class="cache-status-indicator {% if cache_valid %}valid{% else %}invalid{% endif %}"></div>
                 <span>
-                    Cache: 
+                    Кэш: 
                     {% if cache_valid %}
                         Valid ({{ stats.cache_age_minutes|floatformat:1 }}m old)
                     {% else %}
@@ -304,7 +304,7 @@
                         <path d="M1 20v-6h6"></path>
                         <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
                     </svg>
-                    Refresh cache
+                    Обновить кэш
                 </a>
             </div>
         </div>
@@ -314,7 +314,7 @@
                 <line x1="12" y1="5" x2="12" y2="19"></line>
                 <line x1="5" y1="12" x2="19" y2="12"></line>
             </svg>
-            New conversation
+            Новая беседа
         </button>
         
         <div class="conversations-list">
@@ -350,7 +350,7 @@
                 {% empty %}
                 <div class="welcome-message">
                     <h1>Planfix AI Agent</h1>
-                    <p>I can help you with insights about your Planfix data. Try asking questions about tasks, projects, deadlines, and more.</p>
+                    <p>Я могу помочь вам разобраться в данных ПланФикса. Попробуйте задать вопросы о задачах, проектах, сроках и многом другом.</p>
                 </div>
                 {% endfor %}
             </div>
