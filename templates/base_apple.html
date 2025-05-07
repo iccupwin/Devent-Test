@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="{% static 'css/apple-style.css' %}">
     <link rel="stylesheet" href="{% static 'css/apple-task-card.css' %}">
     <link rel="stylesheet" href="{% static 'css/apple-enhanced-table.css' %}">
+    <!-- Extra CSS block for template-specific CSS -->
     {% block extra_css %}{% endblock %}
 </head>
 <body>
@@ -47,7 +48,6 @@
     
     <!-- Common Scripts -->
     <script src="{% static 'js/theme-toggle.js' %}"></script>
-    <script src="{% static 'js/enhanced-table.js' %}"></script>
     {% block scripts %}{% endblock %}
 </body>
 </html>

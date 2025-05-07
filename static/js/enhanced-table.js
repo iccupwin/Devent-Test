@@ -201,12 +201,19 @@ function setupColumnToggle() {
     loadColumnSettings();
 }
 
+
 // Setup task modal functionality
 function setupTaskModal() {
     const taskModal = document.getElementById('taskModal');
-    if (!taskModal) return;
+    console.log('Task Modal Element:', taskModal);
+    
+    if (!taskModal) {
+        console.error('Task Modal element not found!');
+        return;
+    }
     
     const modalClose = taskModal.querySelector('.apple-modal-close');
+    console.log('Modal Close Button:', modalClose)
     
     // Close modal when clicking the close button
     if (modalClose) {
@@ -222,7 +229,7 @@ function setupTaskModal() {
     
     // Close modal with Escape key
     document.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape' && taskModal.style.display === 'block') {
+        if (event.key === 'Escape' && taskModal && taskModal.classList.contains('show')) {
             closeTaskModal();
         }
     });
@@ -230,6 +237,17 @@ function setupTaskModal() {
     // Setup task name link click to open modal
     document.querySelectorAll('.task-name-link').forEach(link => {
         link.addEventListener('click', function(event) {
+            event.preventDefault();
+            const taskId = this.getAttribute('data-task-id');
+            if (taskId) {
+                openTaskModal(taskId);
+            }
+        });
+    });
+    
+    // Setup view buttons to open modal
+    document.querySelectorAll('.btn-view').forEach(button => {
+        button.addEventListener('click', function(event) {
             event.preventDefault();
             const taskId = this.getAttribute('data-task-id');
             if (taskId) {
@@ -269,7 +287,7 @@ function openTaskModal(taskId) {
     
     // Set loading state
     if (modalTaskTitle) modalTaskTitle.textContent = 'Загрузка...';
-    if (modalTaskId) modalTaskId.textContent = taskId;
+    if (modalTaskId) modalTaskId.textContent = `ID: ${taskId}`;
     if (modalTaskProject) modalTaskProject.textContent = '-';
     if (modalTaskAssignee) modalTaskAssignee.textContent = '-';
     if (modalTaskPriority) modalTaskPriority.textContent = '-';
@@ -397,11 +415,19 @@ function closeTaskModal() {
 // Function to integrate a task with Claude
 function integrateTaskWithClaude(taskId, button) {
     // Save original button content
-    const originalContent = button.innerHTML;
+    const originalText = button.querySelector('.button-text');
+    const spinner = button.querySelector('.loading-spinner');
     
-    // Show loading state
-    button.innerHTML = '<div class="loading-spinner"></div> Обработка...';
-    button.disabled = true;
+    if (originalText && spinner) {
+        // Show loading state
+        originalText.style.display = 'none';
+        spinner.style.display = 'inline-block';
+        button.disabled = true;
+    } else {
+        // Fallback if button doesn't have the expected structure
+        button.innerHTML = '<div class="loading-spinner"></div> Обработка...';
+        button.disabled = true;
+    }
     
     // Send request to integrate task
     fetch(`/planfix/task/${taskId}/integrate/`, {
@@ -429,8 +455,14 @@ function integrateTaskWithClaude(taskId, button) {
     })
     .catch(error => {
         // Restore button state
-        button.innerHTML = originalContent;
-        button.disabled = false;
+        if (originalText && spinner) {
+            originalText.style.display = 'inline';
+            spinner.style.display = 'none';
+            button.disabled = false;
+        } else {
+            button.innerHTML = 'Обсудить с Claude';
+            button.disabled = false;
+        }
         
         // Show error notification
         showNotification('error', 'Ошибка!', error.message);

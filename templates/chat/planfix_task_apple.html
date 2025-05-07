@@ -4,6 +4,10 @@
 
 {% block title %}Задачи Planfix{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/apple-modal.css' %}">
+{% endblock %}
+
 {% block content %}
 <div class="planfix-container">
     <div class="planfix-header">
@@ -172,7 +176,7 @@
                     </td>
                     <td class="column-dates">
                         <div class="task-dates">
-                            {% if task.dateBegin %}
+                            {% if task.startDateTime %}
                             <div class="date-start">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
@@ -180,10 +184,10 @@
                                     <line x1="8" y1="2" x2="8" y2="6"></line>
                                     <line x1="3" y1="10" x2="21" y2="10"></line>
                                 </svg>
-                                {{ task.dateBegin|date:"d.m.Y" }}
+                                {{ task.startDateTime|date:"d.m.Y" }}
                             </div>
                             {% endif %}
-                            {% if task.dateEnd %}
+                            {% if task.endDateTime %}
                             <div class="date-end">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
@@ -191,16 +195,16 @@
                                     <line x1="8" y1="2" x2="8" y2="6"></line>
                                     <line x1="3" y1="10" x2="21" y2="10"></line>
                                 </svg>
-                                {{ task.dateEnd|date:"d.m.Y" }}
+                                {{ task.endDateTime|date:"d.m.Y" }}
                             </div>
                             {% endif %}
-                            {% if not task.dateBegin and not task.dateEnd %}
+                            {% if not task.startDateTime and not task.endDateTime %}
                                 <span class="empty-value">Не указаны</span>
                             {% endif %}
                         </div>
                     </td>
                     <td class="column-assignee">
-                        {% if task.assignees.0.name %}
+                        {% if task.assignees and task.assignees|length > 0 %}
                             <div class="assignee-wrapper">
                                 <div class="assignee-avatar">
                                     {{ task.assignees.0.name|slice:":1"|upper }}
@@ -216,7 +220,7 @@
                     </td>
                     <td class="column-actions">
                         <div class="table-actions">
-                            <a href="#" class="btn-icon btn-view task-name-link" data-task-id="{{ task.id }}" title="Просмотр задачи">
+                            <a href="#" class="btn-icon btn-view" data-task-id="{{ task.id }}" title="Просмотр задачи">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                     <circle cx="12" cy="12" r="3"></circle>
@@ -359,6 +363,185 @@
 {% endblock %}
 
 {% block scripts %}
+<script>
+// Simple debug script to check that modal works
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded, checking for modal');
+    
+    // Check if modal exists 
+    const modal = document.getElementById('taskModal');
+    console.log('Modal element:', modal);
+    
+    if (modal) {
+        console.log('Modal found, setting up event listeners');
+        
+        // Get all task name links and view buttons
+        const taskLinks = document.querySelectorAll('.task-name-link, .btn-view');
+        console.log('Task links found:', taskLinks.length);
+        
+        // Add click event to all task links
+        taskLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('Link clicked', this);
+                
+                const taskId = this.getAttribute('data-task-id');
+                console.log('Task ID:', taskId);
+                
+                // Update modal content
+                document.getElementById('modalTaskTitle').textContent = 'Задача #' + taskId;
+                document.getElementById('modalTaskId').textContent = 'ID: ' + taskId;
+                
+                // Show modal
+                modal.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+                
+                // Add show class after small delay for animation
+                setTimeout(() => {
+                    modal.classList.add('show');
+                }, 10);
+                
+                // Fetch task data from API
+                fetch(`/api/task/${taskId}/`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Ошибка при загрузке задачи');
+                        }
+                        return response.json();
+                    })
+                    .then(task => {
+                        console.log('Task data:', task);
+                        
+                        // Update modal content with task data
+                        document.getElementById('modalTaskTitle').textContent = task.name || 'Без названия';
+                        document.getElementById('modalTaskId').textContent = `ID: ${task.id}`;
+                        
+                        // Update other fields
+                        if (document.getElementById('modalTaskProject')) {
+                            document.getElementById('modalTaskProject').textContent = 
+                                task.project && task.project.name ? task.project.name : 'Не указан';
+                        }
+                        
+                        if (document.getElementById('modalTaskAssignee')) {
+                            if (task.assignees && task.assignees.length > 0) {
+                                document.getElementById('modalTaskAssignee').textContent = 
+                                    task.assignees.map(a => a.name).join(', ');
+                            } else {
+                                document.getElementById('modalTaskAssignee').textContent = 'Не назначен';
+                            }
+                        }
+                        
+                        if (document.getElementById('modalTaskPriority')) {
+                            document.getElementById('modalTaskPriority').textContent = 
+                                task.priority && task.priority.name ? task.priority.name : 'Обычный';
+                        }
+                        
+                        if (document.getElementById('modalTaskStatus')) {
+                            if (task.status && task.status.name) {
+                                const statusElem = document.getElementById('modalTaskStatus');
+                                const statusName = task.status.name.toLowerCase().replace(/\s+/g, '');
+                                
+                                statusElem.className = 'apple-status-badge ' + statusName;
+                                statusElem.textContent = task.status.name;
+                            } else {
+                                document.getElementById('modalTaskStatus').textContent = 'Не указан';
+                            }
+                        }
+                        
+                        if (document.getElementById('modalTaskDateStart')) {
+                            document.getElementById('modalTaskDateStart').textContent = 
+                                task.startDateTime ? formatDate(task.startDateTime) : 'Не указана';
+                        }
+                        
+                        if (document.getElementById('modalTaskDateEnd')) {
+                            document.getElementById('modalTaskDateEnd').textContent = 
+                                task.endDateTime ? formatDate(task.endDateTime) : 'Не указана';
+                        }
+                        
+                        if (document.getElementById('modalTaskDescription')) {
+                            if (task.description) {
+                                document.getElementById('modalTaskDescription').innerHTML = task.description;
+                            } else {
+                                document.getElementById('modalTaskDescription').textContent = 'Описание отсутствует';
+                            }
+                        }
+                        
+                        // Set task ID for integrate button
+                        if (document.getElementById('modalIntegrateButton')) {
+                            document.getElementById('modalIntegrateButton').setAttribute('data-task-id', task.id);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching task data:', error);
+                    });
+            });
+        });
+        
+        // Close modal when clicking the close button
+        const closeBtn = modal.querySelector('.apple-modal-close');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', function() {
+                console.log('Close button clicked');
+                
+                // Remove show class
+                modal.classList.remove('show');
+                
+                // Hide modal after animation completes
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = '';
+                }, 300);
+            });
+        }
+        
+        // Close modal when clicking outside the content
+        modal.addEventListener('click', function(event) {
+            if (event.target === modal) {
+                console.log('Clicked outside modal content');
+                
+                // Remove show class
+                modal.classList.remove('show');
+                
+                // Hide modal after animation completes
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = '';
+                }, 300);
+            }
+        });
+        
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape' && modal.style.display === 'block') {
+                console.log('Escape key pressed');
+                
+                // Remove show class
+                modal.classList.remove('show');
+                
+                // Hide modal after animation completes
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = '';
+                }, 300);
+            }
+        });
+        
+        // Helper function to format date
+        function formatDate(dateStr) {
+            if (!dateStr) return '';
+            
+            const date = new Date(dateStr);
+            if (isNaN(date.getTime())) return 'Некорректная дата';
+            
+            return date.toLocaleDateString('ru-RU', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+        }
+    }
+});
+</script>
 <script src="{% static 'js/enhanced-table.js' %}"></script>
 <script src="{% static 'js/planfix-tasks.js' %}"></script>
 {% endblock %}
