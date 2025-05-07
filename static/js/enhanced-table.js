@@ -20,21 +20,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Setup global search
     setupGlobalSearch();
-
-    // Setup view toggle
-    setupViewToggle();
-
-    // Setup pagination
-    setupPagination();
-
-    // Setup task links
-    setupTaskLinks();
-
-    // Setup integrate buttons
-    setupIntegrateButtons();
-
-    // Setup reset filters
-    setupResetFilters();
 });
 
 // Function to add theme toggle button
@@ -780,101 +765,58 @@ function loadAssigners() {
 
 // Function to apply filters
 function applyFilters() {
-    const searchInput = document.getElementById('task-search');
-    const searchQuery = searchInput.value.toLowerCase();
     const statusFilter = document.getElementById('status-filter');
     const projectFilter = document.getElementById('project-filter');
-    const assigneeFilter = document.getElementById('assignee-filter');
-    const dateFilter = document.getElementById('date-filter');
-    
-    const selectedStatus = statusFilter.value;
-    const selectedProject = projectFilter.value;
-    const selectedAssignee = assigneeFilter.value;
-    const selectedDate = dateFilter.value;
-    
-    const rows = document.querySelectorAll('.tasks-table tbody tr');
-    const cards = document.querySelectorAll('.task-card');
+    const assignerFilter = document.getElementById('assigner-filter');
+    const searchInput = document.getElementById('task-search');
+
+    const statusValue = statusFilter ? statusFilter.value : 'all';
+    const projectValue = projectFilter ? projectFilter.value : 'all';
+    const assignerValue = assignerFilter ? assignerFilter.value : 'all';
+    const searchValue = searchInput ? searchInput.value.trim().toLowerCase() : '';
+
     let visibleCount = 0;
-    
-    // Функция для проверки соответствия фильтрам
-    function matchesFilters(element, isCard = false) {
-        const taskId = isCard ? 
-            element.querySelector('.task-card-id').textContent.replace('#', '') :
-            element.querySelector('td:first-child').textContent;
-        const taskName = isCard ?
-            element.querySelector('.task-card-title').textContent :
-            element.querySelector('td:nth-child(2)').textContent;
-        const status = isCard ?
-            element.querySelector('.task-status').textContent :
-            element.querySelector('td:nth-child(3)').textContent;
-        const project = isCard ?
-            element.querySelector('.project-name')?.textContent || '' :
-            element.querySelector('td:nth-child(4)').textContent;
-        const dates = isCard ?
-            Array.from(element.querySelectorAll('.task-card-dates > div')).map(d => d.textContent).join(' ') :
-            element.querySelector('td:nth-child(5)').textContent;
-        const assignee = isCard ?
-            element.querySelector('.assignee-name')?.textContent || '' :
-            element.querySelector('td:nth-child(6)').textContent;
-        
-        // Проверка поискового запроса
-        const searchMatch = searchQuery === '' || 
-            taskId.toLowerCase().includes(searchQuery) ||
-            taskName.toLowerCase().includes(searchQuery) ||
-            status.toLowerCase().includes(searchQuery) ||
-            project.toLowerCase().includes(searchQuery) ||
-            dates.toLowerCase().includes(searchQuery) ||
-            assignee.toLowerCase().includes(searchQuery);
-        
-        // Проверка фильтров
-        const statusMatch = selectedStatus === '' || status === selectedStatus;
-        const projectMatch = selectedProject === '' || project === selectedProject;
-        const assigneeMatch = selectedAssignee === '' || assignee === selectedAssignee;
-        
-        // Проверка фильтра по дате
-        let dateMatch = true;
-        if (selectedDate !== '') {
-            const today = new Date();
-            const taskDate = new Date(dates);
-            
-            switch (selectedDate) {
-                case 'today':
-                    dateMatch = taskDate.toDateString() === today.toDateString();
-                    break;
-                case 'week':
-                    const weekAgo = new Date(today.setDate(today.getDate() - 7));
-                    dateMatch = taskDate >= weekAgo;
-                    break;
-                case 'month':
-                    const monthAgo = new Date(today.setMonth(today.getMonth() - 1));
-                    dateMatch = taskDate >= monthAgo;
-                    break;
-            }
-        }
-        
-        return searchMatch && statusMatch && projectMatch && assigneeMatch && dateMatch;
-    }
-    
-    // Применяем фильтры к строкам таблицы
-    rows.forEach(row => {
-        const isVisible = matchesFilters(row);
+    const totalRows = document.querySelectorAll('.tasks-table tbody tr').length;
+
+    document.querySelectorAll('.tasks-table tbody tr').forEach(row => {
+        const status = row.querySelector('.column-status .task-status')?.textContent.trim() || '';
+        const project = row.querySelector('.column-project .project-name')?.textContent.trim() || 'Не указан';
+        const assigner = row.querySelector('.column-assignee .assignee-name')?.textContent.trim() || 'Не указан';
+        const id = row.querySelector('.column-id')?.textContent.trim() || '';
+        const name = row.querySelector('.column-name .task-name-link')?.textContent.trim() || '';
+        const dates = row.querySelector('.column-dates')?.textContent.trim() || '';
+
+        const statusMatch = statusValue === 'all' || 
+            (statusValue === 'active' && !status.toLowerCase().includes('завершена')) ||
+            (statusValue === 'completed' && status.toLowerCase().includes('завершена'));
+        const projectMatch = projectValue === 'all' || project === projectValue;
+        const assignerMatch = assignerValue === 'all' || assigner === assignerValue;
+
+        // Поиск по всем основным колонкам
+        const rowText = [id, name, status, project, dates, assigner].join(' ').toLowerCase();
+        const searchMatch = !searchValue || rowText.includes(searchValue);
+
+        const isVisible = statusMatch && projectMatch && assignerMatch && searchMatch;
         row.style.display = isVisible ? '' : 'none';
-        if (isVisible) visibleCount++;
+        
+        if (isVisible) {
+            visibleCount++;
+        }
     });
-    
-    // Применяем фильтры к карточкам
-    cards.forEach(card => {
-        const isVisible = matchesFilters(card, true);
-        card.style.display = isVisible ? '' : 'none';
-    });
-    
+
     // Обновляем информацию о пагинации
-    updatePaginationInfo(visibleCount);
-    
-    // Показываем сообщение, если нет видимых задач
-    const noTasksMessage = document.querySelector('.no-tasks');
-    if (noTasksMessage) {
-        noTasksMessage.style.display = visibleCount === 0 ? 'flex' : 'none';
+    const shownFrom = document.getElementById('shown-from');
+    const shownTo = document.getElementById('shown-to');
+    const totalCount = document.getElementById('total-count');
+
+    if (shownFrom) shownFrom.textContent = visibleCount > 0 ? '1' : '0';
+    if (shownTo) shownTo.textContent = visibleCount;
+    if (totalCount) totalCount.textContent = totalRows;
+
+    // Показываем сообщение, если ничего не найдено
+    const noTasksRow = document.querySelector('.no-tasks-cell');
+    if (noTasksRow) {
+        noTasksRow.style.display = visibleCount === 0 ? '' : 'none';
     }
 }
 
@@ -911,69 +853,3 @@ function setupGlobalSearch() {
         });
     }
 }
-
-// Функция для переключения режима отображения
-function setupViewToggle() {
-    const viewToggleBtn = document.getElementById('view-toggle-btn');
-    const tableContainer = document.querySelector('.table-container');
-    const tasksCards = document.querySelector('.tasks-cards');
-    const tableViewIcon = viewToggleBtn ? viewToggleBtn.querySelector('.table-view-icon') : null;
-    const cardViewIcon = viewToggleBtn ? viewToggleBtn.querySelector('.card-view-icon') : null;
-
-    console.log('[setupViewToggle] init:', {
-        viewToggleBtn, tableContainer, tasksCards, tableViewIcon, cardViewIcon
-    });
-    if (!viewToggleBtn || !tableContainer || !tasksCards) {
-        console.error('[setupViewToggle] Не найден один из элементов!');
-        return;
-    }
-
-    function setIcons(isTable) {
-        if (tableViewIcon) tableViewIcon.style.display = isTable ? 'block' : 'none';
-        if (cardViewIcon) cardViewIcon.style.display = isTable ? 'none' : 'block';
-    }
-
-    const savedView = localStorage.getItem('tasksViewMode');
-    console.log('[setupViewToggle] savedView:', savedView);
-    if (savedView === 'cards') {
-        tableContainer.classList.add('hidden-view');
-        tasksCards.classList.remove('hidden-view');
-        viewToggleBtn.classList.add('active');
-        setIcons(false);
-    } else {
-        tableContainer.classList.remove('hidden-view');
-        tasksCards.classList.add('hidden-view');
-        viewToggleBtn.classList.remove('active');
-        setIcons(true);
-    }
-
-    viewToggleBtn.addEventListener('click', () => {
-        const isTableView = !tableContainer.classList.contains('hidden-view');
-        console.log('[setupViewToggle] click, isTableView:', isTableView);
-        if (isTableView) {
-            tableContainer.classList.add('hidden-view');
-            tasksCards.classList.remove('hidden-view');
-            viewToggleBtn.classList.add('active');
-            setIcons(false);
-            localStorage.setItem('tasksViewMode', 'cards');
-        } else {
-            tableContainer.classList.remove('hidden-view');
-            tasksCards.classList.add('hidden-view');
-            viewToggleBtn.classList.remove('active');
-            setIcons(true);
-            localStorage.setItem('tasksViewMode', 'table');
-        }
-    });
-}
-
-// Добавляем вызов setupViewToggle в инициализацию
-document.addEventListener('DOMContentLoaded', function() {
-    setupFilters();
-    setupViewToggle();
-    setupSearch();
-    setupPagination();
-    setupColumnToggle();
-    setupTaskLinks();
-    setupIntegrateButtons();
-    setupResetFilters();
-});
