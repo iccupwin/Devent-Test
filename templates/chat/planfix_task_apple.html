@@ -71,11 +71,8 @@
     
     <!-- Выпадающее меню для выбора столбцов -->
     <div id="columns-dropdown" class="columns-dropdown">
-        <div class="dropdown-header">
-            <h4>Выбор столбцов</h4>
-            <button class="dropdown-close">&times;</button>
-        </div>
-        <div class="columns-options">
+        <div class="columns-dropdown-header">Выбор столбцов</div>
+        <div>
             <label class="column-option">
                 <input type="checkbox" checked data-column="id"> ID
             </label>
@@ -136,7 +133,7 @@
                 <tr>
                     <td class="column-id">{{ task.id }}</td>
                     <td class="column-name">
-                        <a href="/planfix/task/{{ task.id }}/" class="task-name-link">
+                        <a href="#" class="task-name-link" data-task-id="{{ task.id }}">
                             {{ task.name|default:"Без названия" }}
                             {% if task.description %}
                             <span class="has-description" title="Есть описание">📝</span>
@@ -150,23 +147,25 @@
                     </td>
                     <td class="column-project">
                         {% if task.project and task.project.name %}
-                            {% with project_id=task.project.id|default:0 %}
-                            {% with color_index=project_id|modulo:8 %}
-                            <div class="project-badge" style="background-color: 
-                                {% if color_index == 0 %}#6366f1{% endif %}
-                                {% if color_index == 1 %}#8b5cf6{% endif %}
-                                {% if color_index == 2 %}#ec4899{% endif %}
-                                {% if color_index == 3 %}#f43f5e{% endif %}
-                                {% if color_index == 4 %}#f59e0b{% endif %}
-                                {% if color_index == 5 %}#10b981{% endif %}
-                                {% if color_index == 6 %}#06b6d4{% endif %}
-                                {% if color_index == 7 %}#3b82f6{% endif %}
-                            ">
-                                {{ task.project.name|slice:":1"|upper }}
+                            <div class="project-badge">
+                                {% with project_id=task.project.id|default:0 %}
+                                {% with color_index=project_id|modulo:8 %}
+                                <div style="background-color: 
+                                    {% if color_index == 0 %}#6366f1{% endif %}
+                                    {% if color_index == 1 %}#8b5cf6{% endif %}
+                                    {% if color_index == 2 %}#ec4899{% endif %}
+                                    {% if color_index == 3 %}#f43f5e{% endif %}
+                                    {% if color_index == 4 %}#f59e0b{% endif %}
+                                    {% if color_index == 5 %}#10b981{% endif %}
+                                    {% if color_index == 6 %}#06b6d4{% endif %}
+                                    {% if color_index == 7 %}#3b82f6{% endif %}
+                                ">
+                                    {{ task.project.name|slice:":1"|upper }}
+                                </div>
+                                {% endwith %}
+                                {% endwith %}
+                                <span class="project-name">{{ task.project.name }}</span>
                             </div>
-                            <span class="project-name">{{ task.project.name }}</span>
-                            {% endwith %}
-                            {% endwith %}
                         {% else %}
                             <span class="empty-value">Не указан</span>
                         {% endif %}
@@ -217,7 +216,7 @@
                     </td>
                     <td class="column-actions">
                         <div class="table-actions">
-                            <a href="{% url 'chat:planfix_task_detail' task_id=task.id %}" class="btn-icon btn-view" title="Просмотр задачи">
+                            <a href="#" class="btn-icon btn-view task-name-link" data-task-id="{{ task.id }}" title="Просмотр задачи">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                     <circle cx="12" cy="12" r="3"></circle>
@@ -280,77 +279,86 @@
     </div>
     
     <!-- Task Modal -->
-    <div id="taskModal" class="task-modal">
-        <div class="task-modal-content">
-            <div class="task-modal-header">
-                <h2 id="modalTaskTitle">Задача</h2>
-                <span class="task-modal-close">&times;</span>
+    <div id="taskModal" class="apple-modal">
+        <div class="apple-modal-content">
+            <div class="apple-modal-header">
+                <div class="apple-modal-title">
+                    <h2 id="modalTaskTitle">Загрузка...</h2>
+                    <span id="modalTaskId" class="apple-modal-subtitle">ID: -</span>
+                </div>
+                <button class="apple-modal-close">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
             </div>
-            <div class="task-modal-body">
-                <div class="task-card-header">
-                    <div class="task-card-info">
-                        <div class="task-card-id">
-                            <span class="task-card-label">ID ЗАДАЧИ</span>
-                            <span id="modalTaskId" class="task-card-value">-</span>
-                        </div>
-                        <div class="task-card-project">
-                            <span class="task-card-label">ПРОЕКТ</span>
-                            <span id="modalTaskProject" class="task-card-value">-</span>
-                        </div>
-                        <div class="task-card-assignee">
-                            <span class="task-card-label">ИСПОЛНИТЕЛЬ</span>
-                            <span id="modalTaskAssignee" class="task-card-value">-</span>
-                        </div>
-                        <div class="task-card-priority">
-                            <span class="task-card-label">ПРИОРИТЕТ</span>
-                            <span id="modalTaskPriority" class="task-card-value">-</span>
-                        </div>
+            <div class="apple-modal-body">
+                <div class="apple-task-info">
+                    <div class="apple-task-status">
+                        <span id="modalTaskStatus" class="apple-status-badge">-</span>
                     </div>
-                    <div class="task-card-status">
-                        <span id="modalTaskStatus" class="task-status">-</span>
-                    </div>
-                </div>
-                
-                <div class="task-card-dates">
-                    <div class="task-card-date-start">
-                        <span class="task-card-label">ДАТА НАЧАЛА</span>
-                        <span id="modalTaskDateStart" class="task-card-value">-</span>
-                    </div>
-                    <div class="task-card-date-end">
-                        <span class="task-card-label">ДАТА ЗАВЕРШЕНИЯ</span>
-                        <span id="modalTaskDateEnd" class="task-card-value">-</span>
+                    <div class="apple-task-details">
+                        <div class="apple-task-section">
+                            <div class="apple-task-row">
+                                <span class="apple-task-label">Проект</span>
+                                <span id="modalTaskProject" class="apple-task-value">-</span>
+                            </div>
+                            <div class="apple-task-row">
+                                <span class="apple-task-label">Исполнитель</span>
+                                <span id="modalTaskAssignee" class="apple-task-value">-</span>
+                            </div>
+                        </div>
+                        <div class="apple-task-section">
+                            <div class="apple-task-row">
+                                <span class="apple-task-label">Приоритет</span>
+                                <span id="modalTaskPriority" class="apple-task-value">-</span>
+                            </div>
+                            <div class="apple-task-row">
+                                <span class="apple-task-label">Дата начала</span>
+                                <span id="modalTaskDateStart" class="apple-task-value">-</span>
+                            </div>
+                            <div class="apple-task-row">
+                                <span class="apple-task-label">Дата окончания</span>
+                                <span id="modalTaskDateEnd" class="apple-task-value">-</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                
-                <div class="task-card-description">
-                    <h3>Описание</h3>
-                    <div id="modalTaskDescription" class="task-card-description-content">-</div>
+                <div class="apple-task-description">
+                    <h3 class="apple-section-title">Описание</h3>
+                    <div id="modalTaskDescription" class="apple-description-content">Загрузка данных задачи...</div>
                 </div>
-                
-                <div class="task-card-actions">
-                    <button id="modalIntegrateButton" class="btn-integrate-large" data-task-id="">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                        </svg>
-                        Обсудить с Claude
+                <div class="apple-modal-actions">
+                    <button id="modalIntegrateButton" class="apple-button apple-button-primary" data-task-id="">
+                        <span class="button-text">Интегрировать с Claude</span>
+                        <span class="loading-spinner" style="display: none;"></span>
                     </button>
                 </div>
             </div>
         </div>
     </div>
     
-    <!-- Уведомления -->
-    <div id="notification" class="notification" style="display: none;">
-        <div id="notification-icon" class="notification-icon"></div>
-        <div class="notification-content">
-            <div id="notification-title" class="notification-title"></div>
-            <div id="notification-message" class="notification-message"></div>
+    <!-- Notification -->
+    <div id="notification" class="apple-notification" style="display: none;">
+        <div class="apple-notification-content">
+            <div id="notification-icon" class="apple-notification-icon"></div>
+            <div class="apple-notification-text">
+                <div id="notification-title" class="apple-notification-title"></div>
+                <div id="notification-message" class="apple-notification-message"></div>
+            </div>
+            <button id="notification-close" class="apple-notification-close">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
         </div>
-        <button id="notification-close" class="notification-close">&times;</button>
     </div>
 </div>
 {% endblock %}
 
 {% block scripts %}
+<script src="{% static 'js/enhanced-table.js' %}"></script>
 <script src="{% static 'js/planfix-tasks.js' %}"></script>
 {% endblock %}

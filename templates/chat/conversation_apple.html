@@ -13,15 +13,7 @@
             </svg>
             Новая беседа
         </button>
-        <div class="style-switcher">
-            <a href="{% url 'chat:toggle_style' %}?next={{ request.path }}" class="style-toggle">
-                {% if request.COOKIES.use_apple_style == 'true' %}
-                    Вернуться к обычному стилю
-                {% else %}
-                    Включить Apple-стиль
-                {% endif %}
-            </a>
-        </div>
+        
         <div class="conversations-list">
             {% for conv in conversations %}
             <a href="{% url 'chat:conversation' conversation_id=conv.id %}" class="conversation-item {% if conv.id == conversation.id %}active{% endif %}">

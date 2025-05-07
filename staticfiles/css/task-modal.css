@@ -1,0 +1,33 @@
+/* Минималистичный Apple‑look для модальных окон */
+.apple-modal{
+    position:fixed; inset:0;
+    display:flex; align-items:center; justify-content:center;
+    background:rgba(0,0,0,.4); backdrop-filter:blur(30px) saturate(180%);
+    transition:opacity .25s ease, visibility .25s ease;
+    z-index:1000;
+  }
+  .apple-modal.hidden{opacity:0;visibility:hidden;pointer-events:none;}
+  
+  .apple-modal__dialog{
+    background:#fff; color:#1c1c1e;
+    width:90%; max-width:720px;
+    border-radius:14px; box-shadow:0 24px 60px rgba(0,0,0,.25);
+    overflow:hidden; position:relative;
+    animation:modalIn .3s cubic-bezier(.4,0,.2,1);
+  }
+  
+  @keyframes modalIn{from{transform:translateY(24px);opacity:0}
+                     to{transform:translateY(0);opacity:1}}
+  
+  .apple-modal__content{padding:32px; max-height:80vh; overflow-y:auto;}
+  .apple-modal__overlay{position:absolute; inset:0;}
+  .apple-modal__close{
+    position:absolute; top:12px; right:18px;
+    background:none; border:none; font-size:28px; line-height:1;
+    color:#8e8e93; cursor:pointer; transition:color .2s;
+  }
+  .apple-modal__close:hover{color:#1c1c1e;}
+  
+  .loader{opacity:.6; text-align:center;}
+  .error{color:#d13e3e; text-align:center;}
+  

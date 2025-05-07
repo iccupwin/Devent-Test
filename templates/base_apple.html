@@ -11,6 +11,7 @@
     <!-- Apple-inspired CSS -->
     <link rel="stylesheet" href="{% static 'css/apple-style.css' %}">
     <link rel="stylesheet" href="{% static 'css/apple-task-card.css' %}">
+    <link rel="stylesheet" href="{% static 'css/apple-enhanced-table.css' %}">
     {% block extra_css %}{% endblock %}
 </head>
 <body>
@@ -23,6 +24,13 @@
             <div class="header-links">
                 <a href="{% url 'chat:index' %}" class="header-link">Чат с Claude</a>
                 <a href="{% url 'chat:planfix_tasks' %}" class="header-link">Задачи Planfix</a>
+                <a href="{% url 'chat:toggle_style' %}?next={{ request.path }}" class="header-link">
+                    {% if request.COOKIES.use_apple_style == 'true' %}
+                        Обычный стиль
+                    {% else %}
+                        Apple стиль
+                    {% endif %}
+                </a>
             </div>
         </header>
         
@@ -35,6 +43,11 @@
         </footer>
     </div>
     
+    <!-- Theme Toggle Button will be added by JS -->
+    
+    <!-- Common Scripts -->
+    <script src="{% static 'js/theme-toggle.js' %}"></script>
+    <script src="{% static 'js/enhanced-table.js' %}"></script>
     {% block scripts %}{% endblock %}
 </body>
 </html>

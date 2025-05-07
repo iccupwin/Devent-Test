@@ -1,0 +1,53 @@
+{% extends "base_apple.html" %}
+{% load static %}
+
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/apple-modal.css' %}">
+{% endblock %}
+
+{% block extra_js %}
+  <script src="{% static 'js/task-modal.js' %}" defer></script>
+{% endblock %}
+
+{% block content %}
+<div class="task-table-wrapper">
+  <table class="task-table">
+    <thead>
+      <tr>
+        <th>#</th><th>Название</th><th>Статус</th><th>Срок</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for task in tasks %}
+      <!-- ⬇️ Ссылка заменена на кнопку‑строку, чтобы не менять URL -->
+      <tr class="task-row"
+          data-task-id="{{ task.id }}"
+          role="button"
+          tabindex="0">
+        <td>{{ forloop.counter }}</td>
+        <td>{{ task.name }}</td>
+        <td>{{ task.get_status_display }}</td>
+        <td>{{ task.deadline|date:"d b Y" }}</td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="4" class="text-center">Задач нет</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+<!-- ---------- Модальное окно ---------- -->
+<div id="taskModal" class="apple-modal hidden" aria-modal="true"
+     aria-labelledby="modalTitle" aria-describedby="modalBody">
+  <div class="apple-modal__overlay"></div>
+
+  <div class="apple-modal__dialog" role="dialog">
+    <button class="apple-modal__close" aria-label="Закрыть">×</button>
+
+    <h2 id="modalTitle" class="title h3">Загрузка…</h2>
+    <div id="modalBody" class="modal-body">
+      <!-- Сюда JS подставит контент -->
+    </div>
+  </div>
+</div>
+{% endblock %}

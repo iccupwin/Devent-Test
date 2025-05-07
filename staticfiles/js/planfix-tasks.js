@@ -188,7 +188,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Функции для работы с модальным окном задачи
     const taskModal = document.getElementById('taskModal');
-    const modalClose = document.querySelector('.task-modal-close');
+    const modalClose = document.querySelector('.apple-modal-close');
     const modalTaskTitle = document.getElementById('modalTaskTitle');
     const modalTaskId = document.getElementById('modalTaskId');
     const modalTaskProject = document.getElementById('modalTaskProject');
@@ -205,19 +205,21 @@ document.addEventListener('DOMContentLoaded', function() {
         const taskLink = event.target.closest('.task-name-link');
         if (taskLink) {
             event.preventDefault();
-            const taskId = taskLink.getAttribute('href').split('/').filter(Boolean).pop();
-            openTaskModal(taskId);
+            const taskId = taskLink.dataset.taskId;
+            if (taskId) {
+                openTaskModal(taskId);
+            }
         }
     });
     
-    // Закрытие модального окна при клике на крестик
+    // Обработчик для закрытия модального окна
     if (modalClose) {
         modalClose.addEventListener('click', function() {
             closeTaskModal();
         });
     }
     
-    // Закрытие модального окна при клике вне его содержимого
+    // Закрытие модального окна при клике вне его области
     if (taskModal) {
         taskModal.addEventListener('click', function(event) {
             if (event.target === taskModal) {
@@ -226,145 +228,111 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Закрытие модального окна по клавише Escape
+    // Закрытие модального окна при нажатии Escape
     document.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape' && taskModal && taskModal.style.display === 'block') {
+        if (event.key === 'Escape' && taskModal && taskModal.classList.contains('show')) {
             closeTaskModal();
         }
     });
     
-    // Функция открытия модального окна с данными задачи
-    function openTaskModal(taskId) {
-        // Показываем индикатор загрузки в модальном окне
-        modalTaskTitle.textContent = 'Загрузка...';
-        modalTaskId.textContent = taskId;
-        modalTaskProject.textContent = '-';
-        modalTaskAssignee.textContent = '-';
-        modalTaskPriority.textContent = '-';
-        modalTaskStatus.className = 'task-status';
-        modalTaskStatus.textContent = '-';
-        modalTaskDateStart.textContent = '-';
-        modalTaskDateEnd.textContent = '-';
-        modalTaskDescription.textContent = 'Загрузка данных задачи...';
-        modalIntegrateButton.setAttribute('data-task-id', taskId);
-        
-        // Открываем модальное окно
-        taskModal.style.display = 'block';
-        document.body.style.overflow = 'hidden'; // Блокируем прокрутку страницы
-        
-        // Запрашиваем данные задачи
-        fetch(`/api/task/${taskId}/`)
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Ошибка при загрузке задачи');
-                }
-                return response.json();
-            })
-            .then(task => {
-                // Заполняем модальное окно данными
-                modalTaskTitle.textContent = task.name || 'Без названия';
-                modalTaskId.textContent = task.id;
-                
-                // Проект
-                if (task.project && task.project.name) {
-                    modalTaskProject.textContent = task.project.name;
-                } else {
-                    modalTaskProject.textContent = 'Не указан';
-                }
-                
-                // Исполнители
-                if (task.assignees && task.assignees.length > 0) {
-                    modalTaskAssignee.textContent = task.assignees.map(a => a.name).join(', ');
-                } else {
-                    modalTaskAssignee.textContent = 'Не назначен';
-                }
-                
-                // Приоритет
-                if (task.priority && task.priority.name) {
-                    modalTaskPriority.textContent = task.priority.name;
-                } else {
-                    modalTaskPriority.textContent = 'Обычный';
-                }
-                
-                // Статус
-                if (task.status && task.status.name) {
-                    const statusClass = getStatusClass(task.status.name);
-                    modalTaskStatus.className = 'task-status ' + statusClass;
-                    modalTaskStatus.textContent = task.status.name;
-                    
-                    // Если задача завершена, отключаем кнопку интеграции
-                    if (statusClass === 'завершена' || statusClass === 'завершенная' || statusClass === 'выполненная' || task.status.id === 3) {
-                        modalIntegrateButton.disabled = true;
-                    } else {
-                        modalIntegrateButton.disabled = false;
-                    }
-                } else {
-                    modalTaskStatus.className = 'task-status';
-                    modalTaskStatus.textContent = 'Не указан';
-                    modalIntegrateButton.disabled = false;
-                }
-                
-                // Даты
-                if (task.startDateTime) {
-                    modalTaskDateStart.textContent = formatDate(task.startDateTime);
-                } else {
-                    modalTaskDateStart.textContent = 'Не указана';
-                }
-                
-                if (task.endDateTime) {
-                    modalTaskDateEnd.textContent = formatDate(task.endDateTime);
-                } else {
-                    modalTaskDateEnd.textContent = 'Не указана';
-                }
-                
-                // Описание
-                if (task.description) {
-                    modalTaskDescription.innerHTML = task.description;
-                } else {
-                    modalTaskDescription.textContent = 'Описание отсутствует';
-                }
-            })
-            .catch(error => {
-                console.error('Ошибка:', error);
-                modalTaskTitle.textContent = 'Ошибка загрузки';
-                modalTaskDescription.textContent = 'Не удалось загрузить данные задачи. Пожалуйста, попробуйте еще раз.';
-            });
-    }
-    
-    // Функция закрытия модального окна
-    function closeTaskModal() {
-        taskModal.style.display = 'none';
-        document.body.style.overflow = ''; // Восстанавливаем прокрутку страницы
-    }
-    
     // Обработчик для кнопки интеграции в модальном окне
     if (modalIntegrateButton) {
         modalIntegrateButton.addEventListener('click', function() {
-            const taskId = this.getAttribute('data-task-id');
-            if (!taskId) return;
-            
-            // Заменяем содержимое кнопки на спиннер
-            const originalContent = this.innerHTML;
-            this.innerHTML = '<div class="loading-spinner"></div> Обработка...';
+            const taskId = this.dataset.taskId;
+            const buttonText = this.querySelector('.button-text');
+            const spinner = this.querySelector('.loading-spinner');
+
+            // Показываем спиннер и блокируем кнопку
+            buttonText.style.display = 'none';
+            spinner.style.display = 'inline-block';
             this.disabled = true;
-            
+
             // Отправляем запрос на интеграцию
             integrateTaskWithClaude(taskId)
                 .then(response => {
                     if (response.success) {
                         showNotification('success', 'Успешно!', 'Задача добавлена в чат с Claude');
-                        // Перенаправляем на страницу чата
                         window.location.href = `/conversation/${response.conversation_id}/`;
                     } else {
                         throw new Error(response.error || 'Ошибка при интеграции с Claude');
                     }
                 })
                 .catch(error => {
-                    this.innerHTML = originalContent;
+                    // Восстанавливаем кнопку
+                    buttonText.style.display = 'inline';
+                    spinner.style.display = 'none';
                     this.disabled = false;
                     showNotification('error', 'Ошибка!', error.message);
                 });
         });
+    }
+    
+    function openTaskModal(taskId) {
+        if (!taskModal) return;
+
+        // Показываем модальное окно
+        taskModal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+        
+        // Устанавливаем состояние загрузки
+        if (modalTaskTitle) modalTaskTitle.textContent = 'Загрузка...';
+        if (modalTaskId) modalTaskId.textContent = 'ID: -';
+        if (modalTaskProject) modalTaskProject.textContent = '-';
+        if (modalTaskAssignee) modalTaskAssignee.textContent = '-';
+        if (modalTaskPriority) modalTaskPriority.textContent = '-';
+        if (modalTaskStatus) modalTaskStatus.textContent = '-';
+        if (modalTaskDateStart) modalTaskDateStart.textContent = '-';
+        if (modalTaskDateEnd) modalTaskDateEnd.textContent = '-';
+        if (modalTaskDescription) modalTaskDescription.textContent = 'Загрузка данных задачи...';
+        
+        // Загружаем данные задачи
+        fetch(`/api/planfix/tasks/${taskId}/`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const task = data.task;
+                    
+                    // Заполняем модальное окно данными
+                    if (modalTaskTitle) modalTaskTitle.textContent = task.name || 'Без названия';
+                    if (modalTaskId) modalTaskId.textContent = `ID: ${task.id}`;
+                    if (modalTaskProject) modalTaskProject.textContent = task.project?.name || 'Не указан';
+                    if (modalTaskAssignee) modalTaskAssignee.textContent = task.assignees?.[0]?.name || 'Не назначен';
+                    if (modalTaskPriority) modalTaskPriority.textContent = task.priority?.name || 'Не указан';
+                    if (modalTaskStatus) modalTaskStatus.textContent = task.status?.name || 'Без статуса';
+                    if (modalTaskDateStart) modalTaskDateStart.textContent = task.dateBegin ? formatDate(task.dateBegin) : 'Не указана';
+                    if (modalTaskDateEnd) modalTaskDateEnd.textContent = task.dateEnd ? formatDate(task.dateEnd) : 'Не указана';
+                    if (modalTaskDescription) modalTaskDescription.textContent = task.description || 'Описание отсутствует';
+                    
+                    // Устанавливаем ID задачи для кнопки интеграции
+                    if (modalIntegrateButton) {
+                        modalIntegrateButton.dataset.taskId = task.id;
+                    }
+                    
+                    // Добавляем класс для анимации
+                    setTimeout(() => {
+                        taskModal.classList.add('show');
+                    }, 10);
+                } else {
+                    throw new Error(data.error || 'Ошибка при загрузке данных задачи');
+                }
+            })
+            .catch(error => {
+                showNotification('error', 'Ошибка!', error.message);
+                closeTaskModal();
+            });
+    }
+    
+    function closeTaskModal() {
+        if (!taskModal) return;
+
+        // Убираем класс для анимации
+        taskModal.classList.remove('show');
+        
+        // Скрываем модальное окно после завершения анимации
+        setTimeout(() => {
+            taskModal.style.display = 'none';
+            document.body.style.overflow = '';
+        }, 300);
     }
     
     // Функция для инициализации из URL

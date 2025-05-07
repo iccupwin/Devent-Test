@@ -69,11 +69,8 @@
     
     <!-- Выпадающее меню для выбора столбцов -->
     <div id="columns-dropdown" class="columns-dropdown">
-        <div class="dropdown-header">
-            <h4>Выбор столбцов</h4>
-            <button class="dropdown-close">&times;</button>
-        </div>
-        <div class="columns-options">
+        <div class="columns-dropdown-header">Выбор столбцов</div>
+        <div>
             <label class="column-option">
                 <input type="checkbox" checked data-column="id"> ID
             </label>
@@ -123,7 +120,7 @@
                         <span class="sort-icon">▼</span>
                     </th>
                     <th class="column-assignee sortable" data-sort="assignee">
-                        Исполнитель
+                        Постановщик
                         <span class="sort-icon">▼</span>
                     </th>
                     <th class="column-actions">Действия</th>
@@ -148,23 +145,25 @@
                     </td>
                     <td class="column-project">
                         {% if task.project and task.project.name %}
-                            {% with project_id=task.project.id|default:0 %}
-                            {% with color_index=project_id|modulo:8 %}
-                            <div class="project-badge" style="background-color: 
-                                {% if color_index == 0 %}#6366f1{% endif %}
-                                {% if color_index == 1 %}#8b5cf6{% endif %}
-                                {% if color_index == 2 %}#ec4899{% endif %}
-                                {% if color_index == 3 %}#f43f5e{% endif %}
-                                {% if color_index == 4 %}#f59e0b{% endif %}
-                                {% if color_index == 5 %}#10b981{% endif %}
-                                {% if color_index == 6 %}#06b6d4{% endif %}
-                                {% if color_index == 7 %}#3b82f6{% endif %}
-                            ">
-                                {{ task.project.name|slice:":1"|upper }}
+                            <div class="project-badge">
+                                {% with project_id=task.project.id|default:0 %}
+                                {% with color_index=project_id|modulo:8 %}
+                                <div style="background-color: 
+                                    {% if color_index == 0 %}#6366f1{% endif %}
+                                    {% if color_index == 1 %}#8b5cf6{% endif %}
+                                    {% if color_index == 2 %}#ec4899{% endif %}
+                                    {% if color_index == 3 %}#f43f5e{% endif %}
+                                    {% if color_index == 4 %}#f59e0b{% endif %}
+                                    {% if color_index == 5 %}#10b981{% endif %}
+                                    {% if color_index == 6 %}#06b6d4{% endif %}
+                                    {% if color_index == 7 %}#3b82f6{% endif %}
+                                ">
+                                    {{ task.project.name|slice:":1"|upper }}
+                                </div>
+                                {% endwith %}
+                                {% endwith %}
+                                <span class="project-name">{{ task.project.name }}</span>
                             </div>
-                            <span class="project-name">{{ task.project.name }}</span>
-                            {% endwith %}
-                            {% endwith %}
                         {% else %}
                             <span class="empty-value">Не указан</span>
                         {% endif %}
@@ -287,11 +286,11 @@
         <button id="notification-close" class="notification-close">&times;</button>
     </div>
     
-    <!-- Модальное окно для карточки задачи -->
+    <!-- Task Modal -->
     <div id="taskModal" class="task-modal">
         <div class="task-modal-content">
             <div class="task-modal-header">
-                <h2 id="modalTaskTitle">Название задачи</h2>
+                <h2 id="modalTaskTitle">Задача</h2>
                 <span class="task-modal-close">&times;</span>
             </div>
             <div class="task-modal-body">
@@ -350,5 +349,6 @@
 {% endblock %}
 
 {% block scripts %}
+<script src="{% static 'js/enhanced-table.js' %}"></script>
 <script src="{% static 'js/planfix-tasks.js' %}"></script>
 {% endblock %}

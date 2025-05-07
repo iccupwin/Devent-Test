@@ -470,7 +470,7 @@ body {
 
 /* Planfix Task Styling */
 .planfix-container {
-    max-width: 1000px;
+    max-width: 1500px;
     margin: 0 auto;
     padding: var(--spacing-lg);
 }
@@ -913,4 +913,414 @@ body {
     background-color: var(--apple-gray-200);
     transform: translateY(-1px);
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Task Modal Styles */
+.task-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 1000;
+    overflow: auto;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    animation: fadeIn 0.3s ease;
+}
+
+.task-modal-content {
+    background-color: rgba(255, 255, 255, 0.95);
+    margin: 5% auto;
+    width: 90%;
+    max-width: 800px;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+    position: relative;
+    animation: slideDown 0.3s ease;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.task-modal-header {
+    padding: var(--spacing-lg) var(--spacing-xl);
+    border-bottom: 1px solid var(--apple-gray-200);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.task-modal-header h2 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--apple-gray-700);
+    letter-spacing: -0.02em;
+}
+
+.task-modal-close {
+    font-size: 28px;
+    font-weight: 300;
+    color: var(--apple-gray-500);
+    cursor: pointer;
+    line-height: 1;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    transition: all 0.2s ease;
+}
+
+.task-modal-close:hover {
+    background-color: var(--apple-gray-200);
+    color: var(--apple-gray-700);
+}
+
+.task-modal-body {
+    padding: var(--spacing-xl);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xl);
+}
+
+.task-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: var(--spacing-lg);
+}
+
+.task-card-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: var(--spacing-lg);
+    flex: 1;
+}
+
+.task-card-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--apple-gray-500);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: var(--spacing-xs);
+}
+
+.task-card-value {
+    font-size: 15px;
+    color: var(--apple-gray-700);
+    line-height: 1.4;
+}
+
+.task-card-description {
+    background-color: var(--apple-gray-100);
+    border-radius: var(--radius-md);
+    padding: var(--spacing-lg);
+}
+
+.task-card-description h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--apple-gray-700);
+    margin: 0 0 var(--spacing-md);
+}
+
+.task-card-description-content {
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--apple-gray-600);
+}
+
+.task-card-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: var(--spacing-lg);
+}
+
+.btn-integrate-large {
+    background-color: var(--apple-blue);
+    color: white;
+    border: none;
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-md) var(--spacing-xl);
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 113, 227, 0.2);
+}
+
+.btn-integrate-large:hover {
+    background-color: var(--apple-blue-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 113, 227, 0.3);
+}
+
+.btn-integrate-large:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 113, 227, 0.2);
+}
+
+.btn-integrate-large:disabled {
+    background-color: var(--apple-gray-300);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Mobile Adaptation for Modal */
+@media (max-width: 768px) {
+    .task-modal-content {
+        width: 95%;
+        margin: 10% auto;
+    }
+    
+    .task-card-info {
+        grid-template-columns: 1fr;
+    }
+    
+    .task-card-header {
+        flex-direction: column;
+    }
+    
+    .task-modal-header {
+        padding: var(--spacing-md);
+    }
+    
+    .task-modal-body {
+        padding: var(--spacing-lg);
+    }
+    
+    .task-card-description {
+        padding: var(--spacing-md);
+    }
+}
+
+/* Apple Modal Styles */
+.apple-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.apple-modal.show {
+    opacity: 1;
+}
+
+.apple-modal-content {
+    position: relative;
+    width: 90%;
+    max-width: 800px;
+    margin: 40px auto;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 14px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    transform: translateY(20px);
+    transition: transform 0.3s ease;
+    overflow: hidden;
+}
+
+.apple-modal.show .apple-modal-content {
+    transform: translateY(0);
+}
+
+.apple-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--apple-gray-200);
+}
+
+.apple-modal-title {
+    flex: 1;
+}
+
+.apple-modal-title h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--apple-gray-700);
+}
+
+.apple-modal-subtitle {
+    display: block;
+    margin-top: 4px;
+    font-size: 14px;
+    color: var(--apple-gray-500);
+}
+
+.apple-modal-close {
+    background: none;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    color: var(--apple-gray-500);
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
+}
+
+.apple-modal-close:hover {
+    background-color: var(--apple-gray-200);
+}
+
+.apple-modal-body {
+    padding: 24px;
+    max-height: calc(90vh - 140px);
+    overflow-y: auto;
+}
+
+.apple-task-info {
+    margin-bottom: 24px;
+}
+
+.apple-task-status {
+    margin-bottom: 16px;
+}
+
+.apple-status-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    background-color: var(--apple-blue);
+    color: white;
+}
+
+.apple-task-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 24px;
+}
+
+.apple-task-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.apple-task-row {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.apple-task-label {
+    font-size: 12px;
+    color: var(--apple-gray-500);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.apple-task-value {
+    font-size: 15px;
+    color: var(--apple-gray-700);
+}
+
+.apple-task-description {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid var(--apple-gray-200);
+}
+
+.apple-section-title {
+    margin: 0 0 16px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--apple-gray-700);
+}
+
+.apple-description-content {
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--apple-gray-700);
+    white-space: pre-wrap;
+}
+
+.apple-modal-actions {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid var(--apple-gray-200);
+    display: flex;
+    justify-content: flex-end;
+}
+
+.apple-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.apple-button-primary {
+    background-color: var(--apple-blue);
+    color: white;
+}
+
+.apple-button-primary:hover {
+    background-color: var(--apple-blue-hover);
+}
+
+.apple-button-primary:disabled {
+    background-color: var(--apple-gray-300);
+    cursor: not-allowed;
+}
+
+/* Loading Spinner */
+.loading-spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Mobile Adaptation for Modal */
+@media (max-width: 768px) {
+    .apple-modal-content {
+        width: 95%;
+        margin: 20px auto;
+    }
+    
+    .apple-task-details {
+        grid-template-columns: 1fr;
+    }
+    
+    .apple-modal-header {
+        padding: 16px;
+    }
+    
+    .apple-modal-body {
+        padding: 16px;
+    }
 }
