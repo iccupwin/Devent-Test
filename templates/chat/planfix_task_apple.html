@@ -11,12 +11,16 @@
 {% block content %}
 <div class="planfix-container">
     <div class="planfix-header">
-        <h1>Задачи Planfix</h1>
-        <p class="subtitle">Управление задачами и интеграция с Claude</p>
+        <div class="header-content">
+            <div class="header-title">
+                <h1>Задачи Planfix</h1>
+                <p class="subtitle">Управление задачами и интеграция с Claude</p>
+            </div>
+        </div>
     </div>
     
-    <div class="planfix-controls">
-        <div class="planfix-filters">
+    <div class="planfix-main">
+        <div class="planfix-search">
             <div class="search-container">
                 <input type="text" id="task-search" class="search-input" placeholder="Поиск задач...">
                 <button class="search-button">
@@ -26,259 +30,327 @@
                     </svg>
                 </button>
             </div>
-            
-            <div class="filter-options">
-                <select id="status-filter" class="filter-select">
-                    <option value="all" {% if status_filter == 'all' %}selected{% endif %}>Все статусы</option>
-                    <option value="active" {% if status_filter == 'active' %}selected{% endif %}>Активные</option>
-                    <option value="completed" {% if status_filter == 'completed' %}selected{% endif %}>Завершенные</option>
-                </select>
+        </div>
+
+        <div class="planfix-controls">
+            <div class="planfix-filters">
+                <div class="filter-options">
+                    <select id="status-filter" class="filter-select">
+                        <option value="all" {% if status_filter == 'all' %}selected{% endif %}>Все статусы</option>
+                        <option value="active" {% if status_filter == 'active' %}selected{% endif %}>Активные</option>
+                        <option value="completed" {% if status_filter == 'completed' %}selected{% endif %}>Завершенные</option>
+                    </select>
+                    
+                    <select id="project-filter" class="filter-select">
+                        <option value="all">Все проекты</option>
+                        <!-- Проекты будут загружены через API -->
+                    </select>
+
+                    <select id="assigner-filter" class="filter-select">
+                        <option value="all">Все постановщики</option>
+                        <!-- Постановщики будут загружены через API -->
+                    </select>
+                </div>
                 
-                <select id="project-filter" class="filter-select">
-                    <option value="all">Все проекты</option>
-                    <!-- Проекты будут загружены через API -->
-                </select>
+                <button id="refresh-button" class="refresh-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 2v6h-6"></path>
+                        <path d="M3 12a9 9 0 0 1 15-6.7l3 2.7"></path>
+                        <path d="M3 22v-6h6"></path>
+                        <path d="M21 12a9 9 0 0 1-15 6.7l-3-2.7"></path>
+                    </svg>
+                    Обновить
+                </button>
             </div>
             
-            <button id="refresh-button" class="refresh-button">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 2v6h-6"></path>
-                    <path d="M3 12a9 9 0 0 1 15-6.7l3 2.7"></path>
-                    <path d="M3 22v-6h6"></path>
-                    <path d="M21 12a9 9 0 0 1-15 6.7l-3-2.7"></path>
-                </svg>
-                Обновить
-            </button>
+            <div class="table-settings">
+                <div class="page-size-selector">
+                    <span class="page-size-label">Показывать по:</span>
+                    <select id="page-size" class="page-size-select">
+                        <option value="10">10</option>
+                        <option value="25" selected>25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                </div>
+                
+                <div class="view-toggle">
+                    <button id="view-toggle-btn" class="view-toggle-btn" title="Переключить вид">
+                        <svg class="table-view-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="3" y1="9" x2="21" y2="9"></line>
+                            <line x1="3" y1="15" x2="21" y2="15"></line>
+                            <line x1="9" y1="3" x2="9" y2="21"></line>
+                            <line x1="15" y1="3" x2="15" y2="21"></line>
+                        </svg>
+                        <svg class="card-view-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="14" width="7" height="7"></rect>
+                            <rect x="3" y="14" width="7" height="7"></rect>
+                        </svg>
+                    </button>
+                </div>
+                
+                <button id="toggle-columns" class="toggle-columns-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="4" y1="6" x2="20" y2="6"></line>
+                        <line x1="4" y1="12" x2="20" y2="12"></line>
+                        <line x1="4" y1="18" x2="20" y2="18"></line>
+                    </svg>
+                    Столбцы
+                </button>
+            </div>
         </div>
         
-        <div class="table-settings">
-            <div class="page-size-selector">
-                <span class="page-size-label">Показывать по:</span>
-                <select id="page-size" class="page-size-select">
-                    <option value="10">10</option>
-                    <option value="25" selected>25</option>
-                    <option value="50">50</option>
-                    <option value="100">100</option>
-                </select>
+        <!-- Выпадающее меню для выбора столбцов -->
+        <div id="columns-dropdown" class="columns-dropdown">
+            <div class="columns-dropdown-header">Выбор столбцов</div>
+            <div>
+                <label class="column-option">
+                    <input type="checkbox" checked data-column="id"> ID
+                </label>
+                <label class="column-option">
+                    <input type="checkbox" checked data-column="name"> Название
+                </label>
+                <label class="column-option">
+                    <input type="checkbox" checked data-column="status"> Статус
+                </label>
+                <label class="column-option">
+                    <input type="checkbox" checked data-column="project"> Проект
+                </label>
+                <label class="column-option">
+                    <input type="checkbox" checked data-column="dates"> Даты
+                </label>
+                <label class="column-option">
+                    <input type="checkbox" checked data-column="assignee"> Исполнитель
+                </label>
+                <label class="column-option">
+                    <input type="checkbox" checked data-column="actions"> Действия
+                </label>
             </div>
-            
-            <button id="toggle-columns" class="toggle-columns-btn">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="4" y1="6" x2="20" y2="6"></line>
-                    <line x1="4" y1="12" x2="20" y2="12"></line>
-                    <line x1="4" y1="18" x2="20" y2="18"></line>
-                </svg>
-                Столбцы
-            </button>
         </div>
-    </div>
-    
-    <!-- Выпадающее меню для выбора столбцов -->
-    <div id="columns-dropdown" class="columns-dropdown">
-        <div class="columns-dropdown-header">Выбор столбцов</div>
-        <div>
-            <label class="column-option">
-                <input type="checkbox" checked data-column="id"> ID
-            </label>
-            <label class="column-option">
-                <input type="checkbox" checked data-column="name"> Название
-            </label>
-            <label class="column-option">
-                <input type="checkbox" checked data-column="status"> Статус
-            </label>
-            <label class="column-option">
-                <input type="checkbox" checked data-column="project"> Проект
-            </label>
-            <label class="column-option">
-                <input type="checkbox" checked data-column="dates"> Даты
-            </label>
-            <label class="column-option">
-                <input type="checkbox" checked data-column="assignee"> Исполнитель
-            </label>
-            <label class="column-option">
-                <input type="checkbox" checked data-column="actions"> Действия
-            </label>
-        </div>
-    </div>
-    
-    <div class="table-container">
-        <table class="tasks-table">
-            <thead>
-                <tr>
-                    <th class="column-id sortable" data-sort="id">
-                        ID
-                        <span class="sort-icon">▼</span>
-                    </th>
-                    <th class="column-name sortable" data-sort="name">
-                        Название
-                        <span class="sort-icon">▼</span>
-                    </th>
-                    <th class="column-status sortable" data-sort="status">
-                        Статус
-                        <span class="sort-icon">▼</span>
-                    </th>
-                    <th class="column-project sortable" data-sort="project">
-                        Проект
-                        <span class="sort-icon">▼</span>
-                    </th>
-                    <th class="column-dates sortable" data-sort="dates">
-                        Даты
-                        <span class="sort-icon">▼</span>
-                    </th>
-                    <th class="column-assignee sortable" data-sort="assignee">
-                        Постановщик
-                        <span class="sort-icon">▼</span>
-                    </th>
-                    <th class="column-actions">Действия</th>
-                </tr>
-            </thead>
-            <tbody id="tasks-table-body">
-                {% for task in tasks %}
-                <tr>
-                    <td class="column-id">{{ task.id }}</td>
-                    <td class="column-name">
-                        <a href="#" class="task-name-link" data-task-id="{{ task.id }}">
-                            {{ task.name|default:"Без названия" }}
-                            {% if task.description %}
-                            <span class="has-description" title="Есть описание">📝</span>
-                            {% endif %}
-                        </a>
-                    </td>
-                    <td class="column-status">
-                        <span class="task-status {{ task.status.name|default:""|lower|cut:" " }}">
-                            {{ task.status.name|default:"Без статуса" }}
-                        </span>
-                    </td>
-                    <td class="column-project">
-                        {% if task.project and task.project.name %}
-                            <div class="project-badge">
-                                {% with project_id=task.project.id|default:0 %}
-                                {% with color_index=project_id|modulo:8 %}
-                                <div style="background-color: 
-                                    {% if color_index == 0 %}#6366f1{% endif %}
-                                    {% if color_index == 1 %}#8b5cf6{% endif %}
-                                    {% if color_index == 2 %}#ec4899{% endif %}
-                                    {% if color_index == 3 %}#f43f5e{% endif %}
-                                    {% if color_index == 4 %}#f59e0b{% endif %}
-                                    {% if color_index == 5 %}#10b981{% endif %}
-                                    {% if color_index == 6 %}#06b6d4{% endif %}
-                                    {% if color_index == 7 %}#3b82f6{% endif %}
-                                ">
-                                    {{ task.project.name|slice:":1"|upper }}
+        
+        <div class="table-container">
+            <table class="tasks-table">
+                <thead>
+                    <tr>
+                        <th class="column-id sortable" data-sort="id">
+                            ID
+                            <span class="sort-icon">▼</span>
+                        </th>
+                        <th class="column-name sortable" data-sort="name">
+                            Название
+                            <span class="sort-icon">▼</span>
+                        </th>
+                        <th class="column-status sortable" data-sort="status">
+                            Статус
+                            <span class="sort-icon">▼</span>
+                        </th>
+                        <th class="column-project sortable" data-sort="project">
+                            Проект
+                            <span class="sort-icon">▼</span>
+                        </th>
+                        <th class="column-dates sortable" data-sort="dates">
+                            Даты
+                            <span class="sort-icon">▼</span>
+                        </th>
+                        <th class="column-assignee sortable" data-sort="assignee">
+                            Постановщик
+                            <span class="sort-icon">▼</span>
+                        </th>
+                        <th class="column-actions">Действия</th>
+                    </tr>
+                </thead>
+                <tbody id="tasks-table-body">
+                    {% for task in tasks %}
+                    <tr>
+                        <td class="column-id">{{ task.id }}</td>
+                        <td class="column-name">
+                            <a href="#" class="task-name-link" data-task-id="{{ task.id }}">
+                                {{ task.name|default:"Без названия" }}
+                                {% if task.description %}
+                                <span class="has-description" title="Есть описание">📝</span>
+                                {% endif %}
+                            </a>
+                        </td>
+                        <td class="column-status">
+                            <span class="task-status {{ task.status.name|default:""|lower|cut:" " }}">
+                                {{ task.status.name|default:"Без статуса" }}
+                            </span>
+                        </td>
+                        <td class="column-project">
+                            {% if task.project and task.project.name %}
+                                <div class="project-badge">
+                                    {% with project_id=task.project.id|default:0 %}
+                                    {% with color_index=project_id|modulo:8 %}
+                                    <div style="background-color: 
+                                        {% if color_index == 0 %}#6366f1{% endif %}
+                                        {% if color_index == 1 %}#8b5cf6{% endif %}
+                                        {% if color_index == 2 %}#ec4899{% endif %}
+                                        {% if color_index == 3 %}#f43f5e{% endif %}
+                                        {% if color_index == 4 %}#f59e0b{% endif %}
+                                        {% if color_index == 5 %}#10b981{% endif %}
+                                        {% if color_index == 6 %}#06b6d4{% endif %}
+                                        {% if color_index == 7 %}#3b82f6{% endif %}
+                                    ">
+                                        {{ task.project.name|slice:":1"|upper }}
+                                    </div>
+                                    {% endwith %}
+                                    {% endwith %}
+                                    <span class="project-name">{{ task.project.name }}</span>
                                 </div>
-                                {% endwith %}
-                                {% endwith %}
-                                <span class="project-name">{{ task.project.name }}</span>
-                            </div>
-                        {% else %}
-                            <span class="empty-value">Не указан</span>
-                        {% endif %}
-                    </td>
-                    <td class="column-dates">
-                        <div class="task-dates">
-                            {% if task.startDateTime %}
-                            <div class="date-start">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                                </svg>
-                                {{ task.startDateTime|date:"d.m.Y" }}
-                            </div>
+                            {% else %}
+                                <span class="empty-value">Не указан</span>
                             {% endif %}
-                            {% if task.endDateTime %}
-                            <div class="date-end">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                    <line x1="16" y1="2" x2="16" y2="6"></line>
-                                    <line x1="8" y1="2" x2="8" y2="6"></line>
-                                    <line x1="3" y1="10" x2="21" y2="10"></line>
-                                </svg>
-                                {{ task.endDateTime|date:"d.m.Y" }}
-                            </div>
-                            {% endif %}
-                            {% if not task.startDateTime and not task.endDateTime %}
-                                <span class="empty-value">Не указаны</span>
-                            {% endif %}
-                        </div>
-                    </td>
-                    <td class="column-assignee">
-                        {% if task.assignees and task.assignees|length > 0 %}
-                            <div class="assignee-wrapper">
-                                <div class="assignee-avatar">
-                                    {{ task.assignees.0.name|slice:":1"|upper }}
+                        </td>
+                        <td class="column-dates">
+                            <div class="task-dates">
+                                {% if task.startDateTime and task.startDateTime.date %}
+                                <div class="date-start">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                                    </svg>
+                                    {{ task.startDateTime.date }}
                                 </div>
-                                <span class="assignee-name">{{ task.assignees.0.name }}</span>
-                                {% if task.assignees|length > 1 %}
-                                <span class="assignee-count" title="Ещё {{ task.assignees|length|add:"-1" }} исполнитель(ей)">+{{ task.assignees|length|add:"-1" }}</span>
+                                {% endif %}
+                                {% if task.endDateTime and task.endDateTime.date %}
+                                <div class="date-end">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                                    </svg>
+                                    {{ task.endDateTime.date }}
+                                </div>
+                                {% endif %}
+                                {% if not task.startDateTime or not task.startDateTime.date %}
+                                    {% if not task.endDateTime or not task.endDateTime.date %}
+                                    <span class="empty-value">Не указаны</span>
+                                {% endif %}
                                 {% endif %}
                             </div>
-                        {% else %}
-                            <span class="empty-value">Не назначен</span>
-                        {% endif %}
-                    </td>
-                    <td class="column-actions">
-                        <div class="table-actions">
-                            <a href="#" class="btn-icon btn-view" data-task-id="{{ task.id }}" title="Просмотр задачи">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                    <circle cx="12" cy="12" r="3"></circle>
-                                </svg>
-                            </a>
-                            <button 
-                                class="btn-icon btn-integrate"
-                                data-task-id="{{ task.id }}"
-                                title="Обсудить с Claude"
-                                {% if task.status.id == 3 %}disabled{% endif %}
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                                </svg>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="7" class="no-tasks-cell">
-                        <div class="no-tasks">
-                            <div class="no-tasks-icon">📋</div>
-                            <h3>Задачи не найдены</h3>
-                            <p>Попробуйте изменить параметры поиска или обновить список задач.</p>
-                            <button id="reset-filters" class="btn btn-primary">Сбросить фильтры</button>
-                        </div>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    
-    <div class="pagination-container">
-        <div class="pagination-info">
-            Показано <span id="shown-from">{% if tasks %}1{% else %}0{% endif %}</span>-<span id="shown-to">{{ tasks|length }}</span> из <span id="total-count">{{ total_count }}</span> задач
+                        </td>
+                        <td class="column-assignee">
+                            {% if task.assigner and task.assigner.name %}
+                                <div class="assignee-wrapper">
+                                    <div class="assignee-avatar">
+                                        {{ task.assigner.name|slice:":1"|upper }}
+                                    </div>
+                                    <span class="assignee-name">{{ task.assigner.name }}</span>
+                                </div>
+                            {% else %}
+                                <span class="empty-value">Не указан</span>
+                            {% endif %}
+                        </td>
+                        <td class="column-actions">
+                            <div class="table-actions">
+                                <a href="#" class="btn-icon btn-view" data-task-id="{{ task.id }}" title="Просмотр задачи">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                </a>
+                                <button 
+                                    class="btn-icon btn-integrate"
+                                    data-task-id="{{ task.id }}"
+                                    title="Обсудить с Claude"
+                                    {% if task.status.id == 3 %}disabled{% endif %}
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="no-tasks-cell">
+                            <div class="no-tasks">
+                                <div class="no-tasks-icon">📋</div>
+                                <h3>Задачи не найдены</h3>
+                                <p>Попробуйте изменить параметры поиска или обновить список задач.</p>
+                                <button id="reset-filters" class="btn btn-primary">Сбросить фильтры</button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
         
-        <div class="pagination">
-            <button id="prev-page" class="pagination-btn" {% if current_page == 1 %}disabled{% endif %}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="15 18 9 12 15 6"></polyline>
-                </svg>
-                Назад
-            </button>
-            
-            <div class="pagination-pages" id="pagination-pages">
-                <!-- Страницы будут добавлены через JavaScript -->
-                <button class="pagination-page active">1</button>
+        <!-- Карточный вид задач -->
+        <div class="tasks-cards">
+            <div class="cards-grid">
+                {% for task in tasks %}
+                <div class="task-card minimal-card">
+                    {% if task.project and task.project.name %}
+                    <div class="card-project">{{ task.project.name }}</div>
+                    {% endif %}
+                    <div class="card-title-row">
+                        <div class="card-title">
+                            {{ task.name|default:"Без названия" }}
+                        </div>
+                    </div>
+                    <div class="card-bottom-row">
+                        <div class="card-due">
+                            Сроки:
+                            {% if task.endDateTime and task.endDateTime.date %}
+                                {{ task.endDateTime.date }}
+                            {% elif task.startDateTime and task.startDateTime.date %}
+                                {{ task.startDateTime.date }}
+                            {% else %}
+                                Не указаны
+                            {% endif %}
+                        </div>
+                        <div class="card-star" title="В избранное">
+                            ☆
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="no-tasks-card">
+                    <div class="no-tasks">
+                        <div class="no-tasks-icon">📋</div>
+                        <h3>Задачи не найдены</h3>
+                        <p>Попробуйте изменить параметры поиска или обновить список задач.</p>
+                        <button id="reset-filters" class="btn btn-primary">Сбросить фильтры</button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <div class="pagination-container">
+            <div class="pagination-info">
+                Показано <span id="shown-from">{% if tasks %}1{% else %}0{% endif %}</span>-<span id="shown-to">{{ tasks|length }}</span> из <span id="total-count">{{ total_count }}</span> задач
             </div>
             
-            <button id="next-page" class="pagination-btn" {% if current_page >= total_pages %}disabled{% endif %}>
-                Вперёд
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="9 18 15 12 9 6"></polyline>
-                </svg>
-            </button>
+            <div class="pagination">
+                <button id="prev-page" class="pagination-btn" {% if current_page == 1 %}disabled{% endif %}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                    Назад
+                </button>
+                
+                <div class="pagination-pages" id="pagination-pages">
+                    <!-- Страницы будут добавлены через JavaScript -->
+                    <button class="pagination-page active">1</button>
+                </div>
+                
+                <button id="next-page" class="pagination-btn" {% if current_page >= total_pages %}disabled{% endif %}>
+                    Вперёд
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                </button>
+            </div>
         </div>
     </div>
     
@@ -307,6 +379,10 @@
                             <div class="apple-task-row">
                                 <span class="apple-task-label">Проект</span>
                                 <span id="modalTaskProject" class="apple-task-value">-</span>
+                            </div>
+                            <div class="apple-task-row">
+                                <span class="apple-task-label">Постановщик</span>
+                                <span id="modalTaskAssigner" class="apple-task-value">-</span>
                             </div>
                             <div class="apple-task-row">
                                 <span class="apple-task-label">Исполнитель</span>
@@ -363,185 +439,7 @@
 {% endblock %}
 
 {% block scripts %}
-<script>
-// Simple debug script to check that modal works
-document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM loaded, checking for modal');
-    
-    // Check if modal exists 
-    const modal = document.getElementById('taskModal');
-    console.log('Modal element:', modal);
-    
-    if (modal) {
-        console.log('Modal found, setting up event listeners');
-        
-        // Get all task name links and view buttons
-        const taskLinks = document.querySelectorAll('.task-name-link, .btn-view');
-        console.log('Task links found:', taskLinks.length);
-        
-        // Add click event to all task links
-        taskLinks.forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                console.log('Link clicked', this);
-                
-                const taskId = this.getAttribute('data-task-id');
-                console.log('Task ID:', taskId);
-                
-                // Update modal content
-                document.getElementById('modalTaskTitle').textContent = 'Задача #' + taskId;
-                document.getElementById('modalTaskId').textContent = 'ID: ' + taskId;
-                
-                // Show modal
-                modal.style.display = 'block';
-                document.body.style.overflow = 'hidden';
-                
-                // Add show class after small delay for animation
-                setTimeout(() => {
-                    modal.classList.add('show');
-                }, 10);
-                
-                // Fetch task data from API
-                fetch(`/api/task/${taskId}/`)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Ошибка при загрузке задачи');
-                        }
-                        return response.json();
-                    })
-                    .then(task => {
-                        console.log('Task data:', task);
-                        
-                        // Update modal content with task data
-                        document.getElementById('modalTaskTitle').textContent = task.name || 'Без названия';
-                        document.getElementById('modalTaskId').textContent = `ID: ${task.id}`;
-                        
-                        // Update other fields
-                        if (document.getElementById('modalTaskProject')) {
-                            document.getElementById('modalTaskProject').textContent = 
-                                task.project && task.project.name ? task.project.name : 'Не указан';
-                        }
-                        
-                        if (document.getElementById('modalTaskAssignee')) {
-                            if (task.assignees && task.assignees.length > 0) {
-                                document.getElementById('modalTaskAssignee').textContent = 
-                                    task.assignees.map(a => a.name).join(', ');
-                            } else {
-                                document.getElementById('modalTaskAssignee').textContent = 'Не назначен';
-                            }
-                        }
-                        
-                        if (document.getElementById('modalTaskPriority')) {
-                            document.getElementById('modalTaskPriority').textContent = 
-                                task.priority && task.priority.name ? task.priority.name : 'Обычный';
-                        }
-                        
-                        if (document.getElementById('modalTaskStatus')) {
-                            if (task.status && task.status.name) {
-                                const statusElem = document.getElementById('modalTaskStatus');
-                                const statusName = task.status.name.toLowerCase().replace(/\s+/g, '');
-                                
-                                statusElem.className = 'apple-status-badge ' + statusName;
-                                statusElem.textContent = task.status.name;
-                            } else {
-                                document.getElementById('modalTaskStatus').textContent = 'Не указан';
-                            }
-                        }
-                        
-                        if (document.getElementById('modalTaskDateStart')) {
-                            document.getElementById('modalTaskDateStart').textContent = 
-                                task.startDateTime ? formatDate(task.startDateTime) : 'Не указана';
-                        }
-                        
-                        if (document.getElementById('modalTaskDateEnd')) {
-                            document.getElementById('modalTaskDateEnd').textContent = 
-                                task.endDateTime ? formatDate(task.endDateTime) : 'Не указана';
-                        }
-                        
-                        if (document.getElementById('modalTaskDescription')) {
-                            if (task.description) {
-                                document.getElementById('modalTaskDescription').innerHTML = task.description;
-                            } else {
-                                document.getElementById('modalTaskDescription').textContent = 'Описание отсутствует';
-                            }
-                        }
-                        
-                        // Set task ID for integrate button
-                        if (document.getElementById('modalIntegrateButton')) {
-                            document.getElementById('modalIntegrateButton').setAttribute('data-task-id', task.id);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error fetching task data:', error);
-                    });
-            });
-        });
-        
-        // Close modal when clicking the close button
-        const closeBtn = modal.querySelector('.apple-modal-close');
-        if (closeBtn) {
-            closeBtn.addEventListener('click', function() {
-                console.log('Close button clicked');
-                
-                // Remove show class
-                modal.classList.remove('show');
-                
-                // Hide modal after animation completes
-                setTimeout(() => {
-                    modal.style.display = 'none';
-                    document.body.style.overflow = '';
-                }, 300);
-            });
-        }
-        
-        // Close modal when clicking outside the content
-        modal.addEventListener('click', function(event) {
-            if (event.target === modal) {
-                console.log('Clicked outside modal content');
-                
-                // Remove show class
-                modal.classList.remove('show');
-                
-                // Hide modal after animation completes
-                setTimeout(() => {
-                    modal.style.display = 'none';
-                    document.body.style.overflow = '';
-                }, 300);
-            }
-        });
-        
-        // Close modal with Escape key
-        document.addEventListener('keydown', function(event) {
-            if (event.key === 'Escape' && modal.style.display === 'block') {
-                console.log('Escape key pressed');
-                
-                // Remove show class
-                modal.classList.remove('show');
-                
-                // Hide modal after animation completes
-                setTimeout(() => {
-                    modal.style.display = 'none';
-                    document.body.style.overflow = '';
-                }, 300);
-            }
-        });
-        
-        // Helper function to format date
-        function formatDate(dateStr) {
-            if (!dateStr) return '';
-            
-            const date = new Date(dateStr);
-            if (isNaN(date.getTime())) return 'Некорректная дата';
-            
-            return date.toLocaleDateString('ru-RU', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric'
-            });
-        }
-    }
-});
-</script>
+<!-- Replace the problematic planfix-tasks.js with our new script -->
 <script src="{% static 'js/enhanced-table.js' %}"></script>
-<script src="{% static 'js/planfix-tasks.js' %}"></script>
+<script src="{% static 'js/modal-tasks-script.js' %}"></script>
 {% endblock %}

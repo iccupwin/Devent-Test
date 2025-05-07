@@ -50357,20 +50357,20 @@
     "name": "Еженедельное совещание с IND",
     "description": "<p>Среда, 7 мая · 12:00–1:00PM<br>Часовой пояс: Europe/Moscow<br>Контактная информация для встречи в Google Meet<br>Ссылка на видеовстречу: <a href=\"https://meet.google.com/jnj-jugb-ifq\">https://meet.google.com/jnj-jugb-ifq</a>&nbsp;</p>",
     "status": {
-      "id": 1,
-      "name": "Новая",
-      "color": "#00b4b4",
-      "isActive": true,
-      "hasDeadline": true,
+      "id": 3,
+      "name": "Завершенная",
+      "color": "#85878E",
+      "isActive": false,
+      "hasDeadline": false,
       "isAppliedIndividually": false,
       "texts": [
         {
           "lang": "Ru",
-          "name": "Новая"
+          "name": "Завершенная"
         },
         {
           "lang": "En",
-          "name": "New"
+          "name": "Completed"
         }
       ]
     },
@@ -51325,6 +51325,158 @@
       "date": "08-05-2025",
       "time": "00:00",
       "datetime": "2025-05-08T00:00Z"
+    },
+    "assignees": {
+      "users": [
+        {
+          "id": "user:20",
+          "name": "Канатбек Аскаров"
+        }
+      ],
+      "groups": []
+    }
+  },
+  {
+    "id": 2317,
+    "name": "Должностные инструкции",
+    "description": "<h3><strong>Задача ставится согласно Процессу постановки, контроля и выполнения задач. </strong></h3>\n<h3><strong>Просьба ознакомиться:&nbsp;</strong><a href=\"https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy\">https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy</a></h3>\n<p>&nbsp;</p>",
+    "status": {
+      "id": 2,
+      "name": "В работе",
+      "color": "#3377C3",
+      "isActive": true,
+      "hasDeadline": true,
+      "isAppliedIndividually": false,
+      "texts": [
+        {
+          "lang": "Ru",
+          "name": "В работе"
+        },
+        {
+          "lang": "En",
+          "name": "In progress"
+        }
+      ]
+    },
+    "assigner": {
+      "id": "user:5",
+      "name": "Алексей Шульга"
+    },
+    "project": {
+      "id": 23,
+      "name": "Общие вопросы компании"
+    }
+  },
+  {
+    "id": 2318,
+    "name": "Должностная инструкция \"Руководитель проекта\"",
+    "description": "<h3><strong>Задача ставится согласно Процессу постановки, контроля и выполнения задач. </strong></h3>\n<h3><strong>Просьба ознакомиться:&nbsp;</strong><a href=\"https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy\">https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy</a></h3>\n<p>&nbsp;</p>",
+    "status": {
+      "id": 1,
+      "name": "Новая",
+      "color": "#00b4b4",
+      "isActive": true,
+      "hasDeadline": true,
+      "isAppliedIndividually": false,
+      "texts": [
+        {
+          "lang": "Ru",
+          "name": "Новая"
+        },
+        {
+          "lang": "En",
+          "name": "New"
+        }
+      ]
+    },
+    "assigner": {
+      "id": "user:5",
+      "name": "Алексей Шульга"
+    },
+    "project": {
+      "id": 23,
+      "name": "Общие вопросы компании"
+    }
+  },
+  {
+    "id": 2319,
+    "name": "Получить список помещений и список вопросов по помещениям",
+    "description": "<h3><strong>Задача ставится согласно Процессу постановки, контроля и выполнения задач. </strong></h3>\n<h3><strong>Просьба ознакомиться:&nbsp;</strong><a href=\"https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy\">https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy</a></h3>\n<p>&nbsp;</p>",
+    "status": {
+      "id": 1,
+      "name": "Новая",
+      "color": "#00b4b4",
+      "isActive": true,
+      "hasDeadline": true,
+      "isAppliedIndividually": false,
+      "texts": [
+        {
+          "lang": "Ru",
+          "name": "Новая"
+        },
+        {
+          "lang": "En",
+          "name": "New"
+        }
+      ]
+    },
+    "assigner": {
+      "id": "user:5",
+      "name": "Алексей Шульга"
+    },
+    "project": {
+      "id": 29,
+      "name": "Автовокзал"
+    },
+    "startDateTime": {
+      "date": "07-05-2025",
+      "time": "00:00",
+      "datetime": "2025-05-07T00:00Z"
+    },
+    "endDateTime": {
+      "date": "14-05-2025",
+      "time": "00:00",
+      "datetime": "2025-05-14T00:00Z"
+    },
+    "assignees": {
+      "users": [
+        {
+          "id": "user:20",
+          "name": "Канатбек Аскаров"
+        }
+      ],
+      "groups": []
+    }
+  },
+  {
+    "id": 2320,
+    "name": "Получить предложение по транспортировке машин",
+    "description": "<h3><strong>Задача ставится согласно Процессу постановки, контроля и выполнения задач. </strong></h3>\n<h3><strong>Просьба ознакомиться:&nbsp;</strong><a href=\"https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy\">https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy</a></h3>\n<p>&nbsp;</p>",
+    "status": {
+      "id": 1,
+      "name": "Новая",
+      "color": "#00b4b4",
+      "isActive": true,
+      "hasDeadline": true,
+      "isAppliedIndividually": false,
+      "texts": [
+        {
+          "lang": "Ru",
+          "name": "Новая"
+        },
+        {
+          "lang": "En",
+          "name": "New"
+        }
+      ]
+    },
+    "assigner": {
+      "id": "user:5",
+      "name": "Алексей Шульга"
+    },
+    "project": {
+      "id": 29,
+      "name": "Автовокзал"
     },
     "assignees": {
       "users": [

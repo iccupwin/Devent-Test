@@ -14,6 +14,27 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Setup modal functionality
     setupTaskModal();
+
+    // Setup filters
+    setupFilters();
+
+    // Setup global search
+    setupGlobalSearch();
+
+    // Setup view toggle
+    setupViewToggle();
+
+    // Setup pagination
+    setupPagination();
+
+    // Setup task links
+    setupTaskLinks();
+
+    // Setup integrate buttons
+    setupIntegrateButtons();
+
+    // Setup reset filters
+    setupResetFilters();
 });
 
 // Function to add theme toggle button
@@ -277,6 +298,7 @@ function openTaskModal(taskId) {
     const modalTaskTitle = document.getElementById('modalTaskTitle');
     const modalTaskId = document.getElementById('modalTaskId');
     const modalTaskProject = document.getElementById('modalTaskProject');
+    const modalTaskAssigner = document.getElementById('modalTaskAssigner');
     const modalTaskAssignee = document.getElementById('modalTaskAssignee');
     const modalTaskPriority = document.getElementById('modalTaskPriority');
     const modalTaskStatus = document.getElementById('modalTaskStatus');
@@ -289,6 +311,7 @@ function openTaskModal(taskId) {
     if (modalTaskTitle) modalTaskTitle.textContent = 'Загрузка...';
     if (modalTaskId) modalTaskId.textContent = `ID: ${taskId}`;
     if (modalTaskProject) modalTaskProject.textContent = '-';
+    if (modalTaskAssigner) modalTaskAssigner.textContent = '-';
     if (modalTaskAssignee) modalTaskAssignee.textContent = '-';
     if (modalTaskPriority) modalTaskPriority.textContent = '-';
     if (modalTaskStatus) {
@@ -318,6 +341,10 @@ function openTaskModal(taskId) {
             return response.json();
         })
         .then(task => {
+            console.log('Task data:', task); // Для отладки
+            console.log('Task assigner:', task.assigner); // Для отладки
+            console.log('Task assignees:', task.assignees); // Для отладки
+            
             if (modalTaskTitle) modalTaskTitle.textContent = task.name || 'Без названия';
             if (modalTaskId) modalTaskId.textContent = `ID: ${task.id}`;
             
@@ -328,10 +355,20 @@ function openTaskModal(taskId) {
                     : 'Не указан';
             }
             
+            // Assigner
+            if (modalTaskAssigner) {
+                if (task.assigner && task.assigner.name) {
+                    modalTaskAssigner.textContent = task.assigner.name;
+                } else {
+                    modalTaskAssigner.textContent = 'Не указан';
+                }
+            }
+            
             // Assignee
             if (modalTaskAssignee) {
-                if (task.assignees && task.assignees.length > 0) {
-                    modalTaskAssignee.textContent = task.assignees.map(a => a.name).join(', ');
+                console.log('Task assignees:', task.assignees); // Для отладки
+                if (task.assignees && task.assignees.users && Array.isArray(task.assignees.users) && task.assignees.users.length > 0) {
+                    modalTaskAssignee.textContent = task.assignees.users.map(a => a.name).join(', ');
                 } else {
                     modalTaskAssignee.textContent = 'Не назначен';
                 }
@@ -478,10 +515,14 @@ function formatDate(dateInput) {
         
         if (typeof dateInput === 'object') {
             // Try to find a date property
-            if (dateInput.dateFrom) {
+            if (dateInput.date) {
+                date = new Date(dateInput.date);
+            } else if (dateInput.dateFrom) {
                 date = new Date(dateInput.dateFrom);
             } else if (dateInput.dateTo) {
                 date = new Date(dateInput.dateTo);
+            } else if (dateInput.datetime) {
+                date = new Date(dateInput.datetime);
             } else {
                 // Try other properties
                 for (let key in dateInput) {
@@ -496,7 +537,7 @@ function formatDate(dateInput) {
         }
         
         if (!date || isNaN(date.getTime())) {
-            return 'Неверная дата';
+            return 'Не указана';
         }
         
         return date.toLocaleDateString('ru-RU', {
@@ -506,7 +547,7 @@ function formatDate(dateInput) {
         });
     } catch (e) {
         console.error('Error formatting date:', e);
-        return 'Ошибка форматирования';
+        return 'Не указана';
     }
 }
 
@@ -666,3 +707,273 @@ function getCookie(name) {
     }
     return cookieValue;
 }
+
+// Function to setup filters
+function setupFilters() {
+    const statusFilter = document.getElementById('status-filter');
+    const projectFilter = document.getElementById('project-filter');
+    const assignerFilter = document.getElementById('assigner-filter');
+    const searchInput = document.getElementById('task-search');
+    const searchButton = document.querySelector('.search-button');
+
+    if (statusFilter) {
+        statusFilter.addEventListener('change', applyFilters);
+    }
+
+    if (projectFilter) {
+        projectFilter.addEventListener('change', applyFilters);
+    }
+
+    if (assignerFilter) {
+        assignerFilter.addEventListener('change', applyFilters);
+    }
+
+    if (searchInput) {
+        // Поиск при вводе
+        searchInput.addEventListener('input', applyFilters);
+        
+        // Поиск при нажатии Enter
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                applyFilters();
+            }
+        });
+    }
+
+    if (searchButton) {
+        searchButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            applyFilters();
+        });
+    }
+
+    // Load assigners
+    loadAssigners();
+}
+
+// Function to load assigners
+function loadAssigners() {
+    const assignerFilter = document.getElementById('assigner-filter');
+    if (!assignerFilter) return;
+    
+    // Get unique assigners from the table
+    const assigners = new Set();
+    document.querySelectorAll('.column-assignee .assignee-name').forEach(element => {
+        const assignerName = element.textContent.trim();
+        if (assignerName && assignerName !== 'Не указан') {
+            assigners.add(assignerName);
+        }
+    });
+    
+    // Sort assigners alphabetically
+    const sortedAssigners = Array.from(assigners).sort();
+    
+    // Add options to select
+    sortedAssigners.forEach(assigner => {
+        const option = document.createElement('option');
+        option.value = assigner;
+        option.textContent = assigner;
+        assignerFilter.appendChild(option);
+    });
+}
+
+// Function to apply filters
+function applyFilters() {
+    const searchInput = document.getElementById('task-search');
+    const searchQuery = searchInput.value.toLowerCase();
+    const statusFilter = document.getElementById('status-filter');
+    const projectFilter = document.getElementById('project-filter');
+    const assigneeFilter = document.getElementById('assignee-filter');
+    const dateFilter = document.getElementById('date-filter');
+    
+    const selectedStatus = statusFilter.value;
+    const selectedProject = projectFilter.value;
+    const selectedAssignee = assigneeFilter.value;
+    const selectedDate = dateFilter.value;
+    
+    const rows = document.querySelectorAll('.tasks-table tbody tr');
+    const cards = document.querySelectorAll('.task-card');
+    let visibleCount = 0;
+    
+    // Функция для проверки соответствия фильтрам
+    function matchesFilters(element, isCard = false) {
+        const taskId = isCard ? 
+            element.querySelector('.task-card-id').textContent.replace('#', '') :
+            element.querySelector('td:first-child').textContent;
+        const taskName = isCard ?
+            element.querySelector('.task-card-title').textContent :
+            element.querySelector('td:nth-child(2)').textContent;
+        const status = isCard ?
+            element.querySelector('.task-status').textContent :
+            element.querySelector('td:nth-child(3)').textContent;
+        const project = isCard ?
+            element.querySelector('.project-name')?.textContent || '' :
+            element.querySelector('td:nth-child(4)').textContent;
+        const dates = isCard ?
+            Array.from(element.querySelectorAll('.task-card-dates > div')).map(d => d.textContent).join(' ') :
+            element.querySelector('td:nth-child(5)').textContent;
+        const assignee = isCard ?
+            element.querySelector('.assignee-name')?.textContent || '' :
+            element.querySelector('td:nth-child(6)').textContent;
+        
+        // Проверка поискового запроса
+        const searchMatch = searchQuery === '' || 
+            taskId.toLowerCase().includes(searchQuery) ||
+            taskName.toLowerCase().includes(searchQuery) ||
+            status.toLowerCase().includes(searchQuery) ||
+            project.toLowerCase().includes(searchQuery) ||
+            dates.toLowerCase().includes(searchQuery) ||
+            assignee.toLowerCase().includes(searchQuery);
+        
+        // Проверка фильтров
+        const statusMatch = selectedStatus === '' || status === selectedStatus;
+        const projectMatch = selectedProject === '' || project === selectedProject;
+        const assigneeMatch = selectedAssignee === '' || assignee === selectedAssignee;
+        
+        // Проверка фильтра по дате
+        let dateMatch = true;
+        if (selectedDate !== '') {
+            const today = new Date();
+            const taskDate = new Date(dates);
+            
+            switch (selectedDate) {
+                case 'today':
+                    dateMatch = taskDate.toDateString() === today.toDateString();
+                    break;
+                case 'week':
+                    const weekAgo = new Date(today.setDate(today.getDate() - 7));
+                    dateMatch = taskDate >= weekAgo;
+                    break;
+                case 'month':
+                    const monthAgo = new Date(today.setMonth(today.getMonth() - 1));
+                    dateMatch = taskDate >= monthAgo;
+                    break;
+            }
+        }
+        
+        return searchMatch && statusMatch && projectMatch && assigneeMatch && dateMatch;
+    }
+    
+    // Применяем фильтры к строкам таблицы
+    rows.forEach(row => {
+        const isVisible = matchesFilters(row);
+        row.style.display = isVisible ? '' : 'none';
+        if (isVisible) visibleCount++;
+    });
+    
+    // Применяем фильтры к карточкам
+    cards.forEach(card => {
+        const isVisible = matchesFilters(card, true);
+        card.style.display = isVisible ? '' : 'none';
+    });
+    
+    // Обновляем информацию о пагинации
+    updatePaginationInfo(visibleCount);
+    
+    // Показываем сообщение, если нет видимых задач
+    const noTasksMessage = document.querySelector('.no-tasks');
+    if (noTasksMessage) {
+        noTasksMessage.style.display = visibleCount === 0 ? 'flex' : 'none';
+    }
+}
+
+// Function to setup global search
+function setupGlobalSearch() {
+    const searchInput = document.getElementById('task-search');
+    if (!searchInput) return;
+
+    // Обработчик Ctrl+F
+    document.addEventListener('keydown', function(e) {
+        // Проверяем нажатие Ctrl+F
+        if ((e.ctrlKey || e.metaKey) && e.key === 'f') {
+            e.preventDefault(); // Предотвращаем стандартное поведение браузера
+            searchInput.focus();
+        }
+    });
+
+    // Обработчик Enter в любом месте страницы
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && !e.target.matches('textarea, input[type="text"]')) {
+            e.preventDefault();
+            searchInput.focus();
+            applyFilters();
+        }
+    });
+
+    // Обработчик клика на иконку поиска в шапке
+    const searchButton = document.querySelector('.search-button');
+    if (searchButton) {
+        searchButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            searchInput.focus();
+            applyFilters();
+        });
+    }
+}
+
+// Функция для переключения режима отображения
+function setupViewToggle() {
+    const viewToggleBtn = document.getElementById('view-toggle-btn');
+    const tableContainer = document.querySelector('.table-container');
+    const tasksCards = document.querySelector('.tasks-cards');
+    const tableViewIcon = viewToggleBtn ? viewToggleBtn.querySelector('.table-view-icon') : null;
+    const cardViewIcon = viewToggleBtn ? viewToggleBtn.querySelector('.card-view-icon') : null;
+
+    console.log('[setupViewToggle] init:', {
+        viewToggleBtn, tableContainer, tasksCards, tableViewIcon, cardViewIcon
+    });
+    if (!viewToggleBtn || !tableContainer || !tasksCards) {
+        console.error('[setupViewToggle] Не найден один из элементов!');
+        return;
+    }
+
+    function setIcons(isTable) {
+        if (tableViewIcon) tableViewIcon.style.display = isTable ? 'block' : 'none';
+        if (cardViewIcon) cardViewIcon.style.display = isTable ? 'none' : 'block';
+    }
+
+    const savedView = localStorage.getItem('tasksViewMode');
+    console.log('[setupViewToggle] savedView:', savedView);
+    if (savedView === 'cards') {
+        tableContainer.classList.add('hidden-view');
+        tasksCards.classList.remove('hidden-view');
+        viewToggleBtn.classList.add('active');
+        setIcons(false);
+    } else {
+        tableContainer.classList.remove('hidden-view');
+        tasksCards.classList.add('hidden-view');
+        viewToggleBtn.classList.remove('active');
+        setIcons(true);
+    }
+
+    viewToggleBtn.addEventListener('click', () => {
+        const isTableView = !tableContainer.classList.contains('hidden-view');
+        console.log('[setupViewToggle] click, isTableView:', isTableView);
+        if (isTableView) {
+            tableContainer.classList.add('hidden-view');
+            tasksCards.classList.remove('hidden-view');
+            viewToggleBtn.classList.add('active');
+            setIcons(false);
+            localStorage.setItem('tasksViewMode', 'cards');
+        } else {
+            tableContainer.classList.remove('hidden-view');
+            tasksCards.classList.add('hidden-view');
+            viewToggleBtn.classList.remove('active');
+            setIcons(true);
+            localStorage.setItem('tasksViewMode', 'table');
+        }
+    });
+}
+
+// Добавляем вызов setupViewToggle в инициализацию
+document.addEventListener('DOMContentLoaded', function() {
+    setupFilters();
+    setupViewToggle();
+    setupSearch();
+    setupPagination();
+    setupColumnToggle();
+    setupTaskLinks();
+    setupIntegrateButtons();
+    setupResetFilters();
+});

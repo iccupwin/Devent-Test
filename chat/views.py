@@ -132,10 +132,10 @@ def should_use_apple_style(request):
     """
     # Проверяем запрос на явный параметр style
     style_param = request.GET.get('style', '')
-    if style_param == 'apple':
-        return True
-    elif style_param == 'default':
+    if style_param == 'default':
         return False
+    elif style_param == 'apple':
+        return True
     
-    # Проверяем cookie
-    return request.COOKIES.get('use_apple_style', '') == 'true'
+    # По умолчанию используем Apple стиль
+    return True

@@ -4,10 +4,10 @@ from . import views, api_views, views_planfix, api
 app_name = 'chat'
 
 urlpatterns = [
-    # Основные представления для чата
-    path('', views.index, name='index'),
-    path('conversation/<int:conversation_id>/', views.conversation, name='conversation'),
-    path('conversation/new/', views.new_conversation, name='new_conversation'),
+    # Основные представления для чата (Apple стиль)
+    path('', views.index_apple, name='index'),
+    path('conversation/<int:conversation_id>/', views.conversation_apple, name='conversation'),
+    path('conversation/new/', views.new_conversation_apple, name='new_conversation'),
     
     # API для работы с задачами Planfix
     path('api/tasks/', api_views.tasks_api, name='tasks_api'),
@@ -17,18 +17,18 @@ urlpatterns = [
     path('api/conversations/', api.conversations_api, name='conversations_api'),
     path('api/task/<int:task_id>/', api_views.task_api, name='task_api'),
     
-    # Представления для работы с задачами Planfix
-    path('planfix/tasks/', views_planfix.planfix_tasks, name='planfix_tasks'),
-    path('planfix/task/<int:task_id>/', views_planfix.planfix_task_detail, name='planfix_task_detail'),
+    # Представления для работы с задачами Planfix (Apple стиль)
+    path('planfix/tasks/', views_planfix.planfix_tasks_apple, name='planfix_tasks'),
+    path('planfix/task/<int:task_id>/', views_planfix.planfix_task_detail_apple, name='planfix_task_detail'),
     path('planfix/task/<int:task_id>/integrate/', views_planfix.planfix_task_integrate, name='planfix_task_integrate'),
     
-    # Apple-style версии представлений
-    path('apple/', views.index_apple, name='index_apple'),
-    path('apple/conversation/<int:conversation_id>/', views.conversation_apple, name='conversation_apple'),
-    path('apple/conversation/new/', views.new_conversation_apple, name='new_conversation_apple'),
-    path('apple/planfix/tasks/', views_planfix.planfix_tasks_apple, name='planfix_tasks_apple'),
-    path('apple/planfix/task/<int:task_id>/', views_planfix.planfix_task_detail_apple, name='planfix_task_detail_apple'),
+    # Старый стиль (для обратной совместимости)
+    path('default/', views.index, name='index_default'),
+    path('default/conversation/<int:conversation_id>/', views.conversation, name='conversation_default'),
+    path('default/conversation/new/', views.new_conversation, name='new_conversation_default'),
+    path('default/planfix/tasks/', views_planfix.planfix_tasks, name='planfix_tasks_default'),
+    path('default/planfix/task/<int:task_id>/', views_planfix.planfix_task_detail, name='planfix_task_detail_default'),
     
-    # Переключатель стиля
+    # Переключатель стиля (оставлен для обратной совместимости)
     path('toggle-style/', views.toggle_style, name='toggle_style'),
 ]
