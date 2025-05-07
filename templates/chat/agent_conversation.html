@@ -1,0 +1,645 @@
+{% extends 'base_apple.html' %}
+{% load static %}
+
+{% block title %}Agent Conversation{% endblock %}
+
+{% block extra_css %}
+<style>
+    .agent-sidebar {
+        width: 280px;
+        background-color: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-right: 1px solid rgba(0, 0, 0, 0.05);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+    
+    .agent-status {
+        padding: 16px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    
+    .agent-status-title {
+        font-size: 14px;
+        font-weight: 600;
+        color: #1d1d1f;
+        margin-bottom: 8px;
+    }
+    
+    .agent-status-item {
+        display: flex;
+        justify-content: space-between;
+        font-size: 14px;
+        margin-bottom: 6px;
+    }
+    
+    .agent-status-label {
+        color: #6e6e73;
+    }
+    
+    .agent-status-value {
+        font-weight: 500;
+        color: #1d1d1f;
+    }
+    
+    .agent-status-value.warning {
+        color: #ff9500;
+    }
+    
+    .agent-status-value.danger {
+        color: #ff3b30;
+    }
+    
+    .agent-status-value.success {
+        color: #34c759;
+    }
+    
+    .refresh-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 12px;
+        color: #0071e3;
+        cursor: pointer;
+        text-decoration: none;
+    }
+    
+    .refresh-link:hover {
+        text-decoration: underline;
+    }
+    
+    .cache-status {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 8px;
+        font-size: 12px;
+    }
+    
+    .cache-status-indicator {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+    }
+    
+    .cache-status-indicator.valid {
+        background-color: #34c759;
+    }
+    
+    .cache-status-indicator.invalid {
+        background-color: #ff3b30;
+    }
+    
+    .message-highlight {
+        background-color: rgba(0, 113, 227, 0.1);
+        padding: 2px 4px;
+        border-radius: 4px;
+        font-weight: 500;
+    }
+    
+    /* Expand assistant messages to full width */
+    .message.assistant {
+        max-width: 100%;
+    }
+    
+    /* Message content styling for better readability */
+    .message-content {
+        line-height: 1.6;
+    }
+    
+    /* Code block styling */
+    .message-content pre {
+        background-color: rgba(0, 0, 0, 0.05);
+        padding: 16px;
+        border-radius: 8px;
+        overflow-x: auto;
+        margin: 16px 0;
+    }
+    
+    .message-content code {
+        font-family: Monaco, Menlo, Consolas, 'Courier New', monospace;
+        font-size: 14px;
+    }
+    
+    /* Table styling */
+    .message-content table {
+        border-collapse: collapse;
+        width: 100%;
+        margin: 16px 0;
+    }
+    
+    .message-content th,
+    .message-content td {
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        padding: 8px 12px;
+        text-align: left;
+    }
+    
+    .message-content th {
+        background-color: rgba(0, 0, 0, 0.05);
+        font-weight: 600;
+    }
+    
+    .message-content tr:nth-child(even) {
+        background-color: rgba(0, 0, 0, 0.02);
+    }
+    
+    /* List styling */
+    .message-content ul,
+    .message-content ol {
+        padding-left: 24px;
+        margin: 16px 0;
+    }
+    
+    .message-content li {
+        margin-bottom: 8px;
+    }
+    
+    /* Blockquote styling */
+    .message-content blockquote {
+        border-left: 4px solid #0071e3;
+        padding-left: 16px;
+        margin: 16px 0;
+        color: #6e6e73;
+    }
+    
+    /* Headings styling */
+    .message-content h1,
+    .message-content h2,
+    .message-content h3,
+    .message-content h4,
+    .message-content h5,
+    .message-content h6 {
+        margin: 24px 0 16px;
+        color: #1d1d1f;
+    }
+    
+    .message-content h1 {
+        font-size: 24px;
+    }
+    
+    .message-content h2 {
+        font-size: 20px;
+    }
+    
+    .message-content h3 {
+        font-size: 18px;
+    }
+    
+    .message-content h4,
+    .message-content h5,
+    .message-content h6 {
+        font-size: 16px;
+    }
+    
+    /* Markdown parsing for message content */
+    .message-content p {
+        margin-bottom: 16px;
+    }
+    
+    /* Dark theme adjustments */
+    body.dark-theme .agent-sidebar {
+        background-color: rgba(40, 40, 45, 0.7);
+        border-right-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    body.dark-theme .agent-status {
+        border-bottom-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    body.dark-theme .agent-status-title {
+        color: #f5f5f7;
+    }
+    
+    body.dark-theme .agent-status-label {
+        color: #a1a1a6;
+    }
+    
+    body.dark-theme .agent-status-value {
+        color: #f5f5f7;
+    }
+    
+    body.dark-theme .message-highlight {
+        background-color: rgba(10, 132, 255, 0.2);
+    }
+    
+    body.dark-theme .message-content pre {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    body.dark-theme .message-content th {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    body.dark-theme .message-content tr:nth-child(even) {
+        background-color: rgba(255, 255, 255, 0.05);
+    }
+    
+    body.dark-theme .message-content th,
+    body.dark-theme .message-content td {
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    body.dark-theme .message-content h1,
+    body.dark-theme .message-content h2,
+    body.dark-theme .message-content h3,
+    body.dark-theme .message-content h4,
+    body.dark-theme .message-content h5,
+    body.dark-theme .message-content h6 {
+        color: #f5f5f7;
+    }
+    
+    body.dark-theme .message-content blockquote {
+        border-left-color: #0a84ff;
+        color: #a1a1a6;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="app-layout">
+    <div class="agent-sidebar">
+        <div class="agent-status">
+            <div class="agent-status-title">Planfix Stats</div>
+            
+            <div class="agent-status-item">
+                <span class="agent-status-label">Active Tasks</span>
+                <span class="agent-status-value">{{ stats.active_tasks }}</span>
+            </div>
+            
+            <div class="agent-status-item">
+                <span class="agent-status-label">Overdue Tasks</span>
+                <span class="agent-status-value {% if stats.overdue_tasks > 0 %}danger{% endif %}">{{ stats.overdue_tasks }}</span>
+            </div>
+            
+            <div class="agent-status-item">
+                <span class="agent-status-label">Due This Week</span>
+                <span class="agent-status-value {% if stats.tasks_due_this_week > 5 %}warning{% endif %}">{{ stats.tasks_due_this_week }}</span>
+            </div>
+            
+            <div class="agent-status-item">
+                <span class="agent-status-label">Completion Rate</span>
+                <span class="agent-status-value {% if stats.completion_rate > 75 %}success{% elif stats.completion_rate > 50 %}warning{% else %}danger{% endif %}">{{ stats.completion_rate|floatformat:1 }}%</span>
+            </div>
+            
+            <div class="cache-status">
+                <div class="cache-status-indicator {% if cache_valid %}valid{% else %}invalid{% endif %}"></div>
+                <span>
+                    Cache: 
+                    {% if cache_valid %}
+                        Valid ({{ stats.cache_age_minutes|floatformat:1 }}m old)
+                    {% else %}
+                        Stale ({{ stats.cache_age_minutes|floatformat:1 }}m old)
+                    {% endif %}
+                </span>
+            </div>
+            
+            <div style="margin-top: 8px;">
+                <a href="#" id="refresh-cache-link" class="refresh-link">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M23 4v6h-6"></path>
+                        <path d="M1 20v-6h6"></path>
+                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                    </svg>
+                    Refresh cache
+                </a>
+            </div>
+        </div>
+        
+        <button id="newChatButton" class="new-chat-button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            New conversation
+        </button>
+        
+        <div class="conversations-list">
+            {% for conv in conversations %}
+            <a href="{% url 'chat:agent_conversation' conversation_id=conv.id %}" class="conversation-item {% if conv.id == conversation.id %}active{% endif %}">
+                {{ conv.title }}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <div class="content">
+        <div class="chat-container" data-conversation-id="{{ conversation.id }}">
+            <div class="chat-messages" id="chatMessages">
+                {% for message in messages %}
+                <div class="message {{ message.role }}">
+                    {% if message.role == 'assistant' %}
+                    <div class="assistant-avatar">A</div>
+                    <div class="message-content-wrapper">
+                    {% endif %}
+                        <div class="message-role">
+                            {% if message.role == 'user' %}
+                            You
+                            {% else %}
+                            Planfix Agent
+                            {% endif %}
+                        </div>
+                        <div class="message-content">{{ message.content|linebreaksbr }}</div>
+                    {% if message.role == 'assistant' %}
+                    </div>
+                    {% endif %}
+                </div>
+                {% empty %}
+                <div class="welcome-message">
+                    <h1>Planfix AI Agent</h1>
+                    <p>I can help you with insights about your Planfix data. Try asking questions about tasks, projects, deadlines, and more.</p>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <div class="chat-input-container">
+                <form id="messageForm" class="message-form">
+                    <textarea 
+                        id="messageInput" 
+                        class="message-input" 
+                        placeholder="Ask a question about your Planfix data..."
+                        rows="1"
+                        autocomplete="off"
+                    ></textarea>
+                    <button type="submit" class="send-button">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M22 2L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const messageForm = document.getElementById('messageForm');
+    const messageInput = document.getElementById('messageInput');
+    const chatMessages = document.getElementById('chatMessages');
+    const newChatButton = document.getElementById('newChatButton');
+    const refreshCacheLink = document.getElementById('refresh-cache-link');
+    
+    // Get conversation ID from data attribute
+    let currentConversationId = null;
+    const chatContainer = document.querySelector('.chat-container');
+    if (chatContainer && chatContainer.getAttribute('data-conversation-id')) {
+        currentConversationId = chatContainer.getAttribute('data-conversation-id');
+    }
+    
+    console.log('Current conversation ID:', currentConversationId);
+    
+    // Automatically adjust textarea height
+    messageInput.addEventListener('input', function() {
+        this.style.height = 'auto';
+        this.style.height = (this.scrollHeight) + 'px';
+    });
+    
+    // Scroll chat to bottom
+    function scrollToBottom() {
+        if (chatMessages) {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+    }
+    scrollToBottom();
+    
+    // New chat button handler
+    if (newChatButton) {
+        newChatButton.addEventListener('click', function() {
+            window.location.href = '{% url "chat:new_agent_conversation" %}';
+        });
+    }
+    
+    // Refresh cache link handler
+    if (refreshCacheLink) {
+        refreshCacheLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Show loading state
+            this.textContent = 'Refreshing...';
+            
+            // Call refresh API
+            fetch('/api/agent/refresh-cache/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error refreshing cache');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Show success message
+                this.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> Cache refreshed';
+                
+                // Add system message about cache refresh
+                addMessageToChat('assistant', 'I\'ve refreshed the Planfix data cache. Now I\'m working with the latest information.');
+                
+                // Reset link text after 3 seconds
+                setTimeout(() => {
+                    this.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"></path><path d="M1 20v-6h6"></path><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg> Refresh cache';
+                }, 3000);
+            })
+            .catch(error => {
+                // Show error message
+                this.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg> Error refreshing';
+                console.error('Error:', error);
+                
+                // Add system message about cache refresh error
+                addMessageToChat('assistant', 'I encountered an error while trying to refresh the Planfix data cache. Please try again later or contact the administrator if the problem persists.');
+                
+                // Reset link text after 3 seconds
+                setTimeout(() => {
+                    this.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"></path><path d="M1 20v-6h6"></path><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg> Refresh cache';
+                }, 3000);
+            });
+        });
+    }
+    
+    // Form submission handler
+    if (messageForm) {
+        messageForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const message = messageInput.value.trim();
+            if (!message) return;
+            
+            // Add user message to chat
+            addMessageToChat('user', message);
+            
+            // Clear input
+            messageInput.value = '';
+            messageInput.style.height = 'auto';
+            
+            // Show typing indicator
+            const typingIndicator = addTypingIndicator();
+            
+            // Send message to agent API
+            sendMessageToAgent(message)
+                .then(response => {
+                    // Remove typing indicator
+                    if (typingIndicator) {
+                        typingIndicator.remove();
+                    }
+                    
+                    // Add agent response to chat
+                    addMessageToChat('assistant', response.message);
+                    
+                    // Update conversation ID if new
+                    if (response.conversation_id && !currentConversationId) {
+                        currentConversationId = response.conversation_id;
+                        
+                        // Update URL without page reload
+                        const newUrl = `/agent/conversation/${currentConversationId}/`;
+                        window.history.pushState({}, '', newUrl);
+                        
+                        // Update sidebar after 1 second
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1000);
+                    }
+                    
+                    // Scroll to bottom
+                    scrollToBottom();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    
+                    // Remove typing indicator
+                    if (typingIndicator) {
+                        typingIndicator.remove();
+                    }
+                    
+                    // Show error message
+                    addMessageToChat('assistant', 'Sorry, there was an error processing your request. Please try again later or contact the administrator if the problem persists.');
+                    scrollToBottom();
+                });
+        });
+    }
+    
+    // Add message to chat
+    function addMessageToChat(role, content) {
+        // Remove welcome message if present
+        const welcomeMessage = document.querySelector('.welcome-message');
+        if (welcomeMessage) {
+            welcomeMessage.remove();
+        }
+        
+        // Create message element
+        const messageElement = document.createElement('div');
+        messageElement.classList.add('message', role);
+        
+        // Different structure based on role
+        if (role === 'assistant') {
+            messageElement.innerHTML = `
+                <div class="assistant-avatar">A</div>
+                <div class="message-content-wrapper">
+                    <div class="message-role">Planfix Agent</div>
+                    <div class="message-content">${formatMessageContent(content)}</div>
+                </div>
+            `;
+        } else {
+            messageElement.innerHTML = `
+                <div class="message-role">You</div>
+                <div class="message-content">${formatMessageContent(content)}</div>
+            `;
+        }
+        
+        // Add to DOM
+        chatMessages.appendChild(messageElement);
+        
+        // Scroll into view
+        scrollToBottom();
+        
+        return messageElement;
+    }
+    
+    // Format message content
+    function formatMessageContent(content) {
+        // Escape HTML and preserve line breaks
+        const escaped = escapeHtml(content);
+        return escaped.replace(/\n/g, '<br>');
+    }
+    
+    // Add typing indicator
+    function addTypingIndicator() {
+        const indicator = document.createElement('div');
+        indicator.classList.add('typing-indicator');
+        
+        for (let i = 0; i < 3; i++) {
+            const dot = document.createElement('div');
+            dot.classList.add('typing-dot');
+            indicator.appendChild(dot);
+        }
+        
+        chatMessages.appendChild(indicator);
+        scrollToBottom();
+        
+        return indicator;
+    }
+    
+    // Send message to agent API
+    async function sendMessageToAgent(message) {
+        const response = await fetch('/api/agent/message/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({
+                message: message,
+                conversation_id: currentConversationId
+            })
+        });
+        
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Network error');
+        }
+        
+        return response.json();
+    }
+    
+    // Escape HTML
+    function escapeHtml(unsafe) {
+        return unsafe
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+    
+    // Get CSRF token from cookies
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    
+    // Apply syntax highlighting to code blocks if prism.js is available
+    if (typeof Prism !== 'undefined') {
+        Prism.highlightAll();
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,306 @@
+[
+  {
+    "id": "user:2",
+    "name": "ПланФикс",
+    "email": "",
+    "assigned_tasks": 0,
+    "assigned_active": 0,
+    "assigned_completed": 0,
+    "assigned_overdue": 0,
+    "created_tasks": 1,
+    "projects": []
+  },
+  {
+    "id": "user:1",
+    "name": "Константин Осипов",
+    "email": "",
+    "assigned_tasks": 248,
+    "assigned_active": 52,
+    "assigned_completed": 196,
+    "assigned_overdue": 17,
+    "created_tasks": 460,
+    "projects": [
+      "4",
+      "1462",
+      "12",
+      "1647",
+      "116",
+      "23",
+      "1386",
+      "1310",
+      "29"
+    ]
+  },
+  {
+    "id": "user:3",
+    "name": "Вячеслав Фоменко",
+    "email": "",
+    "assigned_tasks": 87,
+    "assigned_active": 27,
+    "assigned_completed": 60,
+    "assigned_overdue": 9,
+    "created_tasks": 107,
+    "projects": [
+      "4",
+      "29",
+      "12",
+      "116",
+      "236",
+      "23",
+      "1647"
+    ]
+  },
+  {
+    "id": "user:4",
+    "name": "Назарий Шевченко",
+    "email": "",
+    "assigned_tasks": 100,
+    "assigned_active": 45,
+    "assigned_completed": 55,
+    "assigned_overdue": 7,
+    "created_tasks": 20,
+    "projects": [
+      "4",
+      "29",
+      "12",
+      "116",
+      "23",
+      "1647"
+    ]
+  },
+  {
+    "id": "contact:4",
+    "name": "Support Team",
+    "email": "",
+    "assigned_tasks": 1,
+    "assigned_active": 0,
+    "assigned_completed": 1,
+    "assigned_overdue": 0,
+    "created_tasks": 0,
+    "projects": [
+      "4"
+    ]
+  },
+  {
+    "id": "user:5",
+    "name": "Алексей Шульга",
+    "email": "",
+    "assigned_tasks": 309,
+    "assigned_active": 78,
+    "assigned_completed": 231,
+    "assigned_overdue": 19,
+    "created_tasks": 538,
+    "projects": [
+      "4",
+      "1462",
+      "12",
+      "1647",
+      "116",
+      "23",
+      "1386",
+      "1310",
+      "29"
+    ]
+  },
+  {
+    "id": "user:6",
+    "name": "Марлен Замиров",
+    "email": "",
+    "assigned_tasks": 57,
+    "assigned_active": 3,
+    "assigned_completed": 54,
+    "assigned_overdue": 3,
+    "created_tasks": 41,
+    "projects": [
+      "4",
+      "29",
+      "12",
+      "116",
+      "23",
+      "1647"
+    ]
+  },
+  {
+    "id": "user:20",
+    "name": "Канатбек Аскаров",
+    "email": "",
+    "assigned_tasks": 65,
+    "assigned_active": 47,
+    "assigned_completed": 18,
+    "assigned_overdue": 19,
+    "created_tasks": 9,
+    "projects": [
+      "4",
+      "29",
+      "12",
+      "23",
+      "1310",
+      "1647"
+    ]
+  },
+  {
+    "id": "user:11",
+    "name": "Данияр Мусуралиев",
+    "email": "",
+    "assigned_tasks": 51,
+    "assigned_active": 3,
+    "assigned_completed": 48,
+    "assigned_overdue": 1,
+    "created_tasks": 0,
+    "projects": [
+      "4",
+      "12",
+      "1647",
+      "23",
+      "1310",
+      "29"
+    ]
+  },
+  {
+    "id": "user:7",
+    "name": "Оксана Янковская",
+    "email": "",
+    "assigned_tasks": 120,
+    "assigned_active": 21,
+    "assigned_completed": 99,
+    "assigned_overdue": 9,
+    "created_tasks": 26,
+    "projects": [
+      "4",
+      "12",
+      "1647",
+      "23",
+      "1310",
+      "29"
+    ]
+  },
+  {
+    "id": "user:9",
+    "name": "Бахтияр Ибрагимов",
+    "email": "",
+    "assigned_tasks": 58,
+    "assigned_active": 13,
+    "assigned_completed": 45,
+    "assigned_overdue": 3,
+    "created_tasks": 40,
+    "projects": [
+      "4",
+      "12",
+      "1647",
+      "116",
+      "23",
+      "29"
+    ]
+  },
+  {
+    "id": "user:10",
+    "name": "Сергей Храпунов",
+    "email": "",
+    "assigned_tasks": 47,
+    "assigned_active": 8,
+    "assigned_completed": 39,
+    "assigned_overdue": 3,
+    "created_tasks": 6,
+    "projects": [
+      "4",
+      "29",
+      "12",
+      "23",
+      "1647"
+    ]
+  },
+  {
+    "id": "user:8",
+    "name": "Сеид Бостанов",
+    "email": "",
+    "assigned_tasks": 18,
+    "assigned_active": 1,
+    "assigned_completed": 17,
+    "assigned_overdue": 1,
+    "created_tasks": 0,
+    "projects": [
+      "4",
+      "12",
+      "1647",
+      "23",
+      "29"
+    ]
+  },
+  {
+    "id": "user:12",
+    "name": "Данияр Сулайманов",
+    "email": "",
+    "assigned_tasks": 42,
+    "assigned_active": 1,
+    "assigned_completed": 41,
+    "assigned_overdue": 0,
+    "created_tasks": 13,
+    "projects": [
+      "4",
+      "12",
+      "1647",
+      "116",
+      "23",
+      "1310",
+      "29"
+    ]
+  },
+  {
+    "id": "contact:78",
+    "name": "Support Team",
+    "email": "",
+    "assigned_tasks": 5,
+    "assigned_active": 0,
+    "assigned_completed": 5,
+    "assigned_overdue": 0,
+    "created_tasks": 0,
+    "projects": [
+      "4"
+    ]
+  },
+  {
+    "id": "user:19",
+    "name": "Михаил Бодан",
+    "email": "",
+    "assigned_tasks": 9,
+    "assigned_active": 4,
+    "assigned_completed": 5,
+    "assigned_overdue": 2,
+    "created_tasks": 1,
+    "projects": [
+      "4",
+      "23",
+      "29",
+      "12"
+    ]
+  },
+  {
+    "id": "user:16",
+    "name": "Аида Насирова",
+    "email": "",
+    "assigned_tasks": 13,
+    "assigned_active": 2,
+    "assigned_completed": 11,
+    "assigned_overdue": 0,
+    "created_tasks": 6,
+    "projects": [
+      "4",
+      "23",
+      "12",
+      "236"
+    ]
+  },
+  {
+    "id": "user:22",
+    "name": "Александр Михайлев",
+    "email": "",
+    "assigned_tasks": 1,
+    "assigned_active": 1,
+    "assigned_completed": 0,
+    "assigned_overdue": 0,
+    "created_tasks": 0,
+    "projects": [
+      "4"
+    ]
+  }
+]

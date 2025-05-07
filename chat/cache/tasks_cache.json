@@ -51944,20 +51944,20 @@
     "name": "Александр, познакомьтесь с Planfix!",
     "description": "<p><span>Это первая задача, которую вам необходимо выполнить в Planfix. Для начала нажмите кнопку «Принять» ниже этого описания. Затем:</span></p>\n<ul>\n <li>Изучите информацию в каждом пункте <a target=\"_blank\" href=\"https://planfix.com/ru/help/%D0%A7%D0%B5%D0%BA-%D0%BB%D0%B8%D1%81%D1%82\">чек-листа</a> и выполните указанные действия.</li>\n <li>Отметьте изученные пункты галочкой.</li>\n <li>После выполнения всех пунктов чек-листа переведите статус этой задачи в <span>«</span>Выполненная<span>».</span></li>\n</ul>\n<p>Аналогичное задание получат все ваши коллеги, это поможет быстро пройти первоначальное обучение и начать работу в системе.</p>\n<p>&nbsp;</p>\n<p>&nbsp;</p>\n<p>P.S.</p>\n<p>Дополнительные материалы о Planfix смотрите здесь:</p>\n<ul>\n <li><a href=\"https://planfix.com/ru/academy/\">Академия Planfix</a></li>\n <li><a href=\"https://planfix.com/ru/help/\">Справки и инструкции</a></li>\n <li><a target=\"_blank\" href=\"https://www.youtube.com/channel/UCij7Bz2wIexl95Y8KKH8FGA\">Видео в YouTube</a></li>\n</ul>\n<p>Любые вопросы задавайте в <a href=\"https://planfix.com/ru/support/\">Службу поддержки</a>.</p>",
     "status": {
-      "id": 1,
-      "name": "Новая",
-      "color": "#00b4b4",
+      "id": 2,
+      "name": "В работе",
+      "color": "#3377C3",
       "isActive": true,
       "hasDeadline": true,
       "isAppliedIndividually": false,
       "texts": [
         {
           "lang": "Ru",
-          "name": "Новая"
+          "name": "В работе"
         },
         {
           "lang": "En",
-          "name": "New"
+          "name": "In progress"
         }
       ]
     },
