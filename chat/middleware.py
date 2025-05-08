@@ -1,6 +1,7 @@
 # chat/middleware.py
 from django.shortcuts import redirect
 from django.urls import reverse
+from django.contrib import messages
 
 class RoleMiddleware:
     """
@@ -24,19 +25,33 @@ class RoleMiddleware:
             '/conversation/',
             '/api/agent/',
             '/planfix/',
+            '/agent/',
+            '/profile/',
+        ]
+        
+        # Список URL-адресов, доступных всем пользователям
+        public_urls = [
+            '/login/',
+            '/register/',
+            '/logout/',
+            '/access-denied/',
+            '/static/',
         ]
         
         # Проверка URL для административных страниц
         if any(request.path.startswith(url) for url in admin_only_urls):
             if not request.user.is_authenticated:
-                return redirect(reverse('login') + f'?next={request.path}')
+                messages.error(request, "Для доступа к этой странице необходимо войти в систему.")
+                return redirect(reverse('chat:login') + f'?next={request.path}')
             if not request.user.is_admin():
-                return redirect('access_denied')
+                messages.error(request, "У вас нет прав доступа к этой странице.")
+                return redirect('chat:access_denied')
         
         # Проверка URL для аутентифицированных пользователей
-        if any(request.path.startswith(url) for url in auth_only_urls):
+        if any(request.path.startswith(url) for url in auth_only_urls) and not any(request.path.startswith(url) for url in public_urls):
             if not request.user.is_authenticated:
-                return redirect(reverse('login') + f'?next={request.path}')
+                messages.error(request, "Для доступа к этой странице необходимо войти в систему.")
+                return redirect(reverse('chat:login') + f'?next={request.path}')
         
         # Продолжаем обработку запроса
         response = self.get_response(request)

@@ -34,7 +34,13 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'chat.middleware.RoleMiddleware',  # Добавляем наш middleware
 ]
+
+# Настройки авторизации
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/login/'
 
 ROOT_URLCONF = 'claude_chat.urls'
 
@@ -58,44 +64,46 @@ WSGI_APPLICATION = 'claude_chat.wsgi.application'
 
 # Database
 # Оптимизация базы данных для производительности
+# В разделе DATABASES заменим настройки на:
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.environ.get('DB_NAME', 'planfix_dashboard'),
         'USER': os.environ.get('DB_USER', 'postgres'),
-        'PASSWORD': os.environ.get('DB_PASSWORD', ''),
+        'PASSWORD': os.environ.get('DB_PASSWORD', 'postgres'),
         'HOST': os.environ.get('DB_HOST', 'localhost'),
         'PORT': os.environ.get('DB_PORT', '5432'),
-        'CONN_MAX_AGE': 60,  # Постоянное соединение
-        'OPTIONS': {
-            'connect_timeout': 10,
-        }
+        'CONN_MAX_AGE': 60,
     }
 }
 
-# Кэширование для улучшения производительности
+# Добавим настройки Redis и Celery
+REDIS_HOST = os.environ.get('REDIS_HOST', 'localhost')
+REDIS_PORT = os.environ.get('REDIS_PORT', '6379')
+REDIS_DB = os.environ.get('REDIS_DB', '0')
+
+# Настройки кэширования
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-        'LOCATION': os.environ.get('REDIS_URL', 'redis://127.0.0.1:6379/1'),
-        'TIMEOUT': 300,  # 5 минут
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': f'redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}',
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         }
     }
 }
 
-# Использование кэша для сессий
+# Настройки сессий
 SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 SESSION_CACHE_ALIAS = 'default'
 
-# Настройка для работы с очередями (для асинхронных задач)
-CELERY_BROKER_URL = os.environ.get('CELERY_BROKER', 'redis://localhost:6379/0')
-CELERY_RESULT_BACKEND = os.environ.get('CELERY_BACKEND', 'redis://localhost:6379/0')
+# Настройки Celery
+CELERY_BROKER_URL = f'redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}'
+CELERY_RESULT_BACKEND = f'redis://{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
-CELERY_TIMEZONE = 'UTC'
+CELERY_TIMEZONE = TIME_ZONE
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [

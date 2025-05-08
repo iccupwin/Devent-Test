@@ -29,4 +29,10 @@ app.conf.beat_schedule = {
         'args': (),
         'options': {'expires': 3600 * 25},
     },
+    'refresh-planfix-cache': {
+        'task': 'chat.tasks.refresh_planfix_cache',
+        'schedule': 3600.0,  # Запуск каждый час
+        'args': (),
+        'options': {'expires': 3600 * 2},  # Истекает через 2 часа
+    },
 }

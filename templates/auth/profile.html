@@ -1,0 +1,221 @@
+{% extends 'base_apple.html' %}
+{% load static %}
+
+{% block title %}Профиль пользователя{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <div class="profile-card">
+        <h2>Профиль пользователя</h2>
+        
+        <div class="profile-info">
+            <div class="profile-avatar">
+                {{ user.username|first|upper }}
+            </div>
+            
+            <div class="profile-details">
+                <div class="profile-row">
+                    <span class="profile-label">Имя пользователя:</span>
+                    <span class="profile-value">{{ user.username }}</span>
+                </div>
+                
+                <div class="profile-row">
+                    <span class="profile-label">Email:</span>
+                    <span class="profile-value">{{ user.email }}</span>
+                </div>
+                
+                <div class="profile-row">
+                    <span class="profile-label">Роль:</span>
+                    <span class="profile-value">{{ user.get_role_display }}</span>
+                </div>
+                
+                <div class="profile-row">
+                    <span class="profile-label">Дата регистрации:</span>
+                    <span class="profile-value">{{ user.date_joined|date:"d.m.Y" }}</span>
+                </div>
+                
+                <div class="profile-row">
+                    <span class="profile-label">Последняя активность:</span>
+                    <span class="profile-value">{{ user.last_active|date:"d.m.Y H:i" }}</span>
+                </div>
+                
+                {% if user.planfix_user_id %}
+                <div class="profile-row">
+                    <span class="profile-label">ID пользователя в Planfix:</span>
+                    <span class="profile-value">{{ user.planfix_user_id }}</span>
+                </div>
+                {% endif %}
+                
+                <div class="profile-row">
+                    <span class="profile-label">Предпочитаемая модель ИИ:</span>
+                    <span class="profile-value">{{ user.preferred_ai_model }}</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="profile-actions">
+            <a href="{% url 'chat:user_settings' %}" class="profile-button">Настройки</a>
+            <a href="{% url 'chat:index' %}" class="profile-button">Вернуться к чату</a>
+            {% if user.is_admin %}
+            <a href="{% url 'chat:analytics_dashboard' %}" class="profile-button">Панель администратора</a>
+            {% endif %}
+            <a href="{% url 'chat:logout' %}" class="profile-button logout">Выйти</a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .profile-container {
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+    
+    .profile-card {
+        background-color: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+        padding: 30px;
+        border: 1px solid rgba(255, 255, 255, 0.7);
+    }
+    
+    .profile-card h2 {
+        font-size: 24px;
+        font-weight: 600;
+        color: #1d1d1f;
+        margin: 0 0 20px;
+        text-align: center;
+    }
+    
+    .profile-info {
+        display: flex;
+        align-items: flex-start;
+        gap: 30px;
+        margin-bottom: 30px;
+    }
+    
+    .profile-avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background-color: #0071e3;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 32px;
+        font-weight: 600;
+        flex-shrink: 0;
+    }
+    
+    .profile-details {
+        flex: 1;
+    }
+    
+    .profile-row {
+        display: flex;
+        margin-bottom: 12px;
+    }
+    
+    .profile-label {
+        width: 200px;
+        font-weight: 500;
+        color: #6e6e73;
+    }
+    
+    .profile-value {
+        flex: 1;
+        font-weight: 500;
+        color: #1d1d1f;
+    }
+    
+    .profile-actions {
+        display: flex;
+        justify-content: center;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+    
+    .profile-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 20px;
+        background-color: #f5f5f7;
+        color: #1d1d1f;
+        border: none;
+        border-radius: 12px;
+        font-size: 15px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+    
+    .profile-button:hover {
+        background-color: #e5e5e7;
+        transform: translateY(-2px);
+    }
+    
+    .profile-button.logout {
+        background-color: #ff3b30;
+        color: white;
+    }
+    
+    .profile-button.logout:hover {
+        background-color: #ff453a;
+    }
+    
+    /* Dark theme support */
+    body.dark-theme .profile-card {
+        background-color: rgba(40, 40, 45, 0.8);
+        border-color: rgba(60, 60, 65, 0.5);
+    }
+    
+    body.dark-theme .profile-card h2 {
+        color: #f5f5f7;
+    }
+    
+    body.dark-theme .profile-label {
+        color: #a1a1a6;
+    }
+    
+    body.dark-theme .profile-value {
+        color: #f5f5f7;
+    }
+    
+    body.dark-theme .profile-button {
+        background-color: #2c2c2e;
+        color: #f5f5f7;
+    }
+    
+    body.dark-theme .profile-button:hover {
+        background-color: #3a3a3c;
+    }
+    
+    body.dark-theme .profile-button.logout {
+        background-color: #ff453a;
+        color: white;
+    }
+    
+    @media (max-width: 768px) {
+        .profile-info {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+        
+        .profile-row {
+            flex-direction: column;
+            text-align: center;
+        }
+        
+        .profile-label {
+            width: 100%;
+            margin-bottom: 4px;
+        }
+    }
+</style>
+{% endblock %}

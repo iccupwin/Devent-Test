@@ -1,0 +1,297 @@
+{% extends 'base_apple.html' %}
+{% load static %}
+
+{% block title %}Настройки пользователя{% endblock %}
+
+{% block content %}
+<div class="settings-container">
+    <div class="settings-card">
+        <h2>Настройки пользователя</h2>
+        
+        {% if messages %}
+        <div class="settings-messages">
+            {% for message in messages %}
+            <div class="settings-message {% if message.tags %}{{ message.tags }}{% endif %}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        <form method="post" class="settings-form">
+            {% csrf_token %}
+            
+            <div class="settings-section">
+                <h3>Интерфейс</h3>
+                
+                <div class="form-group">
+                    <label for="id_theme">{{ form.theme.label }}</label>
+                    {{ form.theme }}
+                    {% if form.theme.errors %}
+                    <div class="field-error">{{ form.theme.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_language">{{ form.language.label }}</label>
+                    {{ form.language }}
+                    {% if form.language.errors %}
+                    <div class="field-error">{{ form.language.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="settings-section">
+                <h3>Уведомления</h3>
+                
+                <div class="form-check">
+                    {{ form.enable_notifications }}
+                    <label class="form-check-label" for="id_enable_notifications">{{ form.enable_notifications.label }}</label>
+                    {% if form.enable_notifications.errors %}
+                    <div class="field-error">{{ form.enable_notifications.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="settings-section">
+                <h3>Отображение задач</h3>
+                
+                <div class="form-check">
+                    {{ form.show_completed_tasks }}
+                    <label class="form-check-label" for="id_show_completed_tasks">{{ form.show_completed_tasks.label }}</label>
+                    {% if form.show_completed_tasks.errors %}
+                    <div class="field-error">{{ form.show_completed_tasks.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_default_page_size">{{ form.default_page_size.label }}</label>
+                    {{ form.default_page_size }}
+                    {% if form.default_page_size.errors %}
+                    <div class="field-error">{{ form.default_page_size.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="settings-actions">
+                <button type="submit" class="settings-button">Сохранить настройки</button>
+                <a href="{% url 'chat:profile' %}" class="settings-button cancel">Отмена</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    .settings-container {
+        max-width: 800px;
+        margin: 40px auto;
+        padding: 0 20px;
+    }
+    
+    .settings-card {
+        background-color: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+        padding: 30px;
+        border: 1px solid rgba(255, 255, 255, 0.7);
+    }
+    
+    .settings-card h2 {
+        font-size: 24px;
+        font-weight: 600;
+        color: #1d1d1f;
+        margin: 0 0 20px;
+        text-align: center;
+    }
+    
+    .settings-messages {
+        margin-bottom: 20px;
+    }
+    
+    .settings-message {
+        padding: 12px 16px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+    }
+    
+    .settings-message.success {
+        background-color: rgba(52, 199, 89, 0.1);
+        border: 1px solid rgba(52, 199, 89, 0.3);
+        color: #34c759;
+    }
+    
+    .settings-message.error {
+        background-color: rgba(255, 59, 48, 0.1);
+        border: 1px solid rgba(255, 59, 48, 0.3);
+        color: #ff3b30;
+    }
+    
+    .settings-message.info {
+        background-color: rgba(0, 122, 255, 0.1);
+        border: 1px solid rgba(0, 122, 255, 0.3);
+        color: #007aff;
+    }
+    
+    .settings-section {
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+    
+    .settings-section h3 {
+        font-size: 18px;
+        font-weight: 600;
+        color: #1d1d1f;
+        margin: 0 0 16px;
+    }
+    
+    .form-group {
+        margin-bottom: 16px;
+    }
+    
+    .form-group label {
+        display: block;
+        font-size: 14px;
+        font-weight: 500;
+        color: #6e6e73;
+        margin-bottom: 8px;
+    }
+    
+    .form-group select,
+    .form-group input[type="text"],
+    .form-group input[type="number"] {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        font-size: 15px;
+        transition: all 0.2s ease;
+    }
+    
+    .form-group select:focus,
+    .form-group input[type="text"]:focus,
+    .form-group input[type="number"]:focus {
+        border-color: #0071e3;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.1);
+    }
+    
+    .form-check {
+        display: flex;
+        align-items: center;
+        margin-bottom: 16px;
+    }
+    
+    .form-check-input {
+        margin-right: 10px;
+        width: 20px;
+        height: 20px;
+    }
+    
+    .form-check-label {
+        font-size: 15px;
+        color: #1d1d1f;
+    }
+    
+    .settings-actions {
+        display: flex;
+        justify-content: center;
+        gap: 16px;
+    }
+    
+    .settings-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 20px;
+        background-color: #0071e3;
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 15px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+    
+    .settings-button:hover {
+        background-color: #0077ed;
+        transform: translateY(-2px);
+    }
+    
+    .settings-button.cancel {
+        background-color: #f5f5f7;
+        color: #1d1d1f;
+    }
+    
+    .settings-button.cancel:hover {
+        background-color: #e5e5e7;
+    }
+    
+    .field-error {
+        color: #ff3b30;
+        font-size: 14px;
+        margin-top: 5px;
+    }
+    
+    /* Dark theme support */
+    body.dark-theme .settings-card {
+        background-color: rgba(40, 40, 45, 0.8);
+        border-color: rgba(60, 60, 65, 0.5);
+    }
+    
+    body.dark-theme .settings-card h2,
+    body.dark-theme .settings-section h3 {
+        color: #f5f5f7;
+    }
+    
+    body.dark-theme .form-group label {
+        color: #a1a1a6;
+    }
+    
+    body.dark-theme .form-check-label {
+        color: #f5f5f7;
+    }
+    
+    body.dark-theme .form-group select,
+    body.dark-theme .form-group input[type="text"],
+    body.dark-theme .form-group input[type="number"] {
+        background-color: #2c2c2e;
+        border-color: rgba(255, 255, 255, 0.1);
+        color: #f5f5f7;
+    }
+    
+    body.dark-theme .form-group select:focus,
+    body.dark-theme .form-group input[type="text"]:focus,
+    body.dark-theme .form-group input[type="number"]:focus {
+        border-color: #0a84ff;
+        box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.1);
+    }
+    
+    body.dark-theme .settings-section {
+        border-bottom-color: rgba(255, 255, 255, 0.1);
+    }
+    
+    body.dark-theme .settings-button.cancel {
+        background-color: #2c2c2e;
+        color: #f5f5f7;
+    }
+    
+    body.dark-theme .settings-button.cancel:hover {
+        background-color: #3a3a3c;
+    }
+    
+    @media (max-width: 768px) {
+        .settings-actions {
+            flex-direction: column;
+        }
+        
+        .settings-button {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}

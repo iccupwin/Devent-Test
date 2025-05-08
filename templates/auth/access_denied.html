@@ -1,0 +1,106 @@
+{% extends 'base_apple.html' %}
+{% load static %}
+
+{% block title %}Доступ запрещен{% endblock %}
+
+{% block content %}
+<div class="access-denied-container">
+    <div class="access-denied-card">
+        <div class="access-denied-icon">🔒</div>
+        <h2>Доступ запрещен</h2>
+        <p>У вас нет прав для доступа к этой странице. Пожалуйста, свяжитесь с администратором системы, если вы считаете, что произошла ошибка.</p>
+        <div class="access-denied-actions">
+            <a href="{% url 'chat:index' %}" class="access-denied-button">На главную</a>
+            <a href="{% url 'chat:logout' %}" class="access-denied-button">Выйти</a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .access-denied-container {
+        max-width: 600px;
+        margin: 100px auto;
+        padding: 0 20px;
+    }
+    
+    .access-denied-card {
+        background-color: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+        padding: 40px;
+        text-align: center;
+        border: 1px solid rgba(255, 255, 255, 0.7);
+    }
+    
+    .access-denied-icon {
+        font-size: 48px;
+        margin-bottom: 20px;
+    }
+    
+    .access-denied-card h2 {
+        font-size: 24px;
+        font-weight: 600;
+        color: #ff3b30;
+        margin: 0 0 20px;
+    }
+    
+    .access-denied-card p {
+        font-size: 16px;
+        color: #6e6e73;
+        margin: 0 0 30px;
+        line-height: 1.5;
+    }
+    
+    .access-denied-actions {
+        display: flex;
+        justify-content: center;
+        gap: 16px;
+    }
+    
+    .access-denied-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 20px;
+        background-color: #f5f5f7;
+        color: #1d1d1f;
+        border: none;
+        border-radius: 12px;
+        font-size: 15px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+    
+    .access-denied-button:hover {
+        background-color: #e5e5e7;
+        transform: translateY(-2px);
+    }
+    
+    /* Dark theme support */
+    body.dark-theme .access-denied-card {
+        background-color: rgba(40, 40, 45, 0.8);
+        border-color: rgba(60, 60, 65, 0.5);
+    }
+    
+    body.dark-theme .access-denied-card h2 {
+        color: #ff453a;
+    }
+    
+    body.dark-theme .access-denied-card p {
+        color: #a1a1a6;
+    }
+    
+    body.dark-theme .access-denied-button {
+        background-color: #2c2c2e;
+        color: #f5f5f7;
+    }
+    
+    body.dark-theme .access-denied-button:hover {
+        background-color: #3a3a3c;
+    }
+</style>
+{% endblock %}

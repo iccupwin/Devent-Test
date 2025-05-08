@@ -2,6 +2,7 @@ from django.urls import path, include
 from . import views, api_views, views_planfix, api, agent_api
 from django.urls import path
 from . import views_admin
+from . import auth_views
 
 app_name = 'chat'
 
