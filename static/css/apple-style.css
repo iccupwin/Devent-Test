@@ -1324,6 +1324,7 @@ body {
 
 .apple-task-value {
     font-size: 15px;
+    line-height: 30px;
     color: var(--apple-gray-700);
 }
 

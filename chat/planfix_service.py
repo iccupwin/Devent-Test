@@ -4,6 +4,7 @@ import time
 import os
 from pathlib import Path
 from django.conf import settings
+from typing import List, Dict, Any
 from .planfix_api import get_projects, get_tasks_page, get_task_detail
 
 # Настройка логирования
@@ -14,6 +15,15 @@ BASE_DIR = Path(settings.BASE_DIR)
 CACHE_DIR = BASE_DIR / 'chat' / 'cache'
 TASKS_CACHE_FILE = CACHE_DIR / 'tasks_cache.json'
 LAST_UPDATE_FILE = CACHE_DIR / 'last_update.txt'
+
+def get_all_tasks(force_update=False):
+    """
+    Получение всех задач из кэша или API
+    
+    :param force_update: Принудительное обновление кэша
+    :return: Список всех задач
+    """
+    return update_tasks_cache(force=force_update)
 
 # Инициализация кэша
 def init_cache():
@@ -147,15 +157,6 @@ def update_tasks_cache(force=False):
             all_tasks = json.load(f)
         return all_tasks
 
-def get_all_tasks(force_update=False):
-    """
-    Получение всех задач из кэша или API
-    
-    :param force_update: Принудительное обновление кэша
-    :return: Список всех задач
-    """
-    return update_tasks_cache(force=force_update)
-
 def get_active_tasks():
     """
     Получение активных задач (не завершенных)
@@ -273,3 +274,90 @@ def format_task_for_claude(task):
     )
     
     return formatted_text
+
+
+# chat/planfix_cache_service.py - modify the _generate_projects_cache method
+def _generate_projects_cache(self) -> List[Dict[str, Any]]:
+    """Generate projects cache from all tasks"""
+    all_tasks = self.get_all_tasks()
+    
+    # Extract unique projects
+    projects_map = {}
+    for task in all_tasks:
+        if task.get('project') and task['project'].get('id'):
+            project_id = str(task['project']['id'])
+            
+            if project_id not in projects_map:
+                # Extract relevant project info
+                project_info = {
+                    'id': task['project']['id'],
+                    'name': task['project'].get('name', f"Project {project_id}"),
+                    'task_count': 1,
+                    'active_tasks': 0,
+                    'completed_tasks': 0,
+                    'overdue_tasks': 0
+                }
+                
+                # Count task status
+                if self._is_task_completed(task):
+                    project_info['completed_tasks'] = 1
+                else:
+                    project_info['active_tasks'] = 1
+                    
+                    # Check if overdue
+                    today = datetime.now().date().isoformat()
+                    end_date = None
+                    if task.get('endDateTime') and isinstance(task['endDateTime'], dict):
+                        if 'date' in task['endDateTime']:
+                            end_date = task['endDateTime']['date']
+                        elif 'dateTo' in task['endDateTime']:
+                            end_date = task['endDateTime']['dateTo']
+                    elif task.get('endDateTime') and isinstance(task['endDateTime'], str):
+                        end_date = task['endDateTime']
+                    elif task.get('dateEnd') and isinstance(task['dateEnd'], str):
+                        end_date = task['dateEnd']
+                    
+                    if end_date and end_date < today:
+                        project_info['overdue_tasks'] = 1
+                
+                projects_map[project_id] = project_info
+            else:
+                # Update existing project info
+                projects_map[project_id]['task_count'] += 1
+                
+                # Ensure project has a name
+                if not projects_map[project_id]['name'] or projects_map[project_id]['name'] == f"Project {project_id}":
+                    projects_map[project_id]['name'] = task['project'].get('name', f"Project {project_id}")
+                
+                if self._is_task_completed(task):
+                    projects_map[project_id]['completed_tasks'] += 1
+                else:
+                    projects_map[project_id]['active_tasks'] += 1
+                    
+                    # Check if overdue
+                    today = datetime.now().date().isoformat()
+                    end_date = None
+                    if task.get('endDateTime') and isinstance(task['endDateTime'], dict):
+                        if 'date' in task['endDateTime']:
+                            end_date = task['endDateTime']['date']
+                        elif 'dateTo' in task['endDateTime']:
+                            end_date = task['endDateTime']['dateTo']
+                    elif task.get('endDateTime') and isinstance(task['endDateTime'], str):
+                        end_date = task['endDateTime']
+                    elif task.get('dateEnd') and isinstance(task['dateEnd'], str):
+                        end_date = task['dateEnd']
+                    
+                    if end_date and end_date < today:
+                        projects_map[project_id]['overdue_tasks'] += 1
+    
+    # Convert map to list
+    projects = list(projects_map.values())
+    
+    try:
+        with open(PROJECTS_CACHE, 'w', encoding='utf-8') as f:
+            json.dump(projects, f, ensure_ascii=False, indent=2)
+        logger.info(f"Generated projects cache with {len(projects)} projects")
+    except IOError as e:
+        logger.error(f"Error writing projects cache: {e}")
+    
+    return projects

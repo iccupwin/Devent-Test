@@ -177,10 +177,13 @@
 }
 
 .project-name {
+    font-weight: 500;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    flex: 1;
+    max-width: 150px;
+    display: inline-block;
+    vertical-align: middle;
 }
 
 /* Date formatting */

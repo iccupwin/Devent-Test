@@ -14,23 +14,53 @@
   <table class="task-table">
     <thead>
       <tr>
-        <th>#</th><th>Название</th><th>Статус</th><th>Срок</th>
+        <th>#</th>
+        <th>Название</th>
+        <th>Проект</th>
+        <th>Статус</th>
+        <th>Срок</th>
       </tr>
     </thead>
     <tbody>
       {% for task in tasks %}
-      <!-- ⬇️ Ссылка заменена на кнопку‑строку, чтобы не менять URL -->
       <tr class="task-row"
           data-task-id="{{ task.id }}"
           role="button"
           tabindex="0">
         <td>{{ forloop.counter }}</td>
         <td>{{ task.name }}</td>
+        <td class="column-project">
+          {% if task.project %}
+            <div class="project-badge">
+              <div class="project-badge-icon" style="background-color: 
+                {% with project_id=task.project.id|default:0 %}
+                {% with color_index=project_id|slugify|make_list|first|stringformat:"s"|add:"0"|add:"0"|slice:":1"|add:"0" %}
+                {% if color_index == "0" %}#6366f1{% endif %}
+                {% if color_index == "1" %}#8b5cf6{% endif %}
+                {% if color_index == "2" %}#ec4899{% endif %}
+                {% if color_index == "3" %}#f43f5e{% endif %}
+                {% if color_index == "4" %}#f59e0b{% endif %}
+                {% if color_index == "5" %}#10b981{% endif %}
+                {% if color_index == "6" %}#06b6d4{% endif %}
+                {% if color_index == "7" %}#3b82f6{% endif %}
+                {% if color_index == "8" %}#8b5cf6{% endif %}
+                {% if color_index == "9" %}#ec4899{% endif %}
+                {% endwith %}
+                {% endwith %}
+              ">
+                {{ task.project.name|slice:":1"|upper }}
+              </div>
+              <span class="project-name">{{ task.project.name }}</span>
+            </div>
+          {% else %}
+            <span class="no-project">Без проекта</span>
+          {% endif %}
+        </td>
         <td>{{ task.get_status_display }}</td>
-        <td>{{ task.deadline|date:"d b Y" }}</td>
+        <td>{{ task.deadline|date:"d b Y" }}</td>
       </tr>
       {% empty %}
-      <tr><td colspan="4" class="text-center">Задач нет</td></tr>
+      <tr><td colspan="5" class="text-center">Задач нет</td></tr>
       {% endfor %}
     </tbody>
   </table>

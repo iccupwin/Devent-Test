@@ -151,7 +151,7 @@ function openTaskModal(taskId) {
                             </div>
                             <span class="assignee-name">${assignee.name}</span>
                         </div>`;
-                    }).join(', ');
+                    }).join('  ');
                     modalTaskAssignee.innerHTML = assigneeNames;
                 } else {
                     modalTaskAssignee.textContent = 'Не назначен';
