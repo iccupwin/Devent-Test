@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django.conf import settings
 
 class AnalyticsEvent(models.Model):
     """
@@ -82,4 +83,30 @@ class AIModelMetrics(models.Model):
         ]
     
     def __str__(self):
-        return f"Метрики {self.ai_model.name} за {self.day}" 
+        return f"Метрики {self.ai_model.name} за {self.day}"
+
+
+# chat/models.py или chat/models/analytics.py
+class AIUsageDaily(models.Model):
+    """Ежедневная статистика использования ИИ-моделей"""
+    date = models.DateField()
+    ai_model = models.ForeignKey('AIModel', on_delete=models.CASCADE)
+    requests_count = models.IntegerField(default=0)
+    tokens_used = models.IntegerField(default=0)
+    average_response_time = models.FloatField(default=0.0)
+    
+    class Meta:
+        unique_together = ['date', 'ai_model']
+        indexes = [models.Index(fields=['date']), models.Index(fields=['ai_model'])]
+
+class UserActivityDaily(models.Model):
+    """Ежедневная активность пользователей"""
+    date = models.DateField()
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    messages_count = models.IntegerField(default=0)
+    conversations_count = models.IntegerField(default=0)
+    tokens_used = models.IntegerField(default=0)
+    
+    class Meta:
+        unique_together = ['date', 'user']
+        indexes = [models.Index(fields=['date']), models.Index(fields=['user'])] 

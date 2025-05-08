@@ -5,11 +5,13 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
 from django.utils import timezone
 from datetime import timedelta
 
 from .models import Conversation, Message, User, UserMetrics, AnalyticsEvent
 from .conversation_analytics_service import ConversationAnalyticsService
+from .analytics_service import AnalyticsService
 
 logger = logging.getLogger(__name__)
 
@@ -122,3 +124,28 @@ def add_conversation_tag_api(request, conversation_id):
     )
     
     return JsonResponse({'status': 'success'})
+
+@staff_member_required
+@require_http_methods(["GET"])
+def dashboard_data_api(request):
+    """API для получения данных панели аналитики"""
+    days = int(request.GET.get('days', 30))
+    
+    # Получение данных
+    models_usage = AnalyticsService.get_ai_models_usage(days)
+    daily_activity = AnalyticsService.get_daily_activity(days)
+    tokens_usage = AnalyticsService.get_tokens_usage(days)
+    top_users = AnalyticsService.get_top_users(limit=10, days=days)
+    
+    # Формирование ответа
+    response_data = {
+        'models_usage': list(models_usage),
+        'daily_activity': list(daily_activity),
+        'tokens_usage': list(tokens_usage),
+        'top_users': list(top_users),
+        'total_users': User.objects.filter(is_active=True).count(),
+        'total_conversations': Conversation.objects.count(),
+        'total_messages': Message.objects.count(),
+    }
+    
+    return JsonResponse(response_data)

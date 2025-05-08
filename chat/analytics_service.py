@@ -1,149 +1,100 @@
 # chat/analytics_service.py
 from django.utils import timezone
-from .models import AnalyticsEvent, Message, User, AIModel, Conversation
+from datetime import timedelta
+from django.db.models import Sum
+from .models import (
+    AnalyticsEvent, Message, User, AIModel, Conversation,
+    AIModelMetrics, UserMetrics
+)
 
 class AnalyticsService:
-    """
-    Сервис для отправки событий в аналитику
-    """
     @staticmethod
-    def track_event(user, event_type, conversation=None, planfix_task_id=None, 
-                   planfix_project_id=None, ai_model=None, metadata=None):
-        """
-        Отслеживание события для аналитики
+    def get_ai_models_usage(days=30):
+        """Получение статистики использования моделей ИИ"""
+        start_date = timezone.now().date() - timedelta(days=days)
         
-        Args:
-            user: Объект пользователя или None для анонимных событий
-            event_type: Тип события (из AnalyticsEvent.EVENT_TYPES)
-            conversation: Объект беседы (опционально)
-            planfix_task_id: ID задачи Planfix (опционально)
-            planfix_project_id: ID проекта Planfix (опционально)
-            ai_model: Объект ИИ-модели (опционально)
-            metadata: Дополнительные данные в формате JSON (опционально)
+        models_usage = AIModelMetrics.objects.filter(
+            day__gte=start_date
+        ).values('ai_model__name').annotate(
+            total_requests=Sum('requests_count'),
+            total_tokens=Sum('tokens_used')
+        ).order_by('-total_requests')
         
-        Returns:
-            Объект события аналитики
-        """
-        # Создание словаря метаданных, если он не был передан
-        if metadata is None:
-            metadata = {}
-        
-        # Создание и сохранение события
-        event = AnalyticsEvent.objects.create(
-            user=user,
-            event_type=event_type,
-            conversation=conversation,
-            planfix_task_id=planfix_task_id,
-            planfix_project_id=planfix_project_id,
-            ai_model=ai_model,
-            metadata=metadata
-        )
-        
-        return event
+        return models_usage
     
     @staticmethod
-    def track_conversation_start(user, conversation, ai_model=None):
-        """
-        Отслеживание начала новой беседы
-        """
-        metadata = {
-            'conversation_id': conversation.id,
-            'conversation_title': conversation.title,
-        }
+    def get_daily_activity(days=30):
+        """Получение ежедневной активности"""
+        start_date = timezone.now().date() - timedelta(days=days)
+        end_date = timezone.now().date()
         
-        if conversation.planfix_task_id:
-            metadata['planfix_task_id'] = conversation.planfix_task_id
+        # Создаем полный список дат
+        date_list = []
+        current = start_date
+        while current <= end_date:
+            date_list.append(current)
+            current += timedelta(days=1)
         
-        return AnalyticsService.track_event(
-            user=user,
-            event_type='conversation_start',
-            conversation=conversation,
-            planfix_task_id=conversation.planfix_task_id,
-            planfix_project_id=conversation.planfix_project_id,
-            ai_model=ai_model,
-            metadata=metadata
-        )
+        # Получаем данные активности
+        daily_data = UserMetrics.objects.filter(
+            day__gte=start_date
+        ).values('day').annotate(
+            messages_count=Sum('messages_sent'),
+            conversations_count=Sum('conversations_count')
+        ).order_by('day')
+        
+        # Преобразуем в словарь для быстрого доступа
+        data_dict = {item['day']: item for item in daily_data}
+        
+        # Форматируем результат
+        result = []
+        for date in date_list:
+            if date in data_dict:
+                result.append({
+                    'day': date.strftime('%Y-%m-%d'),
+                    'messages_count': data_dict[date]['messages_count'],
+                    'conversations_count': data_dict[date]['conversations_count']
+                })
+            else:
+                result.append({
+                    'day': date.strftime('%Y-%m-%d'),
+                    'messages_count': 0,
+                    'conversations_count': 0
+                })
+        
+        return result
     
     @staticmethod
-    def track_message_sent(user, message):
-        """
-        Отслеживание отправки сообщения пользователем
-        """
-        metadata = {
-            'message_id': message.id,
-            'conversation_id': message.conversation.id,
-            'tokens': message.tokens,
-        }
+    def get_tokens_usage(days=30):
+        """Получение статистики использования токенов"""
+        start_date = timezone.now().date() - timedelta(days=days)
         
-        return AnalyticsService.track_event(
-            user=user,
-            event_type='message_sent',
-            conversation=message.conversation,
-            planfix_task_id=message.conversation.planfix_task_id,
-            planfix_project_id=message.conversation.planfix_project_id,
-            metadata=metadata
-        )
+        tokens_data = UserMetrics.objects.filter(
+            day__gte=start_date
+        ).values('day').annotate(
+            tokens_used=Sum('tokens_used')
+        ).order_by('day')
+        
+        return tokens_data
     
     @staticmethod
-    def track_ai_response(user, message, ai_model, response_time):
-        """
-        Отслеживание ответа от ИИ
-        """
-        metadata = {
-            'message_id': message.id,
-            'conversation_id': message.conversation.id,
-            'tokens': message.tokens,
-            'response_time': response_time,
-        }
+    def get_top_users(limit=10, days=30):
+        """Получение топ пользователей по активности"""
+        start_date = timezone.now().date() - timedelta(days=days)
         
-        return AnalyticsService.track_event(
-            user=user,
-            event_type='ai_response',
-            conversation=message.conversation,
-            planfix_task_id=message.conversation.planfix_task_id,
-            planfix_project_id=message.conversation.planfix_project_id,
-            ai_model=ai_model,
-            metadata=metadata
-        )
-    
-    @staticmethod
-    def track_task_integration(user, conversation, planfix_task_id):
-        """
-        Отслеживание интеграции с задачей Planfix
-        """
-        metadata = {
-            'conversation_id': conversation.id,
-            'conversation_title': conversation.title,
-            'planfix_task_id': planfix_task_id,
-        }
+        top_users = UserMetrics.objects.filter(
+            day__gte=start_date
+        ).values(
+            'user__username',
+            'user__first_name',
+            'user__last_name'
+        ).annotate(
+            total_messages=Sum('messages_sent'),
+            total_conversations=Sum('conversations_count'),
+            total_tokens=Sum('tokens_used')
+        ).order_by('-total_messages')[:limit]
         
-        return AnalyticsService.track_event(
-            user=user,
-            event_type='task_integration',
-            conversation=conversation,
-            planfix_task_id=planfix_task_id,
-            metadata=metadata
-        )
-    
-    @staticmethod
-    def track_error(user, error_message, conversation=None, ai_model=None):
-        """
-        Отслеживание ошибки в системе
-        """
-        metadata = {
-            'error_message': error_message,
-        }
-        
-        if conversation:
-            metadata['conversation_id'] = conversation.id
-        
-        return AnalyticsService.track_event(
-            user=user,
-            event_type='error',
-            conversation=conversation,
-            ai_model=ai_model,
-            metadata=metadata
-        )
+        return top_users
 
 # Пример использования в agent_api.py
 # from .analytics_service import AnalyticsService

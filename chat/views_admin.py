@@ -12,131 +12,85 @@ from .models import (
     User, Conversation, Message, AIModel,
     AnalyticsEvent, UserMetrics, AIModelMetrics
 )
+from .analytics_service import AnalyticsService
 
 @staff_member_required
 def analytics_dashboard(request):
     """
     Представление для административной панели аналитики
     """
+    # Период анализа
+    days = int(request.GET.get('days', 30))
+    
+    # Получаем данные из сервиса аналитики
+    models_usage = AnalyticsService.get_ai_models_usage(days)
+    daily_activity = AnalyticsService.get_daily_activity(days)
+    tokens_usage = AnalyticsService.get_tokens_usage(days)
+    top_users = AnalyticsService.get_top_users(limit=10, days=days)
+    
+    # Подготовка данных для графиков
+    activity_dates = [item['day'] for item in daily_activity]  # Already formatted as string in get_daily_activity
+    activity_messages = [item['messages_count'] for item in daily_activity]
+    activity_conversations = [item['conversations_count'] for item in daily_activity]
+    
+    # Convert dates to strings for JSON serialization
+    tokens_dates = [item['day'].strftime('%Y-%m-%d') for item in tokens_usage]
+    tokens_values = [item['tokens_used'] for item in tokens_usage]
+    
+    models_names = [item['ai_model__name'] for item in models_usage]
+    models_requests = [item['total_requests'] for item in models_usage]
+    models_tokens = [item['total_tokens'] for item in models_usage]
+    
+    user_names = [user['user__username'] for user in top_users]
+    user_messages = [user['total_messages'] for user in top_users]
+    
     # Базовые метрики
-    today = timezone.now().date()
-    last_week = today - timedelta(days=7)
-    last_month = today - timedelta(days=30)
+    total_users = User.objects.filter(is_active=True).count()
+    total_conversations = Conversation.objects.count()
+    total_messages = Message.objects.count()
     
-    # Количество пользователей
-    users_count = User.objects.filter(is_active=True).count()
-    users_last_week = User.objects.filter(date_joined__gte=last_week).count()
-    users_previous_week = User.objects.filter(
-        date_joined__lt=last_week, 
-        date_joined__gte=last_week - timedelta(days=7)
-    ).count()
-    users_trend = calculate_trend(users_last_week, users_previous_week)
+    # Получаем данные для модальных окон
+    users = User.objects.all().order_by('-date_joined')
+    conversations = Conversation.objects.all().order_by('-created_at')
+    messages = Message.objects.all().order_by('-created_at')
     
-    # Количество бесед
-    conversations_count = Conversation.objects.count()
-    conversations_last_week = Conversation.objects.filter(created_at__gte=last_week).count()
-    conversations_previous_week = Conversation.objects.filter(
-        created_at__lt=last_week, 
-        created_at__gte=last_week - timedelta(days=7)
-    ).count()
-    conversations_trend = calculate_trend(conversations_last_week, conversations_previous_week)
-    
-    # Количество сообщений
-    messages_count = Message.objects.count()
-    messages_last_week = Message.objects.filter(created_at__gte=last_week).count()
-    messages_previous_week = Message.objects.filter(
-        created_at__lt=last_week, 
-        created_at__gte=last_week - timedelta(days=7)
-    ).count()
-    messages_trend = calculate_trend(messages_last_week, messages_previous_week)
-    
-    # Количество интеграций с задачами
-    task_integrations_count = Conversation.objects.filter(planfix_task_id__isnull=False).count()
-    task_integrations_last_week = Conversation.objects.filter(
+    # Получаем данные о задачах
+    task_integrations = Conversation.objects.filter(planfix_task_id__isnull=False).count()
+    last_week_task_integrations = Conversation.objects.filter(
         planfix_task_id__isnull=False,
-        created_at__gte=last_week
+        created_at__gte=timezone.now() - timedelta(days=7)
     ).count()
-    task_integrations_previous_week = Conversation.objects.filter(
-        planfix_task_id__isnull=False,
-        created_at__lt=last_week,
-        created_at__gte=last_week - timedelta(days=7)
-    ).count()
-    task_integrations_trend = calculate_trend(task_integrations_last_week, task_integrations_previous_week)
+    task_integrations_trend = calculate_trend(task_integrations, last_week_task_integrations)
     
-    # Данные для графиков
-    
-    # 1. Использование ИИ-моделей
-    ai_models = AIModel.objects.filter(is_active=True)
-    ai_models_data = []
-    ai_models_labels = []
-    
-    for model in ai_models:
-        count = Conversation.objects.filter(ai_model=model).count()
-        ai_models_data.append(count)
-        ai_models_labels.append(model.name)
-    
-    # 2. Ежедневная активность за последний месяц
-    daily_data = {}
-    daily_labels = []
-    daily_conversations = []
-    daily_messages = []
-    
-    for i in range(30, -1, -1):
-        day = today - timedelta(days=i)
-        daily_labels.append(day.strftime('%d %b'))
-        
-        conv_count = Conversation.objects.filter(created_at__date=day).count()
-        msg_count = Message.objects.filter(created_at__date=day).count()
-        
-        daily_conversations.append(conv_count)
-        daily_messages.append(msg_count)
-    
-    # 3. Использование токенов по моделям
-    tokens_by_model = []
-    for model in ai_models:
-        tokens = Message.objects.filter(ai_model_used=model).aggregate(Sum('tokens'))['tokens__sum'] or 0
-        tokens_by_model.append(tokens)
-    
-    # 4. Топ пользователей
-    top_users = UserMetrics.objects.filter(day__gte=last_month).values('user').annotate(
-        total_messages=Sum('messages_sent')
-    ).order_by('-total_messages')[:10]
-    
-    top_users_data = []
-    top_users_labels = []
-    
-    for user_metric in top_users:
-        user = User.objects.get(id=user_metric['user'])
-        top_users_labels.append(user.username)
-        top_users_data.append(user_metric['total_messages'])
-    
-    # 5. Недавние события аналитики
-    recent_events = AnalyticsEvent.objects.select_related('user', 'conversation').order_by('-timestamp')[:20]
-    
-    # Формирование контекста для шаблона
     context = {
-        'users_count': users_count,
-        'users_trend': users_trend,
-        'conversations_count': conversations_count,
-        'conversations_trend': conversations_trend,
-        'messages_count': messages_count,
-        'messages_trend': messages_trend,
-        'task_integrations_count': task_integrations_count,
+        'days': days,
+        'total_users': total_users,
+        'total_conversations': total_conversations,
+        'total_messages': total_messages,
+        'task_integrations_count': task_integrations,
         'task_integrations_trend': task_integrations_trend,
         
-        'ai_models_data': ai_models_data,
-        'ai_models_labels': json.dumps(ai_models_labels),
+        # Данные для графиков
+        'models_usage': models_usage,
+        'models_names': json.dumps(models_names),
+        'models_requests': models_requests,
+        'models_tokens': models_tokens,
         
-        'daily_labels': json.dumps(daily_labels),
-        'daily_conversations': daily_conversations,
-        'daily_messages': daily_messages,
+        'activity_dates': json.dumps(activity_dates),
+        'activity_messages': activity_messages,
+        'activity_conversations': activity_conversations,
         
-        'tokens_by_model': tokens_by_model,
+        'tokens_dates': json.dumps(tokens_dates),
+        'tokens_values': tokens_values,
         
-        'top_users_data': top_users_data,
-        'top_users_labels': json.dumps(top_users_labels),
+        'top_users': top_users,
+        'user_names': json.dumps(user_names),
+        'user_messages': user_messages,
         
-        'recent_events': recent_events,
+        # Данные для модальных окон
+        'users': users,
+        'conversations': conversations,
+        'messages': messages,
     }
     
     return render(request, 'admin/analytics/dashboard.html', context)
