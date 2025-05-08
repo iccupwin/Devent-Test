@@ -48,6 +48,32 @@ class UserSettings(models.Model):
             (100, '100'),
         )
     )
+    # Добавляем новые поля
+    ai_model_preference = models.ForeignKey(
+        'chat.AIModel',
+        verbose_name=_('Предпочитаемая модель ИИ'),
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='preferred_by_users'
+    )
+    email_notifications = models.BooleanField(
+        verbose_name=_('Уведомления по электронной почте'),
+        default=False
+    )
+    auto_refresh_cache = models.BooleanField(
+        verbose_name=_('Автоматическое обновление кэша'),
+        default=True
+    )
+    conversation_history_limit = models.IntegerField(
+        verbose_name=_('Лимит истории бесед (дней)'),
+        default=30,
+        help_text=_('Через сколько дней архивировать старые беседы')
+    )
+    export_analytics = models.BooleanField(
+        verbose_name=_('Разрешить экспорт аналитики'),
+        default=True
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     

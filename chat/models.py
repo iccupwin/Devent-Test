@@ -305,3 +305,85 @@ class AIModelMetrics(models.Model):
     
     def __str__(self):
         return f"{self.ai_model.name} - {self.day}"
+    
+
+class ConversationTag(models.Model):
+   
+    name = models.CharField(max_length=50, unique=True)
+    description = models.TextField(blank=True, null=True)
+    color = models.CharField(max_length=7, default='#0071e3')  # HEX-код цвета для отображения в UI
+    
+    class Meta:
+        verbose_name = _('Тег беседы')
+        verbose_name_plural = _('Теги бесед')
+    
+    def __str__(self):
+        return self.name
+
+class ConversationAnalytics(models.Model):
+    """
+    Расширенная аналитика по беседам для более детального анализа
+    """
+    conversation = models.OneToOneField(Conversation, on_delete=models.CASCADE, related_name='analytics')
+    total_messages = models.IntegerField(default=0)
+    total_tokens = models.IntegerField(default=0)
+    average_response_time = models.FloatField(default=0.0)  # среднее время ответа в секундах
+    user_sentiment = models.FloatField(null=True, blank=True)  # оценка тональности беседы (-1.0 - 1.0)
+    satisfaction_rating = models.IntegerField(null=True, blank=True)  # оценка удовлетворенности пользователя (1-5)
+    tags = models.ManyToManyField(ConversationTag, blank=True, related_name='conversations')
+    
+    first_message_time = models.DateTimeField(null=True, blank=True)
+    last_message_time = models.DateTimeField(null=True, blank=True)
+    total_duration = models.DurationField(null=True, blank=True)  # общая длительность беседы
+    
+    # Связь с Planfix
+    related_planfix_tasks = models.IntegerField(default=0)  # количество связанных задач
+    
+    class Meta:
+        verbose_name = _('Аналитика беседы')
+        verbose_name_plural = _('Аналитика бесед')
+    
+    def __str__(self):
+        return f"Аналитика для беседы {self.conversation.title}"
+    
+    def update_analytics(self):
+        """Обновление аналитики на основе текущих данных беседы"""
+        messages = self.conversation.messages.all()
+        self.total_messages = messages.count()
+        self.total_tokens = messages.aggregate(Sum('tokens'))['tokens__sum'] or 0
+        
+        if messages.exists():
+            self.first_message_time = messages.order_by('created_at').first().created_at
+            self.last_message_time = messages.order_by('-created_at').first().created_at
+            if self.first_message_time and self.last_message_time:
+                self.total_duration = self.last_message_time - self.first_message_time
+        
+        # Посчитать связанные задачи Planfix
+        if self.conversation.planfix_task_id:
+            self.related_planfix_tasks = 1
+        
+        self.save()
+
+class MessageFeedback(models.Model):
+    """
+    Модель для сохранения обратной связи по сообщениям от ИИ
+    """
+    FEEDBACK_CHOICES = (
+        ('helpful', _('Полезно')),
+        ('not_helpful', _('Не полезно')),
+        ('partially_helpful', _('Частично полезно')),
+    )
+    
+    message = models.ForeignKey(Message, on_delete=models.CASCADE, related_name='feedback')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='message_feedback')
+    feedback_type = models.CharField(max_length=20, choices=FEEDBACK_CHOICES)
+    comment = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        verbose_name = _('Обратная связь по сообщению')
+        verbose_name_plural = _('Обратная связь по сообщениям')
+        unique_together = ('message', 'user')  # Один пользователь может оставить только один отзыв на сообщение
+    
+    def __str__(self):
+        return f"{self.user.username} - {self.feedback_type}"

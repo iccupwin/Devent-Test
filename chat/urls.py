@@ -62,4 +62,22 @@ urlpatterns = [
     # Управление пользователями
     path('user-management/', views_admin.user_management, name='user_management'),
     path('user-management/<int:user_id>/', views_admin.user_edit, name='user_edit'),
+
+    path('login/', auth_views.login_view, name='login'),
+    path('register/', auth_views.register_view, name='register'),
+    path('logout/', auth_views.logout_view, name='logout'),
+    path('profile/', auth_views.profile_view, name='profile'),
+    path('access-denied/', auth_views.access_denied, name='access_denied'),
+
+
+    path('api/analytics/user/', analytics_api.user_stats_api, name='user_stats_api'),
+    path('api/analytics/conversation/<int:conversation_id>/', analytics_api.conversation_stats_api, name='conversation_stats_api'),
+    path('api/analytics/message/<int:message_id>/feedback/', analytics_api.add_message_feedback_api, name='add_message_feedback_api'),
+    path('api/analytics/conversation/<int:conversation_id>/tag/', analytics_api.add_conversation_tag_api, name='add_conversation_tag_api'),
+
+    # Представления для аналитики
+    path('analytics/user/', analytics_views.user_analytics_view, name='user_analytics'),
+    path('analytics/conversation/<int:conversation_id>/', analytics_views.conversation_analytics_view, name='conversation_analytics'),
+
+
 ]
