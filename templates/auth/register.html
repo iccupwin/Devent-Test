@@ -1,31 +1,28 @@
-{% extends 'base.html' %}
+{% extends 'base_apple.html' %}
 {% load static %}
 
+{% block title %}Регистрация{% endblock %}
+
 {% block content %}
-<div class="auth-container">
-    <div class="auth-form-wrapper">
-        <div class="auth-logo">
-            <img src="{% static 'images/claude-logo.svg' %}" alt="Claude AI Logo" class="logo-image">
-            <h1>Claude Chat</h1>
-        </div>
-        
-        <h2>Регистрация</h2>
+<div class="register-container">
+    <div class="register-card">
+        <h2>Создание аккаунта</h2>
         
         {% if messages %}
-        <div class="auth-messages">
+        <div class="register-messages">
             {% for message in messages %}
-            <div class="auth-message {% if message.tags %}{{ message.tags }}{% endif %}">
+            <div class="register-message {% if message.tags %}{{ message.tags }}{% endif %}">
                 {{ message }}
             </div>
             {% endfor %}
         </div>
         {% endif %}
         
-        <form method="post" class="auth-form">
+        <form method="post" class="register-form">
             {% csrf_token %}
             
             <div class="form-group">
-                <label for="id_username">{{ form.username.label }}</label>
+                <label for="id_username">Имя пользователя</label>
                 {{ form.username }}
                 {% if form.username.errors %}
                 <div class="field-error">{{ form.username.errors }}</div>
@@ -33,7 +30,7 @@
             </div>
             
             <div class="form-group">
-                <label for="id_email">{{ form.email.label }}</label>
+                <label for="id_email">Email</label>
                 {{ form.email }}
                 {% if form.email.errors %}
                 <div class="field-error">{{ form.email.errors }}</div>
@@ -41,35 +38,236 @@
             </div>
             
             <div class="form-group">
-                <label for="id_password1">{{ form.password1.label }}</label>
+                <label for="id_password1">Пароль</label>
                 {{ form.password1 }}
                 {% if form.password1.errors %}
                 <div class="field-error">{{ form.password1.errors }}</div>
                 {% endif %}
+                <div class="field-help">
+                    {{ form.password1.help_text|safe }}
+                </div>
             </div>
             
             <div class="form-group">
-                <label for="id_password2">{{ form.password2.label }}</label>
+                <label for="id_password2">Подтверждение пароля</label>
                 {{ form.password2 }}
                 {% if form.password2.errors %}
                 <div class="field-error">{{ form.password2.errors }}</div>
                 {% endif %}
             </div>
             
-            <div class="form-group">
-                <label for="id_role">{{ form.role.label }}</label>
-                {{ form.role }}
-                {% if form.role.errors %}
-                <div class="field-error">{{ form.role.errors }}</div>
-                {% endif %}
-            </div>
-            
-            <button type="submit" class="auth-button">Зарегистрироваться</button>
-            
-            <div class="auth-links">
-                <a href="{% url 'chat:login' %}">Уже есть аккаунт? Войти</a>
+            <div class="register-actions">
+                <button type="submit" class="register-button">Создать аккаунт</button>
+                <a href="{% url 'chat:login' %}" class="register-link">Уже есть аккаунт? Войти</a>
             </div>
         </form>
     </div>
 </div>
+
+<style>
+    .register-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        background-color: #f5f5f7;
+    }
+    
+    .register-card {
+        width: 100%;
+        max-width: 400px;
+        background-color: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+        padding: 40px;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .register-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+    }
+    
+    .register-card h2 {
+        font-size: 24px;
+        font-weight: 600;
+        color: #1d1d1f;
+        margin: 0 0 30px;
+        text-align: center;
+    }
+    
+    .register-messages {
+        margin-bottom: 20px;
+    }
+    
+    .register-message {
+        padding: 12px 16px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+    }
+    
+    .register-message.success {
+        background-color: rgba(52, 199, 89, 0.1);
+        border: 1px solid rgba(52, 199, 89, 0.3);
+        color: #34c759;
+    }
+    
+    .register-message.error {
+        background-color: rgba(255, 59, 48, 0.1);
+        border: 1px solid rgba(255, 59, 48, 0.3);
+        color: #ff3b30;
+    }
+    
+    .register-message.info {
+        background-color: rgba(0, 122, 255, 0.1);
+        border: 1px solid rgba(0, 122, 255, 0.3);
+        color: #007aff;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-group label {
+        display: block;
+        font-size: 14px;
+        font-weight: 500;
+        color: #6e6e73;
+        margin-bottom: 8px;
+    }
+    
+    .form-group input {
+        width: 93%;
+        padding: 12px;
+        border: 1.5px solid #b0b0b0;
+        border-radius: 8px;
+        font-size: 15px;
+        background-color: #fafbfc;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    
+    .form-group input:focus {
+        border-color: #0071e3;
+        box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.08);
+        background-color: #fff;
+    }
+    
+    .form-group select {
+        width: 100%;
+        padding: 12px;
+        border: 1.5px solid #b0b0b0;
+        border-radius: 8px;
+        font-size: 15px;
+        background-color: #fafbfc;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+        transition: border-color 0.2s, box-shadow 0.2s;
+        appearance: none;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 12px center;
+        background-size: 16px;
+        padding-right: 40px;
+    }
+    
+    .form-group select:focus {
+        border-color: #0071e3;
+        box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.08);
+        background-color: #fff;
+    }
+    
+    .field-error {
+        color: #ff3b30;
+        font-size: 13px;
+        margin-top: 4px;
+    }
+    
+    .field-help {
+        color: #6e6e73;
+        font-size: 13px;
+        margin-top: 4px;
+        line-height: 1.4;
+    }
+    
+    .register-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-top: 30px;
+    }
+    
+    .register-button {
+        width: 100%;
+        padding: 12px;
+        background-color: #0071e3;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 15px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+    }
+    
+    .register-button:hover {
+        background-color: #0077ed;
+    }
+    
+    .register-link {
+        text-align: center;
+        color: #0071e3;
+        text-decoration: none;
+        font-size: 14px;
+        transition: color 0.2s ease;
+    }
+    
+    .register-link:hover {
+        color: #0077ed;
+        text-decoration: underline;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+        .register-container {
+            /* background-color: #1d1d1f; */
+        }
+        
+        .register-card {
+            background-color: #ffffff;
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+        
+        .register-card h2 {
+            color: #1d1d1f;
+        }
+        
+        .form-group label {
+            color: #6e6e73;
+        }
+        
+        .form-group input {
+            background-color: #ffffff;
+            border-color: rgba(0, 0, 0, 0.1);
+            color: #1d1d1f;
+        }
+        
+        .form-group input:focus {
+            border-color: #0071e3;
+            box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.1);
+        }
+        
+        .field-help {
+            color: #6e6e73;
+        }
+        
+        .register-link {
+            color: #0071e3;
+        }
+        
+        .register-link:hover {
+            color: #0077ed;
+        }
+    }
+</style>
 {% endblock %}

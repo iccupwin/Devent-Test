@@ -505,6 +505,11 @@ class PlanfixCacheService:
         """Refresh all derived caches from the main tasks cache"""
         logger.info("Refreshing all derived caches")
         
+        # Update main tasks cache first
+        from .planfix_service import update_tasks_cache
+        update_tasks_cache(force=True)
+        
+        # Then update all derived caches
         self._generate_active_tasks_cache()
         self._generate_completed_tasks_cache()
         self._generate_overdue_tasks_cache()

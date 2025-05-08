@@ -5,6 +5,8 @@ from django.db.models import Count, Sum, Avg, F, Q
 from django.utils import timezone
 from datetime import timedelta
 import json
+from django.contrib import messages
+from django.utils.translation import gettext_lazy as _
 
 from .models import (
     User, Conversation, Message, AIModel,
@@ -295,13 +297,38 @@ def user_management(request):
     """
     Представление для управления пользователями
     """
-    users = User.objects.all().order_by('-is_active', 'username')
-    
-    context = {
-        'users': users
-    }
-    
-    return render(request, 'admin/users/user_management.html', context)
+    users = User.objects.all().order_by('-date_joined')
+    return render(request, 'admin/users/user_management.html', {'users': users})
+
+@staff_member_required
+def update_user_role(request, user_id):
+    """
+    Представление для обновления роли пользователя
+    """
+    if request.method == 'POST':
+        user = get_object_or_404(User, id=user_id)
+        new_role = request.POST.get('role')
+        
+        if new_role in ['user', 'admin']:
+            user.role = new_role
+            user.save()
+            messages.success(request, f'Роль пользователя {user.username} успешно обновлена')
+        else:
+            messages.error(request, 'Некорректная роль')
+            
+    return redirect('chat:user_management')
+
+@staff_member_required
+def delete_user(request, user_id):
+    """
+    Представление для удаления пользователя
+    """
+    if request.method == 'POST':
+        user = get_object_or_404(User, id=user_id)
+        username = user.username
+        user.delete()
+        messages.success(request, f'Пользователь {username} успешно удален')
+    return redirect('chat:user_management')
 
 @staff_member_required
 def user_edit(request, user_id):

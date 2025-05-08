@@ -1,35 +1,224 @@
-{% extends 'base.html' %}
+{% extends 'base_apple.html' %}
 {% load static %}
 
+{% block title %}Вход{% endblock %}
+
 {% block content %}
-<div class="auth-container">
-    <div class="auth-form-wrapper">
-        <div class="auth-logo">
-            <img src="{% static 'images/claude-logo.svg' %}" alt="Claude AI Logo" class="logo-image">
-            <h1>Claude Chat</h1>
-        </div>
+<div class="login-container">
+    <div class="login-card">
+        <h2>Вход в систему</h2>
         
-        <form method="post" class="auth-form">
-            {% csrf_token %}
-            
-            {% if form.errors %}
-            <div class="auth-error">
-                <p>Неверное имя пользователя или пароль. Пожалуйста, попробуйте снова.</p>
+        {% if messages %}
+        <div class="login-messages">
+            {% for message in messages %}
+            <div class="login-message {% if message.tags %}{{ message.tags }}{% endif %}">
+                {{ message }}
             </div>
-            {% endif %}
+            {% endfor %}
+        </div>
+        {% endif %}
+        
+        <form method="post" class="login-form">
+            {% csrf_token %}
             
             <div class="form-group">
                 <label for="id_username">Имя пользователя</label>
                 {{ form.username }}
+                {% if form.username.errors %}
+                <div class="field-error">{{ form.username.errors }}</div>
+                {% endif %}
             </div>
             
             <div class="form-group">
                 <label for="id_password">Пароль</label>
                 {{ form.password }}
+                {% if form.password.errors %}
+                <div class="field-error">{{ form.password.errors }}</div>
+                {% endif %}
             </div>
             
-            <button type="submit" class="auth-button">Войти</button>
+            <div class="login-actions">
+                <button type="submit" class="login-button">Войти</button>
+                <a href="{% url 'chat:register' %}" class="login-link">Создать аккаунт</a>
+            </div>
         </form>
     </div>
 </div>
+
+<style>
+    .login-container {
+        max-width: 400px;
+        margin: 60px auto;
+        padding: 0 20px;
+    }
+    
+    .login-card {
+        background-color: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+        padding: 30px;
+        border: 1px solid rgba(255, 255, 255, 0.7);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .login-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+    }
+    
+    .login-card h2 {
+        font-size: 24px;
+        font-weight: 600;
+        color: #1d1d1f;
+        margin: 0 0 20px;
+        text-align: center;
+    }
+    
+    .login-messages {
+        margin-bottom: 20px;
+    }
+    
+    .login-message {
+        padding: 12px 16px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+    }
+    
+    .login-message.success {
+        background-color: rgba(52, 199, 89, 0.1);
+        border: 1px solid rgba(52, 199, 89, 0.3);
+        color: #34c759;
+    }
+    
+    .login-message.error {
+        background-color: rgba(255, 59, 48, 0.1);
+        border: 1px solid rgba(255, 59, 48, 0.3);
+        color: #ff3b30;
+    }
+    
+    .login-message.info {
+        background-color: rgba(0, 122, 255, 0.1);
+        border: 1px solid rgba(0, 122, 255, 0.3);
+        color: #007aff;
+    }
+    
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-group label {
+        display: block;
+        font-size: 14px;
+        font-weight: 500;
+        color: #6e6e73;
+        margin-bottom: 8px;
+    }
+    
+    .form-group input {
+        width: 93%;
+        padding: 12px;
+        border: 1.5px solid #313131;
+        border-radius: 8px;
+        font-size: 15px;
+        background-color: #fafbfc;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    
+    .form-group input:focus {
+        border-color: #0071e3;
+        box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.08);
+        background-color: #fff;
+    }
+    
+    .field-error {
+        color: #ff3b30;
+        font-size: 13px;
+        margin-top: 4px;
+    }
+    
+    .login-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-top: 30px;
+    }
+    
+    .login-button {
+        width: 100%;
+        padding: 12px;
+        background-color: #0071e3;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 15px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+    }
+    
+    .login-button:hover {
+        background-color: #0077ed;
+    }
+    
+    .login-link {
+        text-align: center;
+        color: #0071e3;
+        text-decoration: none;
+        font-size: 14px;
+        transition: color 0.2s ease;
+    }
+    
+    .login-link:hover {
+        color: #0077ed;
+        text-decoration: underline;
+    }
+    
+    @media (prefers-color-scheme: dark) {
+        body {
+            background-color: #fff;
+            color: #fff;
+        }
+        .login-card {
+            /* background-color: #232325;
+            border: 1.5px solid #44444a;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.32); */
+        }
+        .login-card h2 {
+            color: #fff;
+        }
+        .form-group label {
+            color: #b0b0b0;
+        }
+        .form-group input {
+            /* background-color: #232325; */
+            border: 1.5px solid #44444a;
+            color: #fff;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.12);
+            transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+        }
+        .form-group input:focus {
+            border-color: #0a84ff;
+            box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.12);
+            background-color: #232325;
+            color: #fff;
+        }
+        .login-link {
+            color: #0a84ff;
+        }
+        .login-link:hover {
+            color: #409cff;
+        }
+        .login-button {
+            background-color: #0a84ff;
+            color: #fff;
+            border: none;
+        }
+        .login-button:hover {
+            background-color: #409cff;
+        }
+    }
+</style>
 {% endblock %}

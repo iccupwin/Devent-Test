@@ -3,7 +3,7 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.urls import reverse
-from .forms import CustomAuthenticationForm, CustomUserCreationForm
+from .forms import CustomAuthenticationForm, CustomUserCreationForm, UserSettingsForm
 from .models import User
 
 def login_view(request):
@@ -58,7 +58,19 @@ def logout_view(request):
 @login_required
 def profile_view(request):
     user = request.user
-    return render(request, 'auth/profile.html', {'user': user})
+    if request.method == 'POST':
+        form = UserSettingsForm(request.POST, instance=user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Настройки успешно обновлены!")
+            return redirect('chat:profile')
+    else:
+        form = UserSettingsForm(instance=user)
+    
+    return render(request, 'chat/profile.html', {
+        'user': user,
+        'form': form
+    })
 
 def access_denied(request):
     return render(request, 'auth/access_denied.html')

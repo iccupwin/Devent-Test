@@ -11,17 +11,17 @@
     "id": 116,
     "name": "Маркетинг",
     "task_count": 102,
-    "active_tasks": 65,
-    "completed_tasks": 37,
-    "overdue_tasks": 8
+    "active_tasks": 64,
+    "completed_tasks": 38,
+    "overdue_tasks": 7
   },
   {
     "id": 23,
     "name": "Общие вопросы компании",
-    "task_count": 173,
+    "task_count": 177,
     "active_tasks": 75,
-    "completed_tasks": 98,
-    "overdue_tasks": 9
+    "completed_tasks": 102,
+    "overdue_tasks": 10
   },
   {
     "id": 12,

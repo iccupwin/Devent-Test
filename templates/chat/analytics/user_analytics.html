@@ -71,4 +71,179 @@
     
     .chart-row {
         display: grid;
-        grid-template-columns: repeat(auto-fit, min
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 20px;
+    }
+    
+    .list-container {
+        margin-top: 20px;
+    }
+    
+    .list-title {
+        font-size: 16px;
+        font-weight: 600;
+        color: #1d1d1f;
+        margin-bottom: 12px;
+    }
+    
+    .list-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+    
+    .list-item:last-child {
+        border-bottom: none;
+    }
+    
+    .list-item-name {
+        font-weight: 500;
+        color: #1d1d1f;
+    }
+    
+    .list-item-stats {
+        font-size: 14px;
+        color: #6e6e73;
+    }
+    
+    .user-name {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .user-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background-color: #0071e3;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="analytics-container">
+    <div class="analytics-header">
+        <h1>Аналитика пользователя</h1>
+        <p>Статистика использования и активности за последние 30 дней</p>
+    </div>
+    
+    <div class="stats-row">
+        <!-- Использование моделей ИИ -->
+        <div class="stat-card">
+            <div class="stat-title">Использование моделей ИИ</div>
+            <div class="list-container">
+                {% for model in top_models %}
+                <div class="list-item">
+                    <div class="list-item-name">{{ model.ai_model__name }}</div>
+                    <div class="list-item-stats">
+                        {{ model.total_requests }} запросов
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <!-- Ежедневная активность -->
+        <div class="stat-card">
+            <div class="stat-title">Ежедневная активность</div>
+            <canvas id="activityChart"></canvas>
+        </div>
+        
+        <!-- Использование токенов -->
+        <div class="stat-card">
+            <div class="stat-title">Использование токенов</div>
+            <canvas id="tokensChart"></canvas>
+        </div>
+        
+        <!-- Топ пользователей -->
+        <div class="stat-card">
+            <div class="stat-title">Топ пользователей</div>
+            <div class="list-container">
+                {% for user in top_users %}
+                <div class="list-item">
+                    <div class="user-name">
+                        <div class="user-avatar">
+                            {{ user.user__first_name|first|default:user.user__username|first }}
+                        </div>
+                        <div class="list-item-name">
+                            {{ user.user__first_name|default:"" }} {{ user.user__last_name|default:"" }}
+                            {% if not user.user__first_name and not user.user__last_name %}
+                            {{ user.user__username }}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="list-item-stats">
+                        {{ user.total_messages }} сообщений
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // График активности
+    new Chart(document.getElementById('activityChart'), {
+        type: 'line',
+        data: {
+            labels: {{ daily_activity|safe }}.map(function(stat) { return stat.day; }),
+            datasets: [{
+                label: 'Сообщения',
+                data: {{ daily_activity|safe }}.map(function(stat) { return stat.messages_count; }),
+                borderColor: '#0071e3',
+                tension: 0.4
+            }, {
+                label: 'Беседы',
+                data: {{ daily_activity|safe }}.map(function(stat) { return stat.conversations_count; }),
+                borderColor: '#34c759',
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Ежедневная активность'
+                }
+            }
+        }
+    });
+    
+    // График токенов
+    new Chart(document.getElementById('tokensChart'), {
+        type: 'line',
+        data: {
+            labels: {{ daily_tokens|safe }}.map(function(stat) { return stat.day; }),
+            datasets: [{
+                label: 'Токены',
+                data: {{ daily_tokens|safe }}.map(function(stat) { return stat.tokens_used; }),
+                borderColor: '#ff9500',
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Использование токенов'
+                }
+            }
+        }
+    });
+});
+</script>
+{% endblock %}

@@ -1,5 +1,5 @@
 from django.urls import path, include
-from . import views, api_views, views_planfix, api, agent_api
+from . import views, api_views, views_planfix, api, agent_api, analytics_api, analytics_views
 from django.urls import path
 from . import views_admin
 from . import auth_views
@@ -63,21 +63,25 @@ urlpatterns = [
     path('user-management/', views_admin.user_management, name='user_management'),
     path('user-management/<int:user_id>/', views_admin.user_edit, name='user_edit'),
 
+    # Аутентификация и профиль
     path('login/', auth_views.login_view, name='login'),
     path('register/', auth_views.register_view, name='register'),
     path('logout/', auth_views.logout_view, name='logout'),
     path('profile/', auth_views.profile_view, name='profile'),
     path('access-denied/', auth_views.access_denied, name='access_denied'),
 
-
+    # API endpoints for analytics
     path('api/analytics/user/', analytics_api.user_stats_api, name='user_stats_api'),
     path('api/analytics/conversation/<int:conversation_id>/', analytics_api.conversation_stats_api, name='conversation_stats_api'),
     path('api/analytics/message/<int:message_id>/feedback/', analytics_api.add_message_feedback_api, name='add_message_feedback_api'),
     path('api/analytics/conversation/<int:conversation_id>/tag/', analytics_api.add_conversation_tag_api, name='add_conversation_tag_api'),
 
-    # Представления для аналитики
+    # Views for analytics
     path('analytics/user/', analytics_views.user_analytics_view, name='user_analytics'),
     path('analytics/conversation/<int:conversation_id>/', analytics_views.conversation_analytics_view, name='conversation_analytics'),
 
-
+    # Административные URL
+    path('admin/users/', views_admin.user_management, name='user_management'),
+    path('admin/users/<int:user_id>/update-role/', views_admin.update_user_role, name='update_user_role'),
+    path('admin/users/<int:user_id>/delete/', views_admin.delete_user, name='delete_user'),
 ]

@@ -2,16 +2,19 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.utils.translation import gettext_lazy as _
 from .models import User
-from .models import UserSettings
 
 class CustomAuthenticationForm(AuthenticationForm):
     username = forms.CharField(
-        label=_("Имя пользователя"),
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Введите имя пользователя'}),
+        widget=forms.TextInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Имя пользователя'
+        })
     )
     password = forms.CharField(
-        label=_("Пароль"),
-        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Введите пароль'}),
+        widget=forms.PasswordInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'Пароль'
+        })
     )
 
 class CustomUserCreationForm(UserCreationForm):
@@ -35,26 +38,28 @@ class CustomUserCreationForm(UserCreationForm):
         widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Повторите пароль'}),
     )
     
-    role = forms.ChoiceField(
-        label=_("Роль"),
-        choices=User.ROLE_CHOICES,
-        widget=forms.Select(attrs={'class': 'form-control'}),
-        initial='user',
-    )
-    
     class Meta:
         model = User
-        fields = ('username', 'email', 'password1', 'password2', 'role')
+        fields = ('username', 'email', 'password1', 'password2')
 
-    class UserSettingsForm(forms.ModelForm):
-   
-     class Meta:
-        model = UserSettings
-        fields = ['theme', 'language', 'enable_notifications', 'show_completed_tasks', 'default_page_size']
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.role = 'user'  # Устанавливаем роль по умолчанию
+        if commit:
+            user.save()
+        return user
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            field.widget.attrs['class'] = 'form-control'
+
+class UserSettingsForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'phone']
         widgets = {
-            'theme': forms.Select(attrs={'class': 'form-control'}),
-            'language': forms.Select(attrs={'class': 'form-control'}),
-            'enable_notifications': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
-            'show_completed_tasks': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
-            'default_page_size': forms.Select(attrs={'class': 'form-control'}),
+            'first_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Имя'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Фамилия'}),
+            'phone': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Телефон'}),
         }

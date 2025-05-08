@@ -21,10 +21,27 @@ def agent_dashboard(request):
     # Get agent statistics
     stats = planfix_cache.get_stats()
     
+    # Get users data from database
+    users = User.objects.filter(is_active=True).order_by('-date_joined')
+    
+    # Format users data for template
+    users_data = []
+    for user in users:
+        users_data.append({
+            'name': user.username,
+            'email': user.email,
+            'role': user.get_role_display(),
+            'date_joined': user.date_joined,
+            'last_active': user.last_active,
+            'active_tasks': 0,  # You can add actual task counts here if needed
+            'completed_tasks': 0  # You can add actual task counts here if needed
+        })
+    
     return render(request, 'chat/agent_dashboard.html', {
         'conversations': conversations,
         'stats': stats,
-        'cache_valid': planfix_cache.is_cache_valid(max_age_minutes=60)
+        'cache_valid': planfix_cache.is_cache_valid(max_age_minutes=60),
+        'users': users_data
     })
 
 def agent_conversation(request, conversation_id):
