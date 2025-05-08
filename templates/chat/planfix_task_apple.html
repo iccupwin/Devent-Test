@@ -56,8 +56,7 @@
                 <div class="cache-status">
                     <div class="cache-status-indicator {% if cache_valid %}valid{% else %}invalid{% endif %}"></div>
                     
-                    
-                    <button id="refresh-cache-button" class="refresh-button" style="margin-left: 16px;">
+                    <button id="refresh-cache-button" class="refresh-button" style="margin-left: 16px;" data-refresh-cache="true">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M23 4v6h-6"></path>
                             <path d="M1 20v-6h6"></path>
@@ -236,6 +235,23 @@
                             {% else %}
                                 <span class="empty-value">Не указан</span>
                             {% endif %}
+                        </td>
+                        <td class="column-actions">
+                            <div class="table-actions">
+                                <button class="btn-icon btn-view" data-task-id="{{ task.id }}" title="Просмотр">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                </button>
+                                <button class="btn-icon btn-integrate" onclick="integrateTaskWithClaude('{{ task.id }}', this)" title="Интегрировать с Claude">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                        <polyline points="7 10 12 15 17 10"></polyline>
+                                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                                    </svg>
+                                </button>
+                            </div>
                         </td>
                     </tr>
                     {% empty %}
@@ -434,65 +450,91 @@
             return cookieValue;
         }
     });
-    </script>
+</script>
 {% endblock %}
 
 <style>
-    /* Project badge styling improvements */
-    .project-badge {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        max-width: 100%;
-        overflow: hidden;
-    }
-    
-    .project-badge div {
-        width: 26px;
-        height: 26px;
-        border-radius: 6px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-weight: 600;
-        font-size: 12px;
-        flex-shrink: 0;
-    }
-    
-    .project-name {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        flex: 1;
-    }
-    
-    /* Assignee styling improvements */
-    .assignee-wrapper {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        max-width: 100%;
-        overflow: hidden;
-    }
-    
-    .assignee-avatar {
-        width: 26px;
-        height: 26px;
-        border-radius: 50%;
-        color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 600;
-        font-size: 12px;
-        flex-shrink: 0;
-    }
-    
-    .assignee-name {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        flex: 1;
-    }
+/* Project badge styling improvements */
+.project-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.project-badge div {
+    min-width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+    font-size: 12px;
+    flex-shrink: 0;
+}
+
+.project-name {
+    font-size: 14px;
+    color: var(--apple-gray-700);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: calc(100% - 36px);
+}
+
+/* Стили для темной темы */
+body.dark-theme .project-name {
+    color: #f5f5f7;
+}
+
+/* Расширенные стили для колонки проектов */
+.column-project {
+    min-width: 150px;
+}
+
+/* Assignee styling improvements */
+.assignee-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.assignee-avatar {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 12px;
+    flex-shrink: 0;
+}
+
+.assignee-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+}
+
+body.dark-theme .assignee-name {
+    color: #f5f5f7;
+}
+
+/* Empty values styling */
+.empty-value {
+    color: var(--apple-gray-400, #86868b);
+    font-style: italic;
+}
+
+body.dark-theme .empty-value {
+    color: #636366;
+}
 </style>

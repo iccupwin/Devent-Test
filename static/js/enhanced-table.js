@@ -20,6 +20,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Setup global search
     setupGlobalSearch();
+    
+    // Load projects for filter
+    loadProjectsForFilter();
 });
 
 // Function to add theme toggle button
@@ -207,7 +210,6 @@ function setupColumnToggle() {
     loadColumnSettings();
 }
 
-
 // Setup task modal functionality
 function setupTaskModal() {
     const taskModal = document.getElementById('taskModal');
@@ -352,7 +354,9 @@ function openTaskModal(taskId) {
             // Assignee
             if (modalTaskAssignee) {
                 console.log('Task assignees:', task.assignees); // Для отладки
-                if (task.assignees && task.assignees.users && Array.isArray(task.assignees.users) && task.assignees.users.length > 0) {
+                if (task.assignees && task.assignees.length > 0) {
+                    modalTaskAssignee.textContent = task.assignees.map(a => a.name).join(', ');
+                } else if (task.assignees && task.assignees.users && Array.isArray(task.assignees.users) && task.assignees.users.length > 0) {
                     modalTaskAssignee.textContent = task.assignees.users.map(a => a.name).join(', ');
                 } else {
                     modalTaskAssignee.textContent = 'Не назначен';
@@ -733,8 +737,62 @@ function setupFilters() {
         });
     }
 
+    // Reset Filters button
+    const resetFiltersButton = document.getElementById('reset-filters');
+    if (resetFiltersButton) {
+        resetFiltersButton.addEventListener('click', function() {
+            if (statusFilter) statusFilter.value = 'all';
+            if (projectFilter) projectFilter.value = 'all';
+            if (assignerFilter) assignerFilter.value = 'all';
+            if (searchInput) searchInput.value = '';
+            
+            applyFilters();
+        });
+    }
+    
     // Load assigners
     loadAssigners();
+}
+
+// Function to load projects for filter
+function loadProjectsForFilter() {
+    const projectFilter = document.getElementById('project-filter');
+    if (!projectFilter) return;
+    
+    // Clear existing options, except "All projects"
+    while (projectFilter.options.length > 1) {
+        projectFilter.remove(1);
+    }
+    
+    // Get unique projects from the table
+    const projects = new Map();
+    document.querySelectorAll('.tasks-table tbody tr').forEach(row => {
+        const projectCell = row.querySelector('.column-project');
+        const projectName = projectCell?.querySelector('.project-name')?.textContent.trim();
+        
+        if (projectName && projectName !== 'Не указан') {
+            // Find project div for color
+            const projectDiv = projectCell.querySelector('.project-badge div');
+            const projectColor = projectDiv ? projectDiv.style.backgroundColor : '#3b82f6';
+            
+            if (!projects.has(projectName)) {
+                projects.set(projectName, {
+                    name: projectName,
+                    color: projectColor
+                });
+            }
+        }
+    });
+    
+    // Add project options, sorted by name
+    Array.from(projects.values())
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .forEach(project => {
+            const option = document.createElement('option');
+            option.value = project.name;
+            option.textContent = project.name;
+            projectFilter.appendChild(option);
+        });
 }
 
 // Function to load assigners
@@ -753,6 +811,11 @@ function loadAssigners() {
     
     // Sort assigners alphabetically
     const sortedAssigners = Array.from(assigners).sort();
+    
+    // Clear existing options, except "All assigners"
+    while (assignerFilter.options.length > 1) {
+        assignerFilter.remove(1);
+    }
     
     // Add options to select
     sortedAssigners.forEach(assigner => {
@@ -787,8 +850,8 @@ function applyFilters() {
         const dates = row.querySelector('.column-dates')?.textContent.trim() || '';
 
         const statusMatch = statusValue === 'all' || 
-            (statusValue === 'active' && !status.toLowerCase().includes('завершена')) ||
-            (statusValue === 'completed' && status.toLowerCase().includes('завершена'));
+            (statusValue === 'active' && !status.toLowerCase().includes('завершен')) ||
+            (statusValue === 'completed' && status.toLowerCase().includes('завершен'));
         const projectMatch = projectValue === 'all' || project === projectValue;
         const assignerMatch = assignerValue === 'all' || assigner === assignerValue;
 
