@@ -1,18 +1,18 @@
 {
-  "total_tasks": 1271,
-  "active_tasks": 691,
+  "total_tasks": 1273,
+  "active_tasks": 693,
   "completed_tasks": 580,
-  "overdue_tasks": 92,
-  "tasks_due_this_week": 92,
-  "completion_rate": 45.63,
+  "overdue_tasks": 93,
+  "tasks_due_this_week": 93,
+  "completion_rate": 45.56,
   "total_projects": 10,
-  "avg_tasks_per_project": 127.1,
+  "avg_tasks_per_project": 127.3,
   "status_counts": {
-    "В работе": 292,
+    "В работе": 293,
     "Завершенная": 543,
     "Черновик": 206,
     "Выполненная": 37,
-    "Новая": 175,
+    "Новая": 176,
     "Отложенная": 1,
     "Отклоненная": 1,
     " Подписание договора": 2,
@@ -25,6 +25,6 @@
     "Утверждение результатов": 1,
     "Время встречи назначено": 1
   },
-  "cache_updated_at": "2025-05-08T13:16:28.630123",
-  "cache_age_minutes": 0.003402705987294515
+  "cache_updated_at": "2025-05-08T14:01:54.556932",
+  "cache_age_minutes": 0.006198505560557048
 }

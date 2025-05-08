@@ -1,5 +1,7 @@
 from django.urls import path, include
 from . import views, api_views, views_planfix, api, agent_api
+from django.urls import path
+from . import views_admin
 
 app_name = 'chat'
 
@@ -45,4 +47,18 @@ urlpatterns = [
     
     # Cache refresh endpoint
     path('refresh-cache/', views.refresh_cache, name='refresh_cache'),
+
+    path('analytics/dashboard/', views_admin.analytics_dashboard, name='analytics_dashboard'),
+    path('analytics/users/', views_admin.user_analytics, name='user_analytics'),
+    path('analytics/conversations/', views_admin.conversation_analytics, name='conversation_analytics'),
+    path('analytics/models/', views_admin.model_analytics, name='model_analytics'),
+    path('analytics/tasks/', views_admin.task_analytics, name='task_analytics'),
+    
+    # Настройки ИИ-моделей
+    path('ai-settings/', views_admin.ai_settings, name='ai_settings'),
+    path('ai-settings/<int:model_id>/', views_admin.ai_model_settings, name='ai_model_settings'),
+    
+    # Управление пользователями
+    path('user-management/', views_admin.user_management, name='user_management'),
+    path('user-management/<int:user_id>/', views_admin.user_edit, name='user_edit'),
 ]

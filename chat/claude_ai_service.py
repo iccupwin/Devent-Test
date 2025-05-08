@@ -5,6 +5,7 @@ from typing import Dict, List, Any, Optional, Union
 from django.conf import settings
 import requests
 from .planfix_cache_service import planfix_cache
+from .analytics_service import AnalyticsService
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -67,17 +68,23 @@ class ClaudeAIService:
         
         return system_prompt
     
-    def process_query(self, user_query: str, conversation_history: Optional[List[Dict[str, str]]] = None) -> str:
+    def process_query(self, user_query: str, conversation_history: Optional[List[Dict[str, str]]] = None, 
+                     user=None, conversation=None) -> Union[str, Dict[str, Any]]:
         """
         Process a user query about Planfix data using Claude AI
         
         Args:
             user_query: The user's question or request
             conversation_history: Optional list of previous messages in the conversation
-        
+            user: Optional user object for analytics
+            conversation: Optional conversation object for analytics
+            
         Returns:
-            Claude's response to the query
+            Claude's response to the query or a dictionary with response data
         """
+        # Start timing the response
+        start_time = time.time()
+        
         # Add context from Planfix data based on the query
         query_with_context = self._enrich_query_with_context(user_query)
         
@@ -94,8 +101,41 @@ class ClaudeAIService:
             "content": query_with_context
         })
         
-        # Send to Claude API
-        return self.send_message(messages)
+        try:
+            # Send to Claude API
+            response = self.send_message(messages)
+            
+            # Calculate response time
+            response_time = time.time() - start_time
+            
+            # Log the response time
+            logger.info(f"Claude AI response time: {response_time:.2f} seconds")
+            
+            # Record analytics if user and conversation are provided
+            if user and conversation:
+                AnalyticsService.track_ai_response(
+                    user=user,
+                    message=None,  # This will be set later when the message is created
+                    ai_model=None,  # This would be set from the conversation.ai_model
+                    response_time=response_time
+                )
+            
+            return response
+        except Exception as e:
+            logger.error(f"Error processing query with Claude AI: {e}", exc_info=True)
+            
+            # Record error in analytics
+            if user:
+                AnalyticsService.track_error(
+                    user=user,
+                    error_message=str(e),
+                    conversation=conversation
+                )
+            
+            return {
+                'response_type': 'error',
+                'message': f"Sorry, there was an error processing your query: {str(e)}"
+            }
     
     def _enrich_query_with_context(self, query: str) -> str:
         """
