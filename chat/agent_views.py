@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
-from .models import Conversation, Message, User
+from .models import Conversation, Message, User, UserMetrics, AIModel
 from .planfix_cache_service import planfix_cache
 from .agent_query_processor import agent
 import json
 import os
 import logging
+from django.utils import timezone
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -89,12 +90,37 @@ def agent_conversation(request, conversation_id):
     # Get agent statistics
     stats = planfix_cache.get_stats()
     
+    # Update user metrics
+    today = timezone.now().date()
+    user_metrics, _ = UserMetrics.objects.get_or_create(
+        user=user,
+        day=today,
+        defaults={
+            'messages_sent': 0,
+            'conversations_count': 0,
+            'tokens_used': 0,
+            'tasks_integrated': 0,
+            'average_response_time': 0
+        }
+    )
+    
+    # Update metrics
+    user_metrics.messages_sent += messages.count()
+    
+    # Check if this is a new conversation
+    if conversation.created_at.date() == today:
+        user_metrics.conversations_count += 1
+    
+    user_metrics.save()
+    
+    ai_models = AIModel.objects.filter(is_active=True).order_by('name')
     return render(request, 'chat/agent_conversation.html', {
         'conversation': conversation,
         'messages': messages,
         'conversations': conversations,
         'stats': stats,
-        'cache_valid': planfix_cache.is_cache_valid(max_age_minutes=60)
+        'cache_valid': planfix_cache.is_cache_valid(max_age_minutes=60),
+        'ai_models': ai_models,
     })
 
 def new_agent_conversation(request):
@@ -103,15 +129,22 @@ def new_agent_conversation(request):
     """
     # Get or create anonymous user
     user, created = User.objects.get_or_create(username='anonymous')
-    
+
+    ai_models = AIModel.objects.filter(is_active=True).order_by('name')
+    default_model = ai_models.first() if ai_models.exists() else None
+
+    if request.method == 'POST':
+        # Создаем новую беседу с моделью по умолчанию
+        conversation = Conversation.objects.create(user=user, title='Новая беседа', ai_model=default_model)
+        return redirect('chat:agent_conversation', conversation_id=conversation.id)
+
     # Get list of conversations
     conversations = Conversation.objects.filter(user=user).order_by('-updated_at')
-    
     # Get agent statistics
     stats = planfix_cache.get_stats()
-    
     return render(request, 'chat/agent_conversation_new.html', {
         'conversations': conversations,
         'stats': stats,
-        'cache_valid': planfix_cache.is_cache_valid(max_age_minutes=60)
+        'cache_valid': planfix_cache.is_cache_valid(max_age_minutes=60),
+        'ai_models': ai_models,
     })

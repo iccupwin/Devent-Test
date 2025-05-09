@@ -33,6 +33,9 @@ class PlanfixCacheService:
     def __init__(self):
         """Initialize cache service and ensure cache directory exists"""
         self._ensure_cache_directory()
+        self.is_updating = False
+        self.last_error = None
+        self.last_error_time = None
     
     def _ensure_cache_directory(self):
         """Ensure cache directory and files exist"""
@@ -53,6 +56,8 @@ class PlanfixCacheService:
                 return (time.time() - last_update) < (max_age_minutes * 60)
         except (ValueError, IOError) as e:
             logger.error(f"Error checking cache validity: {e}")
+            self.last_error = str(e)
+            self.last_error_time = time.time()
             return False
     
     def get_cache_age_minutes(self) -> Optional[float]:
@@ -67,6 +72,8 @@ class PlanfixCacheService:
                 return (time.time() - last_update) / 60
         except (ValueError, IOError) as e:
             logger.error(f"Error getting cache age: {e}")
+            self.last_error = str(e)
+            self.last_error_time = time.time()
             return None
     
     def update_cache_timestamp(self):
@@ -75,8 +82,31 @@ class PlanfixCacheService:
             with open(LAST_UPDATE_FILE, 'w') as f:
                 f.write(str(time.time()))
             logger.info("Updated cache timestamp")
+            self.last_error = None
+            self.last_error_time = None
         except IOError as e:
             logger.error(f"Error updating cache timestamp: {e}")
+            self.last_error = str(e)
+            self.last_error_time = time.time()
+    
+    def get_cache_status(self) -> Dict[str, Any]:
+        """Get detailed cache status"""
+        return {
+            'is_valid': self.is_cache_valid(),
+            'age_minutes': self.get_cache_age_minutes(),
+            'is_updating': self.is_updating,
+            'last_error': self.last_error,
+            'last_error_time': self.last_error_time,
+            'cache_files': {
+                'tasks': TASKS_CACHE_FILE.exists(),
+                'active_tasks': ACTIVE_TASKS_CACHE.exists(),
+                'completed_tasks': COMPLETED_TASKS_CACHE.exists(),
+                'overdue_tasks': OVERDUE_TASKS_CACHE.exists(),
+                'projects': PROJECTS_CACHE.exists(),
+                'users': USERS_CACHE.exists(),
+                'stats': STATS_CACHE.exists()
+            }
+        }
     
     def get_all_tasks(self) -> List[Dict[str, Any]]:
         """Get all tasks from cache"""
@@ -505,19 +535,31 @@ class PlanfixCacheService:
         """Refresh all derived caches from the main tasks cache"""
         logger.info("Refreshing all derived caches")
         
-        # Update main tasks cache first
-        from .planfix_service import update_tasks_cache
-        update_tasks_cache(force=True)
-        
-        # Then update all derived caches
-        self._generate_active_tasks_cache()
-        self._generate_completed_tasks_cache()
-        self._generate_overdue_tasks_cache()
-        self._generate_projects_cache()
-        self._generate_users_cache()
-        self._generate_stats_cache()
-        
-        logger.info("All caches refreshed successfully")
+        try:
+            # Update main tasks cache first
+            from .planfix_service import update_tasks_cache
+            update_tasks_cache(force=True)
+            
+            # Then update all derived caches
+            self._generate_active_tasks_cache()
+            self._generate_completed_tasks_cache()
+            self._generate_overdue_tasks_cache()
+            self._generate_projects_cache()
+            self._generate_users_cache()
+            self._generate_stats_cache()
+            
+            # Update timestamp
+            self.update_cache_timestamp()
+            
+            logger.info("All caches refreshed successfully")
+            self.last_error = None
+            self.last_error_time = None
+            
+        except Exception as e:
+            logger.error(f"Error refreshing caches: {e}", exc_info=True)
+            self.last_error = str(e)
+            self.last_error_time = time.time()
+            raise
     
     def _is_task_completed(self, task: Dict[str, Any]) -> bool:
         """Determine if a task is completed based on its status"""

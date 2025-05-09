@@ -1,18 +1,18 @@
 {
-  "total_tasks": 1278,
-  "active_tasks": 692,
-  "completed_tasks": 586,
-  "overdue_tasks": 93,
-  "tasks_due_this_week": 93,
-  "completion_rate": 45.85,
+  "total_tasks": 1296,
+  "active_tasks": 702,
+  "completed_tasks": 594,
+  "overdue_tasks": 92,
+  "tasks_due_this_week": 92,
+  "completion_rate": 45.83,
   "total_projects": 10,
-  "avg_tasks_per_project": 127.8,
+  "avg_tasks_per_project": 129.6,
   "status_counts": {
-    "В работе": 306,
-    "Завершенная": 549,
-    "Черновик": 206,
-    "Выполненная": 37,
-    "Новая": 162,
+    "В работе": 308,
+    "Завершенная": 555,
+    "Черновик": 208,
+    "Выполненная": 39,
+    "Новая": 168,
     "Отложенная": 1,
     "Отклоненная": 1,
     " Подписание договора": 2,
@@ -24,6 +24,6 @@
     "Финансовый директор": 3,
     "Утверждение результатов": 1
   },
-  "cache_updated_at": "2025-05-09T15:24:38.745899",
-  "cache_age_minutes": 0.0041036844253540036
+  "cache_updated_at": "2025-05-09T21:33:59.094742",
+  "cache_age_minutes": 0.00546273390452067
 }

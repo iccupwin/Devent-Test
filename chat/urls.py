@@ -10,7 +10,7 @@ urlpatterns = [
     # Основные представления для чата (Apple стиль)
     path('', views.agent_dashboard, name='index'),
     path('chat/', views.index_apple, name='index_apple'),
-    path('conversation/<int:conversation_id>/', views.conversation_apple, name='conversation'),
+    path('conversation/<int:conversation_id>/', views.conversation, name='conversation'),
     path('conversation/new/', views.new_conversation_apple, name='new_conversation'),
     
     # API для работы с задачами Planfix
@@ -35,6 +35,7 @@ urlpatterns = [
     path('agent/', views.agent_dashboard, name='agent_dashboard'),
     path('agent/conversation/<int:conversation_id>/', views.agent_conversation, name='agent_conversation'),
     path('agent/conversation/new/', views.new_agent_conversation, name='new_agent_conversation'),
+    path('agent/conversation/<int:conversation_id>/change-model/', agent_api.change_conversation_model, name='change_conversation_model'),
     
     # Старый стиль (для обратной совместимости)
     path('default/', views.index, name='index_default'),
@@ -87,4 +88,7 @@ urlpatterns = [
     path('admin/users/', views_admin.user_management, name='user_management'),
     path('admin/users/<int:user_id>/update-role/', views_admin.update_user_role, name='update_user_role'),
     path('admin/users/<int:user_id>/delete/', views_admin.delete_user, name='delete_user'),
+
+    # Изменение модели ИИ в беседе
+    path('conversation/<int:conversation_id>/change-model/', views.change_conversation_model, name='change_conversation_model'),
 ]

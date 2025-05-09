@@ -170,6 +170,34 @@
     body.dark-theme .suggestion-chip:hover {
         background-color: rgba(10, 132, 255, 0.3);
     }
+
+    .model-selector {
+        margin: 20px 0 10px 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .model-select {
+        padding: 8px 35px 8px 15px;
+        border: 2px solid #0071e3;
+        border-radius: 8px;
+        background-color: white;
+        color: #0071e3;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        min-width: 180px;
+        appearance: none;
+    }
+    .model-select-arrow {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #0071e3;
+        pointer-events: none;
+        font-size: 12px;
+    }
 </style>
 {% endblock %}
 
@@ -243,6 +271,19 @@
     </div>
     
     <div class="content">
+        <div class="model-selector">
+            <div style="position:relative;">
+                <select id="aiModelSelect" class="model-select">
+                    {% for model in ai_models %}
+                    <option value="{{ model.id }}" {% if forloop.first %}selected{% endif %}>{{ model.name }}</option>
+                    {% endfor %}
+                </select>
+                <div class="model-select-arrow">▼</div>
+            </div>
+            <span id="currentModelName" style="margin-left: 16px; color: #0071e3; font-weight: bold;">
+                Текущая модель: {{ ai_models.0.name }}
+            </span>
+        </div>
         <div class="chat-container">
             <div class="chat-messages" id="chatMessages">
                 <div class="welcome-message">
@@ -291,6 +332,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const dashboardButton = document.getElementById('dashboardButton');
     const refreshCacheLink = document.getElementById('refresh-cache-link');
     const suggestionChips = document.querySelectorAll('.suggestion-chip');
+    const modelSelect = document.getElementById('aiModelSelect');
+    const label = document.getElementById('currentModelName');
     
     // Current conversation ID (null for new conversation)
     let currentConversationId = null;
@@ -499,16 +542,24 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Send message to agent API
     async function sendMessageToAgent(message) {
+        const payload = {
+            message: message,
+            conversation_id: currentConversationId
+        };
+        // Если это новая беседа, добавляем выбранную модель
+        if (!currentConversationId) {
+            const select = document.getElementById('aiModelSelect');
+            if (select) {
+                payload.model_id = select.value;
+            }
+        }
         const response = await fetch('/api/agent/message/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCookie('csrftoken')
             },
-            body: JSON.stringify({
-                message: message,
-                conversation_id: currentConversationId
-            })
+            body: JSON.stringify(payload)
         });
         
         if (!response.ok) {
@@ -543,6 +594,35 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
         return cookieValue;
+    }
+
+    // Здесь можно добавить обработчик выбора модели для новой беседы
+    if (modelSelect && label) {
+        modelSelect.addEventListener('change', function() {
+            label.textContent = 'Текущая модель: ' + this.options[this.selectedIndex].text;
+            // Если беседа уже создана, отправляем запрос на смену модели
+            if (currentConversationId) {
+                const selectedModelId = this.value;
+                fetch(`/chat/conversation/${currentConversationId}/change-model/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify({
+                        model_id: selectedModelId
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Можно обновить надпись или показать уведомление
+                    if (data.success) {
+                        label.textContent = 'Текущая модель: ' + modelSelect.options[modelSelect.selectedIndex].text;
+                    }
+                })
+                .catch(error => console.error('Ошибка при смене модели:', error));
+            }
+        });
     }
 });
 </script>

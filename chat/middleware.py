@@ -23,9 +23,7 @@ class RoleMiddleware:
         # Список URL-адресов, доступных только аутентифицированным пользователям
         auth_only_urls = [
             '/conversation/',
-            '/api/agent/',
             '/planfix/',
-            '/agent/',
             '/profile/',
         ]
         
@@ -36,6 +34,8 @@ class RoleMiddleware:
             '/logout/',
             '/access-denied/',
             '/static/',
+            '/api/agent/',  # Разрешаем доступ к API для всех
+            '/agent/',      # Разрешаем доступ к агенту для всех
         ]
         
         # Проверка URL для административных страниц

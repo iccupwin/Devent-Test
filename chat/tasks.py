@@ -9,42 +9,47 @@ from .models import (
     User, Conversation, Message, AIModel,
     UserMetrics, AIModelMetrics, AnalyticsEvent
 )
+from .planfix_cache_service import PlanfixCacheService
+from .analytics_service import AnalyticsService
 
 logger = logging.getLogger(__name__)
 
 @shared_task
 def refresh_planfix_cache():
     """
-    Периодическое обновление кэша данных Planfix
+    Задача для обновления кэша Planfix
     """
-    logger.info("Starting Planfix cache refresh (scheduled)")
+    cache_service = PlanfixCacheService()
+    
     try:
-        from .planfix_service import update_tasks_cache
-        from .planfix_cache_service import planfix_cache
+        # Проверяем, не выполняется ли уже обновление
+        if cache_service.is_updating:
+            logger.info("Обновление кэша уже выполняется")
+            return
+            
+        # Устанавливаем флаг обновления
+        cache_service.is_updating = True
         
-        # Обновление основного кэша задач
-        tasks = update_tasks_cache(force=True)
-        logger.info(f"Main tasks cache updated, {len(tasks)} tasks loaded")
+        # Обновляем кэш
+        success = cache_service.refresh_all_caches()
         
-        # Обновление производных кэшей
-        planfix_cache.refresh_all_caches()
-        logger.info("All derived caches refreshed")
-        
-        # Получение обновленной статистики
-        stats = planfix_cache.get_stats()
-        
-        # Логирование статистики
-        logger.info(f"Total tasks: {stats.get('total_tasks', 0)}")
-        logger.info(f"Active tasks: {stats.get('active_tasks', 0)}")
-        logger.info(f"Completed tasks: {stats.get('completed_tasks', 0)}")
-        logger.info(f"Overdue tasks: {stats.get('overdue_tasks', 0)}")
-        
-        return "Cache refresh completed successfully"
+        if success:
+            logger.info("Кэш Planfix успешно обновлен")
+            AnalyticsService.log_cache_refresh(success=True)
+        else:
+            error_msg = cache_service.last_error or "Неизвестная ошибка при обновлении кэша"
+            logger.error(f"Ошибка при обновлении кэша: {error_msg}")
+            AnalyticsService.log_cache_refresh(success=False, error_message=error_msg)
+            
     except Exception as e:
-        logger.error(f"Error refreshing Planfix cache: {e}", exc_info=True)
-        return f"Error refreshing cache: {str(e)}"
-    
-    
+        error_msg = str(e)
+        logger.error(f"Неожиданная ошибка при обновлении кэша: {error_msg}")
+        AnalyticsService.log_cache_refresh(success=False, error_message=error_msg)
+        
+    finally:
+        # Сбрасываем флаг обновления
+        cache_service.is_updating = False
+
 @shared_task
 def cleanup_old_data():
     """

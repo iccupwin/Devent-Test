@@ -1,7 +1,8 @@
 # chat/views_admin.py
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.admin.views.decorators import staff_member_required
-from django.db.models import Count, Sum, Avg, F, Q
+from django.db.models import Count, Sum, Avg, F, Q, FloatField
+from django.db.models.functions import Cast
 from django.utils import timezone
 from datetime import timedelta
 import json
@@ -25,17 +26,17 @@ def analytics_dashboard(request):
     days = int(request.GET.get('days', 30))
     
     # Получаем данные из сервиса аналитики
+    analytics_summary = AnalyticsService.get_analytics_summary(days)
     models_usage = AnalyticsService.get_ai_models_usage(days)
     daily_activity = AnalyticsService.get_daily_activity(days)
     tokens_usage = AnalyticsService.get_tokens_usage(days)
     top_users = AnalyticsService.get_top_users(limit=10, days=days)
     
     # Подготовка данных для графиков
-    activity_dates = [item['day'] for item in daily_activity]  # Already formatted as string in get_daily_activity
+    activity_dates = [item['day'] for item in daily_activity]
     activity_messages = [item['messages_count'] for item in daily_activity]
     activity_conversations = [item['conversations_count'] for item in daily_activity]
     
-    # Convert dates to strings for JSON serialization
     tokens_dates = [item['day'].strftime('%Y-%m-%d') for item in tokens_usage]
     tokens_values = [item['tokens_used'] for item in tokens_usage]
     
@@ -63,6 +64,42 @@ def analytics_dashboard(request):
         created_at__gte=timezone.now() - timedelta(days=7)
     ).count()
     task_integrations_trend = calculate_trend(task_integrations, last_week_task_integrations)
+    
+    # Данные для новых модальных окон
+    top_queries = analytics_summary.get('top_queries', [])
+    quality_score = analytics_summary.get('quality_score', 0)
+    helpful_responses = analytics_summary.get('helpful_responses', 0)
+    accuracy_score = analytics_summary.get('accuracy_score', 0)
+    quality_feedback = analytics_summary.get('quality_feedback', [])
+    
+    # Данные для мониторинга использования
+    active_users = User.objects.filter(
+        last_login__gte=timezone.now() - timedelta(days=1)
+    ).count()
+    
+    requests_per_hour = Message.objects.filter(
+        created_at__gte=timezone.now() - timedelta(hours=1)
+    ).count()
+    
+    # Расчет среднего времени ответа
+    avg_response_time = Message.objects.filter(
+        role='assistant',
+        processing_time__gt=0
+    ).aggregate(
+        avg_time=Avg('processing_time')
+    )['avg_time'] or 0.0
+    
+    # Получаем пики использования
+    usage_peaks = Message.objects.filter(
+        created_at__gte=timezone.now() - timedelta(days=7)
+    ).values('created_at__hour').annotate(
+        requests=Count('id'),
+        avg_time=Avg('processing_time'),
+        errors=Count(
+            'id',
+            filter=Q(metadata__has_key='error')
+        )
+    ).order_by('-requests')[:10]
     
     context = {
         'days': days,
@@ -93,6 +130,30 @@ def analytics_dashboard(request):
         'users': users,
         'conversations': conversations,
         'messages': messages,
+        
+        # Данные для новых модальных окон
+        'top_queries': top_queries,
+        'quality_score': quality_score,
+        'helpful_responses': helpful_responses,
+        'accuracy_score': accuracy_score,
+        'quality_feedback': quality_feedback,
+        'active_users': active_users,
+        'requests_per_hour': requests_per_hour,
+        'avg_response_time': avg_response_time,
+        'usage_peaks': usage_peaks,
+        
+        # Данные для графиков качества и использования
+        'quality_data': json.dumps({
+            'labels': [item['day'] for item in analytics_summary.get('quality_history', [])],
+            'scores': [item['score'] for item in analytics_summary.get('quality_history', [])],
+            'helpful': [item['helpful'] for item in analytics_summary.get('quality_history', [])],
+            'accuracy': [item['accuracy'] for item in analytics_summary.get('quality_history', [])]
+        }),
+        'usage_data': json.dumps({
+            'labels': [item['day'] for item in analytics_summary.get('usage_history', [])],
+            'requests': [item['requests'] for item in analytics_summary.get('usage_history', [])],
+            'responseTime': [item['response_time'] for item in analytics_summary.get('usage_history', [])]
+        })
     }
     
     return render(request, 'admin/analytics/dashboard.html', context)
@@ -118,8 +179,8 @@ def user_analytics(request):
         day__gte=last_month
     ).values('user').annotate(
         total_messages=Sum('messages_sent'),
-        total_conversations=Sum('conversations_started'),
-        avg_response_time=Avg('avg_response_time'),
+        total_conversations=Sum('conversations_count'),
+        avg_response_time=Avg('average_response_time'),
         total_tokens=Sum('tokens_used')
     ).order_by('-total_messages')
 
@@ -169,26 +230,71 @@ def model_analytics(request):
     """
     last_month = timezone.now() - timedelta(days=30)
     
+    # Получаем базовую статистику по моделям
     model_stats = AIModelMetrics.objects.filter(
         day__gte=last_month
-    ).values('model').annotate(
+    ).values('ai_model').annotate(
         total_usage=Count('id'),
         total_tokens=Sum('tokens_used'),
-        avg_response_time=Avg('avg_response_time')
+        avg_response_time=Avg('average_response_time'),
+        error_rate=Cast(Sum('error_count'), FloatField()) / Cast(Sum('requests_count'), FloatField()) * 100.0
     ).order_by('-total_usage')
 
+    # Получаем ежедневную статистику для графиков
+    daily_stats = AIModelMetrics.objects.filter(
+        day__gte=last_month
+    ).values('day', 'ai_model__name').annotate(
+        requests=Sum('requests_count'),
+        tokens=Sum('tokens_used'),
+        response_time=Avg('average_response_time')
+    ).order_by('day', 'ai_model__name')
+
+    # Форматируем данные для шаблона
     models_data = []
     for stat in model_stats:
-        model = AIModel.objects.get(id=stat['model'])
+        model = AIModel.objects.get(id=stat['ai_model'])
         models_data.append({
             'name': model.name,
+            'type': model.get_model_type_display(),
+            'version': model.version,
             'usage': stat['total_usage'],
             'tokens': stat['total_tokens'],
-            'avg_response_time': round(stat['avg_response_time'] if stat['avg_response_time'] else 0, 2)
+            'avg_response_time': round(stat['avg_response_time'] if stat['avg_response_time'] else 0, 2),
+            'error_rate': round(stat['error_rate'] if stat['error_rate'] else 0, 2),
+            'is_active': model.is_active
         })
+
+    # Подготавливаем данные для графиков
+    chart_data = {
+        'labels': [],
+        'datasets': {}
+    }
+
+    # Инициализируем наборы данных для каждой модели
+    for model in AIModel.objects.all():
+        chart_data['datasets'][model.name] = {
+            'requests': [],
+            'tokens': [],
+            'response_times': []
+        }
+
+    # Заполняем данные для графиков
+    current_date = None
+    for stat in daily_stats:
+        if current_date != stat['day']:
+            current_date = stat['day']
+            chart_data['labels'].append(current_date.strftime('%Y-%m-%d'))
+        
+        model_name = stat['ai_model__name']
+        chart_data['datasets'][model_name]['requests'].append(stat['requests'])
+        chart_data['datasets'][model_name]['tokens'].append(stat['tokens'])
+        chart_data['datasets'][model_name]['response_times'].append(
+            round(stat['response_time'], 2) if stat['response_time'] else 0
+        )
 
     context = {
         'models_data': models_data,
+        'chart_data': chart_data,
         'period': '30 дней'
     }
     

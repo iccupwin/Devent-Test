@@ -2,13 +2,17 @@ import json
 import logging
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_http_methods
+from django.views.decorators.http import require_http_methods, require_POST
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 
-from .models import Conversation, Message, User
+from .models import Conversation, Message, User, UserMetrics, AIModel
 from .agent_query_processor import agent
 from .planfix_cache_service import planfix_cache
 from .planfix_service import update_tasks_cache
+from .claude_ai_service import claude_ai
+from .openai_service import openai_ai
+from .gemini_service import gemini_ai
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -24,6 +28,7 @@ def agent_message_api(request):
         data = json.loads(request.body)
         message_text = data.get('message', '')
         conversation_id = data.get('conversation_id')
+        model_id = data.get('model_id')
         
         # Validate message
         if not message_text:
@@ -41,9 +46,16 @@ def agent_message_api(request):
         else:
             # Create a new conversation - use first few words as title
             title = ' '.join(message_text.split()[:5]) + '...'
+            selected_model = None
+            if model_id:
+                try:
+                    selected_model = AIModel.objects.get(id=model_id)
+                except AIModel.DoesNotExist:
+                    pass
             conversation = Conversation.objects.create(
                 user=user,
-                title=title
+                title=title,
+                ai_model=selected_model
             )
         
         # Save user message
@@ -52,6 +64,29 @@ def agent_message_api(request):
             role='user',
             content=message_text
         )
+        
+        # Update user metrics
+        today = timezone.now().date()
+        user_metrics, _ = UserMetrics.objects.get_or_create(
+            user=user,
+            day=today,
+            defaults={
+                'messages_sent': 0,
+                'conversations_count': 0,
+                'tokens_used': 0,
+                'tasks_integrated': 0,
+                'average_response_time': 0
+            }
+        )
+        
+        # Update metrics
+        user_metrics.messages_sent += 1
+        
+        # Check if this is a new conversation
+        if conversation.created_at.date() == today:
+            user_metrics.conversations_count += 1
+        
+        user_metrics.save()
         
         # Get previous messages for context (limit to last 10 for simplicity)
         previous_messages = Message.objects.filter(conversation=conversation).order_by('created_at')
@@ -64,43 +99,34 @@ def agent_message_api(request):
                 "content": msg.content
             })
         
-        # Handle messages about cache refresh
-        if 'refresh' in message_text.lower() and any(keyword in message_text.lower() for keyword in ['cache', 'data', 'update']):
-            # Update cache
-            try:
-                update_tasks_cache(force=True)
-                planfix_cache.refresh_all_caches()
-                response = "I've refreshed the Planfix data. Now I'm working with the latest information."
-            except Exception as e:
-                logger.error(f"Error refreshing cache: {e}", exc_info=True)
-                response = f"I encountered an error while refreshing the Planfix data: {str(e)}"
+        # Получаем выбранную модель ИИ для беседы
+        ai_model = conversation.ai_model
+        response = ""
+        if not ai_model:
+            response = "Модель ИИ не выбрана для этой беседы."
         else:
-            # Process query with agent
-            agent_response = agent.process_query(message_text, conversation_history)
-            
-            # Handle different response types
-            response_type = agent_response.get('response_type', '')
-            response = agent_response.get('message', '')
-            
-            if response_type == 'cache_refresh_needed':
-                # Ask user if they want to refresh cache
-                pass
-            elif response_type == 'cache_refresh_requested':
-                # Refresh cache
-                try:
-                    update_tasks_cache(force=True)
-                    planfix_cache.refresh_all_caches()
-                    response += "\n\nCache refreshed successfully! Now I'm working with the latest Planfix data."
-                except Exception as e:
-                    logger.error(f"Error refreshing cache: {e}", exc_info=True)
-                    response += f"\n\nI encountered an error while refreshing the data: {str(e)}"
-            # For other response types, just use the message directly
+            try:
+                if ai_model.model_type == 'claude':
+                    ai_response = claude_ai.process_query(message_text, conversation_history)
+                    response = ai_response.get('message', str(ai_response)) if isinstance(ai_response, dict) else str(ai_response)
+                elif ai_model.model_type == 'gpt':
+                    ai_response = openai_ai.process_query(message_text, conversation_history, model_name=ai_model.version)
+                    response = ai_response.get('message', str(ai_response)) if isinstance(ai_response, dict) else str(ai_response)
+                elif ai_model.model_type == 'gemini':
+                    ai_response = gemini_ai.process_query(message_text, conversation_history)
+                    response = ai_response.get('message', str(ai_response)) if isinstance(ai_response, dict) else str(ai_response)
+                else:
+                    response = f"Неизвестный тип модели: {ai_model.model_type}"
+            except Exception as e:
+                logger.error(f"Error processing query with {ai_model.model_type}: {e}", exc_info=True)
+                response = f"Ошибка при обработке запроса через {ai_model.name}: {str(e)}"
         
         # Save agent's response
         assistant_message = Message.objects.create(
             conversation=conversation,
             role='assistant',
-            content=response
+            content=response,
+            ai_model_used=ai_model
         )
         
         # Update conversation's updated_at timestamp
@@ -112,9 +138,15 @@ def agent_message_api(request):
             'conversation_id': conversation.id
         })
         
+    except json.JSONDecodeError as e:
+        logger.error(f"Invalid JSON in request: {e}", exc_info=True)
+        return JsonResponse({'error': 'Invalid request format'}, status=400)
     except Exception as e:
         logger.error(f"Error in agent message API: {str(e)}", exc_info=True)
-        return JsonResponse({'error': str(e)}, status=500)
+        return JsonResponse({
+            'error': 'An unexpected error occurred',
+            'details': str(e)
+        }, status=500)
 
 @require_http_methods(["GET"])
 def agent_status_api(request):
@@ -184,3 +216,22 @@ def refresh_cache_api(request):
             'success': False,
             'message': f'Error refreshing cache: {str(e)}'
         }, status=500)
+
+@csrf_exempt
+@require_POST
+def change_conversation_model(request, conversation_id):
+    try:
+        conversation = get_object_or_404(Conversation, id=conversation_id)
+        data = json.loads(request.body)
+        model_id = data.get('model_id')
+        if not model_id:
+            logger.warning(f"Model ID not provided for conversation {conversation_id}")
+            return JsonResponse({'success': False, 'error': 'Model ID is required'})
+        model = get_object_or_404(AIModel, id=model_id)
+        conversation.ai_model = model
+        conversation.save()
+        logger.info(f"Устанавливаю модель {model} для беседы {conversation.id}")
+        return JsonResponse({'success': True, 'model_name': model.name})
+    except Exception as e:
+        logger.error(f"Ошибка при смене модели: {e}")
+        return JsonResponse({'success': False, 'error': str(e)}, status=400)

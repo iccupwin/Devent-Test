@@ -1,7 +1,7 @@
 # chat/models.py - расширение модели User
 
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
+from django.contrib.auth.models import AbstractUser, BaseUserManager, PermissionsMixin
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 
@@ -27,60 +27,23 @@ class UserManager(BaseUserManager):
 
         return self.create_user(username, email, password, **extra_fields)
 
-class User(AbstractBaseUser, PermissionsMixin):
+class User(AbstractUser):
     """
-    Расширенная модель пользователя с ролями и интеграцией Planfix
+    Расширенная модель пользователя с дополнительными полями
     """
-    ROLE_CHOICES = (
-        ('user', _('Пользователь')),
-        ('admin', _('Администратор')),
+    role = models.CharField(
+        max_length=20,
+        choices=[('user', 'Пользователь'), ('admin', 'Администратор')],
+        default='user'
     )
-    
-    username = models.CharField(
-        _('username'),
-        max_length=150,
-        unique=True,
-        help_text=_('Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.'),
-        error_messages={
-            'unique': _("A user with that username already exists."),
-        },
-    )
-    password = models.CharField(_('password'), max_length=128)
-    email = models.EmailField(_('email address'), blank=True)
-    first_name = models.CharField(_('first name'), max_length=150, blank=True)
-    last_name = models.CharField(_('last name'), max_length=150, blank=True)
-    is_staff = models.BooleanField(
-        _('staff status'),
-        default=False,
-        help_text=_('Designates whether the user can log into this admin site.'),
-    )
-    is_active = models.BooleanField(
-        _('active'),
-        default=True,
-        help_text=_(
-            'Designates whether this user should be treated as active. '
-            'Unselect this instead of deleting accounts.'
-        ),
-    )
-    date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
-    last_login = models.DateTimeField(_('last login'), null=True, blank=True)
-    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='user')
-    planfix_user_id = models.CharField(max_length=100, blank=True, null=True)
-    planfix_api_token = models.CharField(max_length=255, blank=True, null=True)
+    planfix_user_id = models.CharField(max_length=100, null=True, blank=True)
+    planfix_api_token = models.CharField(max_length=255, null=True, blank=True)
     last_active = models.DateTimeField(auto_now=True)
     preferred_ai_model = models.CharField(max_length=50, default='claude')
 
-    objects = UserManager()
-
-    USERNAME_FIELD = 'username'
-    REQUIRED_FIELDS = []
-
     class Meta:
-        verbose_name = _('user')
-        verbose_name_plural = _('users')
-
-    def is_admin(self):
-        return self.role == 'admin'
+        verbose_name = 'user'
+        verbose_name_plural = 'users'
 
     def __str__(self):
         return self.username
@@ -92,7 +55,7 @@ class AIModel(models.Model):
     MODEL_TYPES = (
         ('claude', 'Claude AI'),
         ('gpt', 'ChatGPT'),
-        ('deepseek', 'DeepSeek'),
+        ('gemini', 'Google Gemini'),
     )
     
     name = models.CharField(max_length=50)
@@ -163,6 +126,7 @@ class Message(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     parent_message = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='replies')
     metadata = models.JSONField(default=dict, blank=True)  # Для дополнительных данных от ИИ
+    processing_time = models.FloatField(default=0.0, verbose_name='Время обработки (сек)')  # Время обработки запроса в секундах
     
     class Meta:
         ordering = ['created_at']
@@ -228,40 +192,106 @@ class PlanfixTask(models.Model):
         return f"{self.name} (ID: {self.task_id})"
         
 class AnalyticsEvent(models.Model):
-    """
-    Модель для отслеживания событий в системе для аналитики
-    """
+    """Модель для хранения событий аналитики"""
+    
     EVENT_TYPES = (
-        ('conversation_start', _('Начало беседы')),
-        ('conversation_end', _('Завершение беседы')),
-        ('message_sent', _('Отправлено сообщение')),
-        ('ai_response', _('Ответ ИИ')),
-        ('task_integration', _('Интеграция с задачей')),
-        ('cache_refresh', _('Обновление кэша')),
-        ('login', _('Вход в систему')),
-        ('logout', _('Выход из системы')),
-        ('error', _('Ошибка')),
+        ('cache_refresh', 'Обновление кэша'),
+        ('ai_query', 'Запрос к ИИ'),
+        ('error', 'Ошибка'),
+        ('feedback', 'Оценка ответа'),
+        ('system', 'Системное событие')
     )
     
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='events')
-    event_type = models.CharField(max_length=50, choices=EVENT_TYPES)
-    timestamp = models.DateTimeField(auto_now_add=True)
-    conversation = models.ForeignKey(Conversation, on_delete=models.SET_NULL, null=True, blank=True)
-    planfix_task_id = models.CharField(max_length=100, null=True, blank=True)
-    planfix_project_id = models.CharField(max_length=100, null=True, blank=True)
-    ai_model = models.ForeignKey(AIModel, on_delete=models.SET_NULL, null=True, blank=True)
-    metadata = models.JSONField(default=dict, blank=True)
+    STATUS_CHOICES = (
+        ('success', 'Успешно'),
+        ('error', 'Ошибка'),
+        ('warning', 'Предупреждение'),
+        ('info', 'Информация')
+    )
+    
+    event_type = models.CharField(
+        max_length=50,
+        choices=EVENT_TYPES,
+        verbose_name='Тип события'
+    )
+    
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='info',
+        verbose_name='Статус'
+    )
+    
+    user = models.ForeignKey(
+        'User',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name='Пользователь'
+    )
+    
+    details = models.JSONField(
+        default=dict,
+        verbose_name='Детали события'
+    )
+    
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='Дата создания'
+    )
     
     class Meta:
-        verbose_name = _('Событие аналитики')
-        verbose_name_plural = _('События аналитики')
+        verbose_name = 'Событие аналитики'
+        verbose_name_plural = 'События аналитики'
+        ordering = ['-created_at']
         indexes = [
-            models.Index(fields=['event_type', 'timestamp']),
-            models.Index(fields=['user', 'event_type']),
+            models.Index(fields=['event_type']),
+            models.Index(fields=['status']),
+            models.Index(fields=['created_at']),
+            models.Index(fields=['user']),
         ]
     
     def __str__(self):
-        return f"{self.event_type} - {self.timestamp}"
+        return f"{self.event_type} - {self.status} ({self.created_at})"
+    
+    @classmethod
+    def get_top_queries(cls, limit=5, days=7):
+        """Получение топ запросов к ИИ"""
+        start_date = timezone.now() - timezone.timedelta(days=days)
+        
+        return cls.objects.filter(
+            event_type='ai_query',
+            created_at__gte=start_date
+        ).values('details__query').annotate(
+            count=models.Count('id'),
+            last_used=models.Max('created_at')
+        ).order_by('-count')[:limit]
+    
+    @classmethod
+    def get_error_stats(cls, days=7):
+        """Получение статистики ошибок"""
+        start_date = timezone.now() - timezone.timedelta(days=days)
+        
+        return cls.objects.filter(
+            event_type='error',
+            created_at__gte=start_date
+        ).values('details__error_type').annotate(
+            count=models.Count('id'),
+            last_occurrence=models.Max('created_at')
+        ).order_by('-count')
+    
+    @classmethod
+    def get_cache_stats(cls, days=7):
+        """Получение статистики кэша"""
+        start_date = timezone.now() - timezone.timedelta(days=days)
+        
+        return cls.objects.filter(
+            event_type='cache_refresh',
+            created_at__gte=start_date
+        ).values('status').annotate(
+            count=models.Count('id'),
+            last_update=models.Max('created_at')
+        ).order_by('-last_update')
 
 class UserMetrics(models.Model):
     """

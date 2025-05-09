@@ -47,9 +47,14 @@ class AgentQueryProcessor:
         try:
             ai_response = claude_ai.process_query(user_query, conversation_history)
             
+            # If ai_response is already a dictionary with response_type and message, return it
+            if isinstance(ai_response, dict) and 'response_type' in ai_response and 'message' in ai_response:
+                return ai_response
+            
+            # Otherwise, wrap the response in our standard format
             return {
                 'response_type': 'ai_response',
-                'message': ai_response
+                'message': str(ai_response)
             }
         except Exception as e:
             logger.error(f"Error processing query with Claude AI: {e}", exc_info=True)

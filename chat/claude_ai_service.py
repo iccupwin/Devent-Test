@@ -28,6 +28,7 @@ class ClaudeAIService:
         }
         self.max_retries = 3
         self.retry_delay = 5
+        self.analytics = AnalyticsService()
         
         logger.info(f"Initialized ClaudeAIService with model: {self.model}")
     
@@ -69,7 +70,7 @@ class ClaudeAIService:
         return system_prompt
     
     def process_query(self, user_query: str, conversation_history: Optional[List[Dict[str, str]]] = None, 
-                     user=None, conversation=None) -> Union[str, Dict[str, Any]]:
+                     user=None, conversation=None) -> Dict[str, Any]:
         """
         Process a user query about Planfix data using Claude AI
         
@@ -80,61 +81,136 @@ class ClaudeAIService:
             conversation: Optional conversation object for analytics
             
         Returns:
-            Claude's response to the query or a dictionary with response data
+            Dictionary with response data including response_type and message
         """
-        # Start timing the response
-        start_time = time.time()
-        
-        # Add context from Planfix data based on the query
-        query_with_context = self._enrich_query_with_context(user_query)
-        
-        # Prepare messages for Claude API
-        messages = []
-        
-        # Add conversation history if provided
-        if conversation_history:
-            messages.extend(conversation_history)
-        
-        # Add the enriched query
-        messages.append({
-            "role": "user",
-            "content": query_with_context
-        })
-        
         try:
+            print("\n=== Starting query processing ===")
+            print(f"User query: {user_query}")
+            print(f"API Key present: {'Yes' if self.api_key else 'No'}")
+            print(f"API URL: {self.api_url}")
+            print(f"Model: {self.model}")
+            
+            # Start timing the response
+            start_time = time.time()
+            
+            # Add context from Planfix data based on the query
+            print("\n=== Enriching query with context ===")
+            query_with_context = self._enrich_query_with_context(user_query)
+            print(f"Context length: {len(query_with_context)} chars")
+            
+            # Prepare messages for Claude API
+            messages = []
+            
+            # Add system prompt
+            system_prompt = self._get_system_prompt()
+            print("\n=== System prompt ===")
+            print(f"System prompt length: {len(system_prompt)} chars")
+            messages.append({
+                "role": "system",
+                "content": system_prompt
+            })
+            
+            # Add conversation history if provided
+            if conversation_history:
+                print("\n=== Adding conversation history ===")
+                print(f"History messages: {len(conversation_history)}")
+                for msg in conversation_history:
+                    if isinstance(msg, dict) and 'role' in msg and 'content' in msg:
+                        messages.append({
+                            "role": msg['role'],
+                            "content": msg['content']
+                        })
+            
+            # Add the enriched query
+            messages.append({
+                "role": "user",
+                "content": query_with_context
+            })
+            
+            print("\n=== Sending to Claude API ===")
+            print(f"Total messages: {len(messages)}")
+            
             # Send to Claude API
-            response = self.send_message(messages)
+            response = self.send_message(messages, user=user, conversation=conversation)
             
             # Calculate response time
             response_time = time.time() - start_time
+            print(f"\nResponse time: {response_time:.2f} seconds")
             
             # Log the response time
             logger.info(f"Claude AI response time: {response_time:.2f} seconds")
             
             # Record analytics if user and conversation are provided
             if user and conversation:
-                AnalyticsService.track_ai_response(
+                self.analytics.track_ai_response(
                     user=user,
-                    message=None,  # This will be set later when the message is created
-                    ai_model=None,  # This would be set from the conversation.ai_model
+                    message=None,
+                    ai_model=None,
                     response_time=response_time
                 )
+                
+                # Update user metrics for new conversation
+                from .models import UserMetrics
+                from django.utils import timezone
+                
+                today = timezone.now().date()
+                if conversation.created_at.date() == today:
+                    user_metrics, _ = UserMetrics.objects.get_or_create(
+                        user=user,
+                        day=today,
+                        defaults={
+                            'messages_sent': 0,
+                            'conversations_count': 0,
+                            'tokens_used': 0,
+                            'tasks_integrated': 0,
+                            'average_response_time': 0
+                        }
+                    )
+                    user_metrics.conversations_count += 1
+                    user_metrics.save()
             
-            return response
+            # Log successful query
+            self.analytics.log_ai_query(
+                query=user_query,
+                success=True,
+                user=user
+            )
+            
+            print("\n=== Query processing completed successfully ===")
+            print(f"Query logged: {user_query[:50]}...")
+            return {
+                'response_type': 'ai_response',
+                'message': response
+            }
         except Exception as e:
-            logger.error(f"Error processing query with Claude AI: {e}", exc_info=True)
+            error_msg = str(e)
+            print(f"\n=== Error in query processing ===")
+            print(f"Error type: {type(e).__name__}")
+            print(f"Error message: {error_msg}")
+            import traceback
+            print(f"Traceback: {traceback.format_exc()}")
+            
+            logger.error(f"Ошибка при обработке запроса: {error_msg}", exc_info=True)
             
             # Record error in analytics
             if user:
-                AnalyticsService.track_error(
+                self.analytics.track_error(
                     user=user,
-                    error_message=str(e),
+                    error_message=error_msg,
                     conversation=conversation
                 )
             
+            # Log failed query
+            self.analytics.log_ai_query(
+                query=user_query,
+                success=False,
+                user=user,
+                error_message=error_msg
+            )
+            
             return {
                 'response_type': 'error',
-                'message': f"Sorry, there was an error processing your query: {str(e)}"
+                'message': f"Sorry, there was an error processing your request. Please try again later or contact the administrator if the problem persists."
             }
     
     def _enrich_query_with_context(self, query: str) -> str:
@@ -348,16 +424,18 @@ class ClaudeAIService:
         
         # Add instruction for Claude on how to use this data
         context += "\nBased on the above Planfix data, please respond to the user's query in a helpful and informative way."
-        context += "\nOriginal user query: " + query
+        context += f"\nOriginal user query: {query}"
         
         return context
     
-    def send_message(self, messages: List[Dict[str, str]]) -> str:
+    def send_message(self, messages: List[Dict[str, str]], user=None, conversation=None) -> str:
         """
         Send messages to Claude API and get response
         
         Args:
             messages: List of message objects (role, content)
+            user: Optional user object for metrics tracking
+            conversation: Optional conversation object for metrics tracking
         
         Returns:
             Claude's response text
@@ -366,85 +444,161 @@ class ClaudeAIService:
         
         while retries <= self.max_retries:
             try:
-                # Prepare the API request
-                system_prompt = self._get_system_prompt()
+                print("\n=== Preparing API request ===")
                 
+                # Extract system prompt if present
+                system_prompt = None
+                filtered_messages = []
+                for msg in messages:
+                    if msg['role'] == 'system':
+                        system_prompt = msg['content']
+                    else:
+                        filtered_messages.append(msg)
+                
+                # Prepare the API request
                 payload = {
                     "model": self.model,
-                    "system": system_prompt,
-                    "messages": messages,
+                    "messages": filtered_messages,
                     "max_tokens": 4000,
                     "temperature": 0.7
                 }
                 
-                # Log request (without full message content for brevity)
-                logger.info(f"Sending request to Claude API, model: {self.model}")
-                logger.debug(f"Number of messages: {len(messages)}")
+                # Add system prompt as top-level parameter if present
+                if system_prompt:
+                    payload["system"] = system_prompt
                 
+                print(f"Model: {self.model}")
+                print(f"Number of messages: {len(filtered_messages)}")
+                print(f"API URL: {self.api_url}")
+                print(f"Headers: {self.headers}")
+                
+                # Check if API key is set
+                if not self.api_key:
+                    print("\n=== API Key Error ===")
+                    print("API key is not set in environment variables")
+                    logger.error("Claude API key is not set in environment variables")
+                    return "The AI service is not properly configured. The API key is missing. Please contact the administrator to set up the CLAUDE_API_KEY environment variable."
+                
+                print("\n=== Sending request to Claude API ===")
                 # Send request
                 response = requests.post(
                     self.api_url,
                     headers=self.headers,
-                    json=payload
+                    json=payload,
+                    timeout=30
                 )
                 
-                # Log response status
-                logger.info(f"Claude API response status: {response.status_code}")
+                print(f"Response status: {response.status_code}")
+                print(f"Response headers: {response.headers}")
                 
-                # Handle common errors
-                if response.status_code == 401:
-                    error_text = response.text
-                    logger.error(f"Authentication error (401): {error_text}")
-                    return "Sorry, there was an authentication error when connecting to the AI service. Please contact the administrator."
-                
-                elif response.status_code == 429:
-                    retries += 1
-                    if retries <= self.max_retries:
-                        wait_time = self.retry_delay * (2 ** (retries - 1))  # Exponential backoff
-                        logger.warning(f"Rate limit error (429). Waiting {wait_time} seconds before retry...")
-                        time.sleep(wait_time)
-                        continue
-                    else:
-                        error_text = response.text
-                        logger.error(f"Max retries exceeded. Last error: {error_text[:200]}")
-                        return "Sorry, the AI service is currently experiencing high demand. Please try again later."
-                
-                elif response.status_code != 200:
-                    error_text = response.text
-                    logger.error(f"API error: {response.status_code}, text: {error_text[:200]}")
-                    return f"Sorry, there was an error communicating with the AI service. Error code: {response.status_code}"
-                
-                # Parse successful response
-                try:
-                    response_data = response.json()
-                    logger.info("Successfully received and parsed response from API")
+                if response.status_code == 200:
+                    try:
+                        response_data = response.json()
+                        content = response_data.get('content', [{}])[0].get('text', '')
+                        
+                        # Log token usage
+                        input_tokens = response_data.get('usage', {}).get('input_tokens', 0)
+                        output_tokens = response_data.get('usage', {}).get('output_tokens', 0)
+                        total_tokens = input_tokens + output_tokens
+                        
+                        # Update user metrics if user is provided
+                        if user:
+                            from .models import UserMetrics, AIModelMetrics
+                            from django.utils import timezone
+                            
+                            # Get or create user metrics for today
+                            today = timezone.now().date()
+                            user_metrics, _ = UserMetrics.objects.get_or_create(
+                                user=user,
+                                day=today,
+                                defaults={
+                                    'messages_sent': 0,
+                                    'conversations_count': 0,
+                                    'tokens_used': 0,
+                                    'tasks_integrated': 0,
+                                    'average_response_time': 0
+                                }
+                            )
+                            
+                            # Update metrics
+                            user_metrics.messages_sent += 1
+                            user_metrics.tokens_used += total_tokens
+                            
+                            # Check if this is a new conversation
+                            if conversation and conversation.created_at.date() == today:
+                                user_metrics.conversations_count += 1
+                            
+                            user_metrics.save()
+                            
+                            # Update AI model metrics
+                            model_metrics, _ = AIModelMetrics.objects.get_or_create(
+                                ai_model=self.model,
+                                day=today,
+                                defaults={
+                                    'requests_count': 0,
+                                    'tokens_used': 0,
+                                    'avg_response_time': 0
+                                }
+                            )
+                            
+                            # Update model metrics
+                            model_metrics.requests_count += 1
+                            model_metrics.tokens_used += total_tokens
+                            model_metrics.save()
+                        
+                        print("\n=== Query processing completed successfully ===")
+                        return content
+                        
+                    except json.JSONDecodeError as e:
+                        print("\n=== JSON Parse Error ===")
+                        print(f"Error: {str(e)}")
+                        print(f"Response text: {response.text}")
+                        logger.error(f"Error parsing Claude API response: {str(e)}")
+                        return "Sorry, there was an error processing the response from the AI service."
+                        
+                elif response.status_code == 401:
+                    print("\n=== Authentication Error ===")
+                    print("Invalid API key")
+                    logger.error("Claude API authentication failed")
+                    return "The AI service is not properly configured. Please contact the administrator."
                     
-                    # Extract text from Claude's response format
-                    if 'content' in response_data and len(response_data['content']) > 0:
-                        result = response_data['content'][0].get('text', '')
-                        logger.info(f"Response length: {len(result)} chars")
-                        return result
-                    else:
-                        logger.warning(f"Empty content array in API response: {response_data}")
-                        return "I processed your request, but couldn't generate a proper response. Please try rephrasing your question."
-                
-                except ValueError:
-                    logger.error("Failed to parse JSON from API response")
-                    return "Sorry, there was an error processing the AI response. Please try again."
-            
+                elif response.status_code == 429:
+                    print("\n=== Rate Limit Error ===")
+                    print("Rate limit exceeded")
+                    logger.warning("Claude API rate limit exceeded")
+                    if retries < self.max_retries:
+                        retries += 1
+                        time.sleep(self.retry_delay * retries)
+                        continue
+                    return "The AI service is currently busy. Please try again in a few minutes."
+                    
+                else:
+                    print("\n=== API Error ===")
+                    print(f"Status code: {response.status_code}")
+                    print(f"Error text: {response.text}")
+                    print(f"Request payload: {json.dumps(payload, indent=2)}")
+                    logger.error(f"Claude API error: {response.status_code}, text: {response.text}")
+                    return f"Sorry, there was an error communicating with the AI service. Error code: {response.status_code}"
+                    
             except requests.exceptions.RequestException as e:
-                logger.error(f"Request error: {str(e)}", exc_info=True)
-                return f"Sorry, there was a connection error with the AI service: {str(e)}"
-            
+                print("\n=== Connection Error ===")
+                print(f"Error type: {type(e).__name__}")
+                print(f"Error message: {str(e)}")
+                logger.error(f"Error connecting to Claude API: {str(e)}")
+                if retries < self.max_retries:
+                    retries += 1
+                    time.sleep(self.retry_delay * retries)
+                    continue
+                return "Sorry, there was an error connecting to the AI service. Please try again later."
+                
             except Exception as e:
-                logger.error(f"Unexpected error: {str(e)}", exc_info=True)
-                return f"Sorry, an unexpected error occurred: {str(e)}"
-            
-            # If we reach here, the request was successful
-            break
+                print("\n=== Unexpected Error ===")
+                print(f"Error type: {type(e).__name__}")
+                print(f"Error message: {str(e)}")
+                logger.error(f"Unexpected error in Claude AI service: {str(e)}")
+                return "Sorry, there was an unexpected error. Please try again later."
         
-        # This should not be reached under normal circumstances
-        return "Sorry, there was an error processing your request. Please try again."
+        return "Sorry, the AI service is currently unavailable. Please try again later."
 
 # Singleton instance
 claude_ai = ClaudeAIService()

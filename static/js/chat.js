@@ -2,7 +2,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const messageForm = document.getElementById('messageForm');
     const messageInput = document.getElementById('messageInput');
     const chatMessages = document.getElementById('chatMessages');
-    const newChatButton = document.getElementById('newChatButton');
     
     // Получаем ID беседы из data-атрибута
     let currentConversationId = null;
@@ -26,13 +25,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     scrollToBottom();
-    
-    // Обработчик кнопки "Новый чат"
-    if (newChatButton) {
-        newChatButton.addEventListener('click', function() {
-            window.location.href = '/';
-        });
-    }
     
     // Обработчик отправки формы
     if (messageForm) {
@@ -134,7 +126,22 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Функция форматирования содержимого сообщения
     function formatMessageContent(content) {
-        // Пока просто экранируем HTML и сохраняем переносы строк
+        // Проверяем, что content является строкой
+        if (typeof content !== 'string') {
+            // Если это объект, пытаемся преобразовать его в строку
+            if (typeof content === 'object') {
+                try {
+                    content = JSON.stringify(content);
+                } catch (e) {
+                    content = String(content);
+                }
+            } else {
+                // Для других типов просто преобразуем в строку
+                content = String(content);
+            }
+        }
+        
+        // Экранируем HTML и сохраняем переносы строк
         const escaped = escapeHtml(content);
         return escaped.replace(/\n/g, '<br>');
     }
@@ -158,28 +165,49 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Функция отправки сообщения на сервер
     async function sendMessageToServer(message) {
-        const response = await fetch('/api/message/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': getCookie('csrftoken')
-            },
-            body: JSON.stringify({
-                message: message,
-                conversation_id: currentConversationId
-            })
-        });
-        
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || 'Ошибка сети');
+        try {
+            const response = await fetch('/api/message/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({
+                    message: message,
+                    conversation_id: currentConversationId
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (!response.ok) {
+                // Если есть сообщение об ошибке в ответе, используем его
+                const errorMessage = data.error || 'Произошла неизвестная ошибка';
+                throw new Error(errorMessage);
+            }
+            
+            return data;
+        } catch (error) {
+            console.error('Ошибка при отправке сообщения:', error);
+            throw new Error(error.message || 'Произошла ошибка при отправке сообщения');
         }
-        
-        return response.json();
     }
     
     // Вспомогательная функция для экранирования HTML
     function escapeHtml(unsafe) {
+        // Проверяем, что unsafe является строкой
+        if (typeof unsafe !== 'string') {
+            if (unsafe === null || unsafe === undefined) {
+                return '';
+            }
+            try {
+                unsafe = String(unsafe);
+            } catch (e) {
+                console.error('Error converting to string:', e);
+                return '';
+            }
+        }
+        
         return unsafe
             .replace(/&/g, "&amp;")
             .replace(/</g, "&lt;")

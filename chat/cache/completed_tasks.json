@@ -3775,6 +3775,47 @@
     }
   },
   {
+    "id": 205,
+    "name": "Топосъёмка участка + очистных",
+    "description": "",
+    "status": {
+      "id": 6,
+      "name": "Выполненная",
+      "color": "#30AB50",
+      "isActive": true,
+      "hasDeadline": false,
+      "isAppliedIndividually": true,
+      "texts": [
+        {
+          "lang": "Ru",
+          "name": "Выполненная"
+        },
+        {
+          "lang": "En",
+          "name": "Ready for review"
+        }
+      ]
+    },
+    "assigner": {
+      "id": "user:5",
+      "name": "Алексей Шульга"
+    },
+    "project": {
+      "id": 1647,
+      "name": "Elysium Иссык-Куль"
+    },
+    "startDateTime": {
+      "date": "04-02-2025",
+      "time": "00:00",
+      "datetime": "2025-02-04T00:00Z"
+    },
+    "endDateTime": {
+      "date": "08-05-2025",
+      "time": "00:00",
+      "datetime": "2025-05-08T00:00Z"
+    }
+  },
+  {
     "id": 206,
     "name": "Выполнить работы по топосъёмке",
     "description": "",
@@ -14571,6 +14612,117 @@
     }
   },
   {
+    "id": 1473,
+    "name": "3.1 Определить цели и основные параметры проекта",
+    "description": "",
+    "status": {
+      "id": 3,
+      "name": "Завершенная",
+      "color": "#85878E",
+      "isActive": false,
+      "hasDeadline": false,
+      "isAppliedIndividually": false,
+      "texts": [
+        {
+          "lang": "Ru",
+          "name": "Завершенная"
+        },
+        {
+          "lang": "En",
+          "name": "Completed"
+        }
+      ]
+    },
+    "assigner": {
+      "id": "user:1",
+      "name": "Константин Осипов"
+    },
+    "project": {
+      "id": 1462,
+      "name": "Благоустройство парка \"Молодежный\" и \"40 лет Октября\""
+    }
+  },
+  {
+    "id": 1510,
+    "name": "4.1 Провести топосъемку",
+    "description": "",
+    "status": {
+      "id": 3,
+      "name": "Завершенная",
+      "color": "#85878E",
+      "isActive": false,
+      "hasDeadline": false,
+      "isAppliedIndividually": false,
+      "texts": [
+        {
+          "lang": "Ru",
+          "name": "Завершенная"
+        },
+        {
+          "lang": "En",
+          "name": "Completed"
+        }
+      ]
+    },
+    "assigner": {
+      "id": "user:1",
+      "name": "Константин Осипов"
+    },
+    "project": {
+      "id": 1462,
+      "name": "Благоустройство парка \"Молодежный\" и \"40 лет Октября\""
+    },
+    "assignees": {
+      "users": [
+        {
+          "id": "user:5",
+          "name": "Алексей Шульга"
+        }
+      ],
+      "groups": []
+    }
+  },
+  {
+    "id": 1540,
+    "name": "Создать ТЗ для топосъёмки",
+    "description": "<p>Учесть там здания за дорогой.<br />Согнласовать с Константином.</p>",
+    "status": {
+      "id": 3,
+      "name": "Завершенная",
+      "color": "#85878E",
+      "isActive": false,
+      "hasDeadline": false,
+      "isAppliedIndividually": false,
+      "texts": [
+        {
+          "lang": "Ru",
+          "name": "Завершенная"
+        },
+        {
+          "lang": "En",
+          "name": "Completed"
+        }
+      ]
+    },
+    "assigner": {
+      "id": "user:5",
+      "name": "Алексей Шульга"
+    },
+    "project": {
+      "id": 1462,
+      "name": "Благоустройство парка \"Молодежный\" и \"40 лет Октября\""
+    },
+    "assignees": {
+      "users": [
+        {
+          "id": "user:5",
+          "name": "Алексей Шульга"
+        }
+      ],
+      "groups": []
+    }
+  },
+  {
     "id": 1541,
     "name": "Провести встречу на объекте",
     "description": "",
@@ -16553,6 +16705,42 @@
         }
       ],
       "groups": []
+    }
+  },
+  {
+    "id": 1620,
+    "name": "Фирменный стиль",
+    "description": "",
+    "status": {
+      "id": 6,
+      "name": "Выполненная",
+      "color": "#30AB50",
+      "isActive": true,
+      "hasDeadline": false,
+      "isAppliedIndividually": true,
+      "texts": [
+        {
+          "lang": "Ru",
+          "name": "Выполненная"
+        },
+        {
+          "lang": "En",
+          "name": "Ready for review"
+        }
+      ]
+    },
+    "assigner": {
+      "id": "user:3",
+      "name": "Вячеслав Фоменко"
+    },
+    "project": {
+      "id": 116,
+      "name": "Маркетинг"
+    },
+    "endDateTime": {
+      "date": "08-05-2025",
+      "time": "00:00",
+      "datetime": "2025-05-08T00:00Z"
     }
   },
   {
@@ -24033,6 +24221,96 @@
     }
   },
   {
+    "id": 2071,
+    "name": "Определить предварительную цветовую палитру",
+    "description": "Определить предварительную цветовую палитру",
+    "status": {
+      "id": 3,
+      "name": "Завершенная",
+      "color": "#85878E",
+      "isActive": false,
+      "hasDeadline": false,
+      "isAppliedIndividually": false,
+      "texts": [
+        {
+          "lang": "Ru",
+          "name": "Завершенная"
+        },
+        {
+          "lang": "En",
+          "name": "Completed"
+        }
+      ]
+    },
+    "assigner": {
+      "id": "user:3",
+      "name": "Вячеслав Фоменко"
+    },
+    "project": {
+      "id": 116,
+      "name": "Маркетинг"
+    },
+    "endDateTime": {
+      "date": "08-05-2025",
+      "time": "00:00",
+      "datetime": "2025-05-08T00:00Z"
+    },
+    "assignees": {
+      "users": [
+        {
+          "id": "user:3",
+          "name": "Вячеслав Фоменко"
+        }
+      ],
+      "groups": []
+    }
+  },
+  {
+    "id": 2072,
+    "name": "Выбрать типографику для проекта",
+    "description": "Выбрать типографику для проекта",
+    "status": {
+      "id": 3,
+      "name": "Завершенная",
+      "color": "#85878E",
+      "isActive": false,
+      "hasDeadline": false,
+      "isAppliedIndividually": false,
+      "texts": [
+        {
+          "lang": "Ru",
+          "name": "Завершенная"
+        },
+        {
+          "lang": "En",
+          "name": "Completed"
+        }
+      ]
+    },
+    "assigner": {
+      "id": "user:3",
+      "name": "Вячеслав Фоменко"
+    },
+    "project": {
+      "id": 116,
+      "name": "Маркетинг"
+    },
+    "endDateTime": {
+      "date": "08-05-2025",
+      "time": "00:00",
+      "datetime": "2025-05-08T00:00Z"
+    },
+    "assignees": {
+      "users": [
+        {
+          "id": "user:3",
+          "name": "Вячеслав Фоменко"
+        }
+      ],
+      "groups": []
+    }
+  },
+  {
     "id": 2076,
     "name": "Оплата материалов по договору устройство ограждения Автовокзала",
     "description": "<p>Задача ставится согласно процесса согласования договоров:&nbsp;<a href=\"https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.esmrt0f8nx6u\">https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.esmrt0f8nx6u</a></p>\n<p>Продолжение работ по устройству ограждения территории Автовокзала. Работы: по устройству нового&nbsp; ограждения участка - продолжение по фасадной части от проспекта Жибе-Жолу высотой 3,2 м с козырьком; устройство нового&nbsp; ограждения с северной стороны высотой 2,7 м без козырька;&nbsp; наращивание существующего бетонного ограждения общей высотой 2,7 м.</p>",
@@ -25434,6 +25712,51 @@
     "project": {
       "id": 116,
       "name": "Маркетинг"
+    },
+    "assignees": {
+      "users": [
+        {
+          "id": "user:3",
+          "name": "Вячеслав Фоменко"
+        }
+      ],
+      "groups": []
+    }
+  },
+  {
+    "id": 2157,
+    "name": "Логотип",
+    "description": "<h3>&nbsp;</h3>\n<p>&nbsp;</p>",
+    "status": {
+      "id": 3,
+      "name": "Завершенная",
+      "color": "#85878E",
+      "isActive": false,
+      "hasDeadline": false,
+      "isAppliedIndividually": false,
+      "texts": [
+        {
+          "lang": "Ru",
+          "name": "Завершенная"
+        },
+        {
+          "lang": "En",
+          "name": "Completed"
+        }
+      ]
+    },
+    "assigner": {
+      "id": "user:3",
+      "name": "Вячеслав Фоменко"
+    },
+    "project": {
+      "id": 116,
+      "name": "Маркетинг"
+    },
+    "endDateTime": {
+      "date": "08-05-2025",
+      "time": "00:00",
+      "datetime": "2025-05-08T00:00Z"
     },
     "assignees": {
       "users": [

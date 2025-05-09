@@ -256,6 +256,34 @@
         border-left-color: #0a84ff;
         color: #a1a1a6;
     }
+
+    .model-selector {
+        margin: 20px 0 10px 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .model-select {
+        padding: 8px 35px 8px 15px;
+        border: 2px solid #0071e3;
+        border-radius: 8px;
+        background-color: white;
+        color: #0071e3;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        min-width: 180px;
+        appearance: none;
+    }
+    .model-select-arrow {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #0071e3;
+        pointer-events: none;
+        font-size: 12px;
+    }
 </style>
 {% endblock %}
 
@@ -327,6 +355,17 @@
     </div>
     
     <div class="content">
+        <div class="model-selector">
+            <div style="position:relative;">
+                <select id="aiModelSelect" class="model-select">
+                    {% for model in ai_models %}
+                    <option value="{{ model.id }}" {% if model.id == conversation.ai_model.id %}selected{% endif %}>{{ model.name }}</option>
+                    {% endfor %}
+                </select>
+                <div class="model-select-arrow">▼</div>
+            </div>
+            <span style="margin-left: 16px; color: #0071e3; font-weight: bold;">Текущая модель: {{ conversation.ai_model.name|default:'(не выбрана)' }}</span>
+        </div>
         <div class="chat-container" data-conversation-id="{{ conversation.id }}">
             <div class="chat-messages" id="chatMessages">
                 {% for message in messages %}
@@ -385,6 +424,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const chatMessages = document.getElementById('chatMessages');
     const newChatButton = document.getElementById('newChatButton');
     const refreshCacheLink = document.getElementById('refresh-cache-link');
+    const modelSelect = document.getElementById('aiModelSelect');
+    const conversationId = document.querySelector('.chat-container').dataset.conversationId;
     
     // Get conversation ID from data attribute
     let currentConversationId = null;
@@ -639,6 +680,27 @@ document.addEventListener('DOMContentLoaded', function() {
     // Apply syntax highlighting to code blocks if prism.js is available
     if (typeof Prism !== 'undefined') {
         Prism.highlightAll();
+    }
+
+    // Model select handler
+    if (modelSelect) {
+        modelSelect.addEventListener('change', function() {
+            const selectedModelId = this.value;
+            fetch(`/agent/conversation/${conversationId}/change-model/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({ model_id: selectedModelId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                }
+            });
+        });
     }
 });
 </script>

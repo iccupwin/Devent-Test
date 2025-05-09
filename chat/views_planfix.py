@@ -5,7 +5,7 @@ from django.contrib import messages
 import json
 import logging
 
-from .models import Conversation, Message, User
+from .models import Conversation, Message, User, UserMetrics
 from .planfix_service import (
     get_active_tasks, 
     get_completed_tasks, 
@@ -15,6 +15,7 @@ from .planfix_service import (
 )
 from .services import ClaudeService
 from .views import should_use_apple_style
+from django.utils import timezone
 
 # Настройка логирования
 logger = logging.getLogger(__name__)
@@ -214,6 +215,30 @@ def planfix_task_integrate(request, task_id):
                 role='user',
                 content=user_message
             )
+            
+            # Update user metrics
+            today = timezone.now().date()
+            user_metrics, _ = UserMetrics.objects.get_or_create(
+                user=user,
+                day=today,
+                defaults={
+                    'messages_sent': 0,
+                    'conversations_count': 0,
+                    'tokens_used': 0,
+                    'tasks_integrated': 0,
+                    'average_response_time': 0
+                }
+            )
+            
+            # Update metrics
+            user_metrics.messages_sent += 1
+            user_metrics.tasks_integrated += 1
+            
+            # Check if this is a new conversation
+            if conversation.created_at.date() == today:
+                user_metrics.conversations_count += 1
+            
+            user_metrics.save()
             
             logger.info(f"Создано сообщение пользователя для задачи {task_id}")
             

@@ -6,13 +6,26 @@
 {% block content %}
 <div class="app-layout">
     <div class="sidebar">
-        <button id="newChatButton" class="new-chat-button">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="12" y1="5" x2="12" y2="19"></line>
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-            </svg>
-            Новая беседа
-        </button>
+        <form id="newChatForm" method="POST" action="{% url 'chat:new_conversation' %}" style="margin-bottom: 16px;">
+            {% csrf_token %}
+            <div class="model-selector" style="margin-bottom: 12px;">
+                <select name="model_id" id="aiModelSelect" class="model-select" style="width: 100%; padding: 8px; border-radius: 8px; border: 1px solid #d2d2d7; background-color: #fff;">
+                    {% for model in ai_models %}
+                    <option value="{{ model.id }}">{{ model.name }}</option>
+                    {% endfor %}
+                </select>
+                <span id="currentModelName" style="margin-left: 16px; color: #0071e3; font-weight: bold;">
+                    Текущая модель: {{ ai_models.0.name }}
+                </span>
+            </div>
+            <button type="submit" class="new-chat-button" style="width: 100%;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                Новая беседа
+            </button>
+        </form>
         
         <div class="conversations-list">
             {% for conversation in conversations %}
@@ -56,4 +69,15 @@
 
 {% block scripts %}
 <script src="{% static 'js/chat.js' %}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const select = document.getElementById('aiModelSelect');
+    const label = document.getElementById('currentModelName');
+    if (select && label) {
+        select.addEventListener('change', function() {
+            label.textContent = 'Текущая модель: ' + select.options[select.selectedIndex].text;
+        });
+    }
+});
+</script>
 {% endblock %}

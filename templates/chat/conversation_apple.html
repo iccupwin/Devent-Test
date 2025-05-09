@@ -1,7 +1,7 @@
 {% extends 'base_apple.html' %}
 {% load static %}
 
-{% block title %}Беседа с Claude{% endblock %}
+{% block title %}Беседа с {{ conversation.ai_model.name }}{% endblock %}
 
 {% block content %}
 <div class="app-layout">
@@ -25,18 +25,33 @@
     
     <div class="content">
         <div class="chat-container" data-conversation-id="{{ conversation.id }}">
+            <div class="chat-header">
+                <div class="model-selector">
+                    <div class="model-select-wrapper">
+                        <select id="aiModelSelect" class="model-select">
+                            {% for model in ai_models %}
+                            <option value="{{ model.id }}" {% if model.id == conversation.ai_model.id %}selected{% endif %}>
+                                {{ model.name }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                        <div class="model-select-arrow">▼</div>
+                    </div>
+                </div>
+            </div>
+            
             <div class="chat-messages" id="chatMessages">
                 {% for message in messages %}
                 <div class="message {{ message.role }}">
                     {% if message.role == 'assistant' %}
-                    <div class="assistant-avatar">C</div>
+                    <div class="assistant-avatar">{{ message.ai_model_used.name|first|upper }}</div>
                     <div class="message-content-wrapper">
                     {% endif %}
                         <div class="message-role">
                             {% if message.role == 'user' %}
                             Вы
                             {% else %}
-                            Claude
+                            {{ message.ai_model_used.name }}
                             {% endif %}
                         </div>
                         <div class="message-content">{{ message.content }}</div>
@@ -46,7 +61,7 @@
                 </div>
                 {% empty %}
                 <div class="welcome-message">
-                    <h1>Привет! Я Claude.</h1>
+                    <h1>Привет! Я {{ conversation.ai_model.name }}.</h1>
                     <p>Задайте мне вопрос, и я постараюсь помочь.</p>
                 </div>
                 {% endfor %}
@@ -76,4 +91,126 @@
 
 {% block scripts %}
 <script src="{% static 'js/chat.js' %}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const modelSelect = document.getElementById('aiModelSelect');
+    const conversationId = document.querySelector('.chat-container').dataset.conversationId;
+    
+    modelSelect.addEventListener('change', function() {
+        const selectedModelId = this.value;
+        // Отправляем запрос на изменение модели
+        fetch(`/chat/conversation/${conversationId}/change-model/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({
+                model_id: selectedModelId
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Обновляем имя модели в приветственном сообщении
+                const welcomeMessage = document.querySelector('.welcome-message h1');
+                if (welcomeMessage) {
+                    welcomeMessage.textContent = `Привет! Я ${data.model_name}.`;
+                }
+                // Обновляем заголовок страницы
+                document.title = `Беседа с ${data.model_name}`;
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+    
+    // Функция для получения CSRF токена
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+});
+</script>
+{% endblock %}
+
+{% block styles %}
+<style>
+.chat-header {
+    padding: 15px 20px;
+    border-bottom: 1px solid #e0e0e0;
+    background: #f8f8f8;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.model-selector {
+    display: flex;
+    align-items: center;
+}
+
+.model-select-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.model-select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    padding: 8px 35px 8px 15px;
+    border: 2px solid #0071e3;
+    border-radius: 8px;
+    background-color: white;
+    color: #0071e3;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 180px;
+}
+
+.model-select-arrow {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #0071e3;
+    pointer-events: none;
+    font-size: 12px;
+}
+
+.model-select:hover {
+    background-color: #f0f0f0;
+    border-color: #005bb5;
+}
+
+.model-select:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.2);
+}
+
+.assistant-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: #0071e3;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-right: 12px;
+}
+</style>
 {% endblock %}

@@ -1,11 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse, HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_http_methods
-from .models import Conversation, Message, User
+from django.views.decorators.http import require_http_methods, require_POST
+from .models import Conversation, Message, User, UserMetrics, AIModel
 from .agent_views import agent_dashboard, agent_conversation, new_agent_conversation
 from .planfix_cache_service import planfix_cache
 import logging
+from django.utils import timezone
+import json
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -19,7 +21,13 @@ def index(request):
         return index_apple(request)
         
     # Получаем или создаем анонимного пользователя
-    user, created = User.objects.get_or_create(username='anonymous')
+    user, created = User.objects.get_or_create(
+        username='anonymous',
+        defaults={
+            'role': 'user',
+            'is_active': True
+        }
+    )
     
     # Получаем список бесед
     conversations = Conversation.objects.filter(user=user).order_by('-updated_at')
@@ -33,7 +41,13 @@ def index_apple(request):
     Стартовая страница (главная) в стиле Apple
     """
     # Получаем или создаем анонимного пользователя
-    user, created = User.objects.get_or_create(username='anonymous')
+    user, created = User.objects.get_or_create(
+        username='anonymous',
+        defaults={
+            'role': 'user',
+            'is_active': True
+        }
+    )
     
     # Получаем список бесед
     conversations = Conversation.objects.filter(user=user).order_by('-updated_at')
@@ -44,17 +58,16 @@ def index_apple(request):
 
 def conversation(request, conversation_id):
     """
-    Страница беседы
+    Представление для отображения беседы
     """
-    # Проверка, использовать ли Apple-стиль
-    if should_use_apple_style(request):
-        return conversation_apple(request, conversation_id)
-        
     # Получаем или создаем анонимного пользователя
-    user, created = User.objects.get_or_create(username='anonymous')
-    
-    # Получаем список бесед
-    conversations = Conversation.objects.filter(user=user).order_by('-updated_at')
+    user, created = User.objects.get_or_create(
+        username='anonymous',
+        defaults={
+            'role': 'user',
+            'is_active': True
+        }
+    )
     
     # Получаем текущую беседу
     conversation = get_object_or_404(Conversation, id=conversation_id, user=user)
@@ -62,33 +75,20 @@ def conversation(request, conversation_id):
     # Получаем сообщения беседы
     messages = Message.objects.filter(conversation=conversation).order_by('created_at')
     
-    return render(request, 'chat/conversation.html', {
-        'conversation': conversation,
-        'messages': messages,
-        'conversations': conversations
-    })
-
-def conversation_apple(request, conversation_id):
-    """
-    Страница беседы в стиле Apple
-    """
-    # Получаем или создаем анонимного пользователя
-    user, created = User.objects.get_or_create(username='anonymous')
-    
-    # Получаем список бесед
+    # Получаем список бесед пользователя
     conversations = Conversation.objects.filter(user=user).order_by('-updated_at')
     
-    # Получаем текущую беседу
-    conversation = get_object_or_404(Conversation, id=conversation_id, user=user)
+    # Получаем список доступных моделей ИИ
+    ai_models = AIModel.objects.filter(is_active=True).order_by('name')
     
-    # Получаем сообщения беседы
-    messages = Message.objects.filter(conversation=conversation).order_by('created_at')
-    
-    return render(request, 'chat/conversation_apple.html', {
+    context = {
         'conversation': conversation,
         'messages': messages,
-        'conversations': conversations
-    })
+        'conversations': conversations,
+        'ai_models': ai_models,
+    }
+    
+    return render(request, 'chat/conversation_apple.html', context)
 
 def new_conversation(request):
     """
@@ -107,11 +107,46 @@ def new_conversation_apple(request):
     """
     Создание новой беседы в стиле Apple
     """
-    if request.method == 'POST':
-        # Для демонстрации просто перенаправляем на страницу беседы
-        return redirect('chat:conversation_apple', conversation_id=1)
+    # Получаем или создаем анонимного пользователя
+    user, created = User.objects.get_or_create(
+        username='anonymous',
+        defaults={
+            'role': 'user',
+            'is_active': True
+        }
+    )
     
-    return render(request, 'chat/index_apple.html', {'title': 'Новая беседа'})
+    # Получаем список доступных моделей ИИ
+    ai_models = AIModel.objects.filter(is_active=True).order_by('name')
+    
+    if request.method == 'POST':
+        # Получаем ID выбранной модели из POST-запроса
+        model_id = request.POST.get('model_id')
+        selected_model = None
+        
+        if model_id:
+            try:
+                selected_model = AIModel.objects.get(id=model_id)
+            except AIModel.DoesNotExist:
+                pass
+        
+        # Если модель не выбрана, используем первую доступную
+        if not selected_model and ai_models.exists():
+            selected_model = ai_models.first()
+        
+        # Создаем новую беседу с выбранной моделью
+        conversation = Conversation.objects.create(
+            user=user,
+            title='Новая беседа',
+            ai_model=selected_model
+        )
+        
+        return redirect('chat:conversation', conversation_id=conversation.id)
+    
+    return render(request, 'chat/index_apple.html', {
+        'title': 'Новая беседа',
+        'ai_models': ai_models
+    })
 
 def toggle_style(request):
     """
@@ -163,3 +198,30 @@ def refresh_cache(request):
     except Exception as e:
         logger.error(f"Error refreshing cache: {str(e)}", exc_info=True)
         return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+
+@require_POST
+def change_conversation_model(request, conversation_id):
+    """
+    Изменение модели ИИ для беседы
+    """
+    try:
+        conversation = get_object_or_404(Conversation, id=conversation_id)
+        data = json.loads(request.body)
+        model_id = data.get('model_id')
+        
+        if not model_id:
+            return JsonResponse({'success': False, 'error': 'Model ID is required'})
+            
+        model = get_object_or_404(AIModel, id=model_id)
+        conversation.ai_model = model
+        conversation.save()
+        
+        return JsonResponse({
+            'success': True,
+            'model_name': model.name
+        })
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        }, status=400)

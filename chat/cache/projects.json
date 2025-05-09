@@ -10,10 +10,10 @@
   {
     "id": 116,
     "name": "Маркетинг",
-    "task_count": 102,
-    "active_tasks": 64,
-    "completed_tasks": 38,
-    "overdue_tasks": 7
+    "task_count": 103,
+    "active_tasks": 61,
+    "completed_tasks": 42,
+    "overdue_tasks": 4
   },
   {
     "id": 23,
@@ -43,9 +43,9 @@
     "id": 1647,
     "name": "Elysium Иссык-Куль",
     "task_count": 159,
-    "active_tasks": 107,
-    "completed_tasks": 52,
-    "overdue_tasks": 10
+    "active_tasks": 106,
+    "completed_tasks": 53,
+    "overdue_tasks": 9
   },
   {
     "id": 1310,
@@ -66,10 +66,10 @@
   {
     "id": 1462,
     "name": "Благоустройство парка \"Молодежный\" и \"40 лет Октября\"",
-    "task_count": 77,
-    "active_tasks": 76,
-    "completed_tasks": 1,
-    "overdue_tasks": 1
+    "task_count": 94,
+    "active_tasks": 90,
+    "completed_tasks": 4,
+    "overdue_tasks": 4
   },
   {
     "id": 236,

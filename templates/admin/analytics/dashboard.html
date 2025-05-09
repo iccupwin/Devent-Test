@@ -40,6 +40,31 @@
         {{ task_integrations_trend }}% за неделю
       </div>
     </div>
+
+    <!-- Новые карточки -->
+    <div class="stat-card" data-modal="topQueriesModal">
+      <h3>Топ вопросы</h3>
+      <div class="stat-value">{{ top_queries_count }}</div>
+      <div class="stat-trend">
+        За последние {{ days }} дней
+      </div>
+    </div>
+
+    <div class="stat-card" data-modal="qualityModal">
+      <h3>Качество ответов</h3>
+      <div class="stat-value">{{ quality_score }}%</div>
+      <div class="stat-trend {% if quality_trend > 0 %}positive{% elif quality_trend < 0 %}negative{% endif %}">
+        {{ quality_trend }}% изменение
+      </div>
+    </div>
+
+    <div class="stat-card" data-modal="usageModal">
+      <h3>Использование</h3>
+      <div class="stat-value">{{ usage_percentage }}%</div>
+      <div class="stat-trend">
+        {{ usage_hours }} часов
+      </div>
+    </div>
   </div>
   
   <!-- Модальные окна -->
@@ -207,6 +232,142 @@
             {% endfor %}
           </tbody>
         </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Новые модальные окна -->
+  <div id="topQueriesModal" class="apple-modal">
+    <div class="apple-modal-content">
+      <div class="apple-modal-header">
+        <h2>Топ вопросы</h2>
+        <button class="apple-modal-close" onclick="closeModal('topQueriesModal')">&times;</button>
+      </div>
+      <div class="apple-modal-body">
+        <div class="search-box">
+          <input type="text" id="querySearch" placeholder="Поиск вопросов..." onkeyup="filterTable('queryTable', 'querySearch')">
+        </div>
+        <table id="queryTable" class="apple-table">
+          <thead>
+            <tr>
+              <th>Вопрос</th>
+              <th>Количество запросов</th>
+              <th>Средняя оценка</th>
+              <th>Последний запрос</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for query in top_queries %}
+            <tr>
+              <td>{{ query.details__query }}</td>
+              <td>{{ query.count }}</td>
+              <td>{{ query.last_used|date:"d.m.Y H:i" }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div id="qualityModal" class="apple-modal">
+    <div class="apple-modal-content">
+      <div class="apple-modal-header">
+        <h2>Качество ответов</h2>
+        <button class="apple-modal-close" onclick="closeModal('qualityModal')">&times;</button>
+      </div>
+      <div class="apple-modal-body">
+        <div class="quality-metrics">
+          <div class="metric-card">
+            <h4>Общая оценка</h4>
+            <div class="metric-value">{{ quality_score }}%</div>
+          </div>
+          <div class="metric-card">
+            <h4>Полезные ответы</h4>
+            <div class="metric-value">{{ helpful_responses }}%</div>
+          </div>
+          <div class="metric-card">
+            <h4>Точность</h4>
+            <div class="metric-value">{{ accuracy_score }}%</div>
+          </div>
+        </div>
+        <div class="quality-chart">
+          <canvas id="qualityChart"></canvas>
+        </div>
+        <div class="quality-table">
+          <h4>Последние оценки</h4>
+          <table class="apple-table">
+            <thead>
+              <tr>
+                <th>Вопрос</th>
+                <th>Оценка</th>
+                <th>Комментарий</th>
+                <th>Дата</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for feedback in quality_feedback %}
+              <tr>
+                <td>{{ feedback.query|truncatechars:50 }}</td>
+                <td>{{ feedback.rating }}/5</td>
+                <td>{{ feedback.comment|truncatechars:30 }}</td>
+                <td>{{ feedback.created_at|date:"d.m.Y H:i" }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="usageModal" class="apple-modal">
+    <div class="apple-modal-content">
+      <div class="apple-modal-header">
+        <h2>Мониторинг использования</h2>
+        <button class="apple-modal-close" onclick="closeModal('usageModal')">&times;</button>
+      </div>
+      <div class="apple-modal-body">
+        <div class="usage-metrics">
+          <div class="metric-card">
+            <h4>Активные пользователи</h4>
+            <div class="metric-value">{{ active_users }}</div>
+          </div>
+          <div class="metric-card">
+            <h4>Запросов в час</h4>
+            <div class="metric-value">{{ requests_per_hour }}</div>
+          </div>
+          <div class="metric-card">
+            <h4>Среднее время ответа</h4>
+            <div class="metric-value">{{ avg_response_time }}с</div>
+          </div>
+        </div>
+        <div class="usage-chart">
+          <canvas id="usageChart"></canvas>
+        </div>
+        <div class="usage-table">
+          <h4>Пиковые нагрузки</h4>
+          <table class="apple-table">
+            <thead>
+              <tr>
+                <th>Время</th>
+                <th>Количество запросов</th>
+                <th>Среднее время ответа</th>
+                <th>Ошибки</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for peak in usage_peaks %}
+              <tr>
+                <td>{{ peak.time|date:"d.m.Y H:i" }}</td>
+                <td>{{ peak.requests }}</td>
+                <td>{{ peak.avg_time }}с</td>
+                <td>{{ peak.errors }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>

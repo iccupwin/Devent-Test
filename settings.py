@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv
-
+print("CLAUDE_API_KEY:", os.environ.get('CLAUDE_API_KEY'))
 # Загрузка переменных окружения
 load_dotenv()
 

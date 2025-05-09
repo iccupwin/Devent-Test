@@ -5,8 +5,9 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from .analytics_service import AnalyticsService
 
-from .models import Conversation, Message, User
+from .models import Conversation, Message, User, UserMetrics
 from .services import ClaudeService
+from django.utils import timezone
 
 logger = logging.getLogger(__name__)
 
@@ -48,6 +49,29 @@ def message_api(request):
             content=message_text
         )
         
+        # Update user metrics
+        today = timezone.now().date()
+        user_metrics, _ = UserMetrics.objects.get_or_create(
+            user=user,
+            day=today,
+            defaults={
+                'messages_sent': 0,
+                'conversations_count': 0,
+                'tokens_used': 0,
+                'tasks_integrated': 0,
+                'average_response_time': 0
+            }
+        )
+        
+        # Update metrics
+        user_metrics.messages_sent += 1
+        
+        # Check if this is a new conversation
+        if conversation.created_at.date() == today:
+            user_metrics.conversations_count += 1
+        
+        user_metrics.save()
+        
         # Get previous messages for context (limit to last 10 for simplicity)
         previous_messages = Message.objects.filter(conversation=conversation).order_by('created_at')
         
@@ -69,6 +93,11 @@ def message_api(request):
         # Send to Claude API
         claude_service = ClaudeService()
         claude_response = claude_service.send_message(messages_for_claude)
+        
+        # Check if the response is an error message (starts with "Error" or "Ошибка")
+        if isinstance(claude_response, str) and any(claude_response.startswith(prefix) for prefix in ["Error", "Ошибка", "Произошла ошибка"]):
+            logger.error(f"Claude API error: {claude_response}")
+            return JsonResponse({'error': claude_response}, status=500)
         
         # Save Claude's response
         assistant_message = Message.objects.create(

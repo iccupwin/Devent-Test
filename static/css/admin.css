@@ -1,0 +1,79 @@
+/* Стили для новых модальных окон */
+.quality-metrics,
+.usage-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.metric-card {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 1rem;
+  text-align: center;
+}
+
+.metric-card h4 {
+  color: #6c757d;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.metric-value {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #212529;
+}
+
+.quality-chart,
+.usage-chart {
+  margin: 2rem 0;
+  height: 300px;
+}
+
+.quality-table,
+.usage-table {
+  margin-top: 2rem;
+}
+
+.quality-table h4,
+.usage-table h4 {
+  margin-bottom: 1rem;
+  color: #495057;
+}
+
+.search-box {
+  margin-bottom: 1rem;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.search-box input:focus {
+  outline: none;
+  border-color: #80bdff;
+  box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .quality-metrics,
+  .usage-metrics {
+    grid-template-columns: 1fr;
+  }
+  
+  .metric-card {
+    margin-bottom: 1rem;
+  }
+  
+  .quality-chart,
+  .usage-chart {
+    height: 200px;
+  }
+} 
