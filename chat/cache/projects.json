@@ -2,10 +2,10 @@
   {
     "id": 4,
     "name": "Planfix: обучение и поддержка",
-    "task_count": 23,
-    "active_tasks": 2,
+    "task_count": 24,
+    "active_tasks": 3,
     "completed_tasks": 21,
-    "overdue_tasks": 0
+    "overdue_tasks": 1
   },
   {
     "id": 116,
@@ -19,9 +19,9 @@
     "id": 23,
     "name": "Общие вопросы компании",
     "task_count": 177,
-    "active_tasks": 75,
-    "completed_tasks": 102,
-    "overdue_tasks": 10
+    "active_tasks": 74,
+    "completed_tasks": 103,
+    "overdue_tasks": 9
   },
   {
     "id": 12,

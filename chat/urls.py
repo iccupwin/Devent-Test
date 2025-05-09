@@ -62,6 +62,9 @@ urlpatterns = [
     # Управление пользователями
     path('user-management/', views_admin.user_management, name='user_management'),
     path('user-management/<int:user_id>/', views_admin.user_edit, name='user_edit'),
+    path('employees/', views_admin.employees_view, name='employees'),
+    path('employee-tasks/<str:employee_id>/', views_admin.employee_active_tasks, name='employee_active_tasks'),
+    path('employee-completed-tasks/<str:employee_id>/', views_admin.employee_completed_tasks, name='employee_completed_tasks'),
 
     # Аутентификация и профиль
     path('login/', auth_views.login_view, name='login'),

@@ -1,0 +1,78 @@
+INFO 2025-05-09 13:35:06,187 claude_ai_service 38412 14236 Initialized ClaudeAIService with model: claude-3-opus-20240229
+INFO 2025-05-09 13:35:06,187 agent_query_processor 38412 14236 Initializing Agent Query Processor
+INFO 2025-05-09 13:35:08,378 agent_views 38412 12680 Loading dashboard for user: admin
+INFO 2025-05-09 13:35:08,379 planfix_service 38412 12680 Requesting employees from Planfix API: https://deventky.planfix.com/rest/employee/list
+INFO 2025-05-09 13:35:08,380 planfix_service 38412 12680 Using API token: 0b372...5f05c
+INFO 2025-05-09 13:35:08,648 planfix_service 38412 12680 Planfix API response status: 404
+INFO 2025-05-09 13:35:08,649 planfix_service 38412 12680 Response headers: {'Server': 'openresty', 'Date': 'Fri, 09 May 2025 07:35:08 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Vary': 'Accept-Encoding', 'Cache-Control': 'must-revalidate,no-cache,no-store', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'accept, origin, if-none-match, if-modified-since, authorization, content-type', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, DELETE', 'Access-Control-Expose-Headers': 'Etag, Last-Modified', 'Content-Encoding': 'gzip'}
+ERROR 2025-05-09 13:35:08,650 planfix_service 38412 12680 Error getting employees from Planfix API: 404
+ERROR 2025-05-09 13:35:08,650 planfix_service 38412 12680 Response content: {
+"message":"Not Found",
+"url":"http://deventky.planfix.com/rest/employee/list?account=deventky",
+"status":"404"
+}
+INFO 2025-05-09 13:35:08,651 agent_views 38412 12680 Retrieved 0 employees from Planfix
+INFO 2025-05-09 13:35:08,651 agent_views 38412 12680 Retrieved stats: {"total_tasks": 1277, "active_tasks": 691, "completed_tasks": 586, "overdue_tasks": 92, "tasks_due_this_week": 92, "completion_rate": 45.89, "total_projects": 10, "avg_tasks_per_project": 127.7, "status_counts": {"В работе": 306, "Завершенная": 549, "Черновик": 206, "Выполненная": 37, "Новая": 161, "Отложенная": 1, "Отклоненная": 1, " Подписание договора": 2, "Отмененная": 2, "Доработка инициатором": 3, "Действующий ": 1, "Принято к исполнению": 3, "Главный бухгалтер": 1, "Финансовый директор": 3, "Утверждение результатов": 1}, "cache_updated_at": "2025-05-09T13:34:23.165607", "cache_age_minutes": 0.005441693464914957}
+INFO 2025-05-09 13:35:08,652 agent_views 38412 12680 Rendering dashboard with 0 employees
+INFO 2025-05-09 13:35:14,877 claude_ai_service 41032 41336 Initialized ClaudeAIService with model: claude-3-opus-20240229
+INFO 2025-05-09 13:35:14,878 agent_query_processor 41032 41336 Initializing Agent Query Processor
+INFO 2025-05-09 13:35:14,883 planfix_config 41032 41336 Planfix API Configuration:
+INFO 2025-05-09 13:35:14,883 planfix_config 41032 41336 Account: deventky
+INFO 2025-05-09 13:35:14,883 planfix_config 41032 41336 API Base URL: https://deventky.planfix.ru/rest
+INFO 2025-05-09 13:35:14,883 planfix_config 41032 41336 API Token: 0b372...5f05c
+INFO 2025-05-09 13:35:15,150 agent_views 41032 25904 Loading dashboard for user: admin
+INFO 2025-05-09 13:35:15,151 planfix_service 41032 25904 Requesting employees from Planfix API: https://deventky.planfix.ru/rest/employee/list
+INFO 2025-05-09 13:35:15,151 planfix_service 41032 25904 Using API token: 0b372...5f05c
+INFO 2025-05-09 13:35:15,382 planfix_service 41032 25904 Planfix API response status: 404
+INFO 2025-05-09 13:35:15,383 planfix_service 41032 25904 Response headers: {'Server': 'openresty', 'Date': 'Fri, 09 May 2025 07:35:15 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Vary': 'Accept-Encoding', 'Cache-Control': 'must-revalidate,no-cache,no-store', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'accept, origin, if-none-match, if-modified-since, authorization, content-type', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, DELETE', 'Access-Control-Expose-Headers': 'Etag, Last-Modified', 'Content-Encoding': 'gzip'}
+ERROR 2025-05-09 13:35:15,383 planfix_service 41032 25904 Error getting employees from Planfix API: 404
+ERROR 2025-05-09 13:35:15,383 planfix_service 41032 25904 Response content: {
+"message":"Not Found",
+"url":"http://deventky.planfix.ru/rest/employee/list?account=deventky",
+"status":"404"
+}
+INFO 2025-05-09 13:35:15,384 agent_views 41032 25904 Retrieved 0 employees from Planfix
+INFO 2025-05-09 13:35:15,385 agent_views 41032 25904 Retrieved stats: {"total_tasks": 1277, "active_tasks": 691, "completed_tasks": 586, "overdue_tasks": 92, "tasks_due_this_week": 92, "completion_rate": 45.89, "total_projects": 10, "avg_tasks_per_project": 127.7, "status_counts": {"В работе": 306, "Завершенная": 549, "Черновик": 206, "Выполненная": 37, "Новая": 161, "Отложенная": 1, "Отклоненная": 1, " Подписание договора": 2, "Отмененная": 2, "Доработка инициатором": 3, "Действующий ": 1, "Принято к исполнению": 3, "Главный бухгалтер": 1, "Финансовый директор": 3, "Утверждение результатов": 1}, "cache_updated_at": "2025-05-09T13:34:23.165607", "cache_age_minutes": 0.005441693464914957}
+INFO 2025-05-09 13:35:15,386 agent_views 41032 25904 Rendering dashboard with 0 employees
+INFO 2025-05-09 13:35:16,360 agent_views 41032 4180 Loading dashboard for user: admin
+INFO 2025-05-09 13:35:16,360 planfix_service 41032 4180 Requesting employees from Planfix API: https://deventky.planfix.ru/rest/employee/list
+INFO 2025-05-09 13:35:16,360 planfix_service 41032 4180 Using API token: 0b372...5f05c
+INFO 2025-05-09 13:35:16,513 planfix_service 41032 4180 Planfix API response status: 404
+INFO 2025-05-09 13:35:16,514 planfix_service 41032 4180 Response headers: {'Server': 'openresty', 'Date': 'Fri, 09 May 2025 07:35:16 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Vary': 'Accept-Encoding', 'Cache-Control': 'must-revalidate,no-cache,no-store', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'accept, origin, if-none-match, if-modified-since, authorization, content-type', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, DELETE', 'Access-Control-Expose-Headers': 'Etag, Last-Modified', 'Content-Encoding': 'gzip'}
+ERROR 2025-05-09 13:35:16,514 planfix_service 41032 4180 Error getting employees from Planfix API: 404
+ERROR 2025-05-09 13:35:16,514 planfix_service 41032 4180 Response content: {
+"message":"Not Found",
+"url":"http://deventky.planfix.ru/rest/employee/list?account=deventky",
+"status":"404"
+}
+INFO 2025-05-09 13:35:16,514 agent_views 41032 4180 Retrieved 0 employees from Planfix
+INFO 2025-05-09 13:35:16,515 agent_views 41032 4180 Retrieved stats: {"total_tasks": 1277, "active_tasks": 691, "completed_tasks": 586, "overdue_tasks": 92, "tasks_due_this_week": 92, "completion_rate": 45.89, "total_projects": 10, "avg_tasks_per_project": 127.7, "status_counts": {"В работе": 306, "Завершенная": 549, "Черновик": 206, "Выполненная": 37, "Новая": 161, "Отложенная": 1, "Отклоненная": 1, " Подписание договора": 2, "Отмененная": 2, "Доработка инициатором": 3, "Действующий ": 1, "Принято к исполнению": 3, "Главный бухгалтер": 1, "Финансовый директор": 3, "Утверждение результатов": 1}, "cache_updated_at": "2025-05-09T13:34:23.165607", "cache_age_minutes": 0.005441693464914957}
+INFO 2025-05-09 13:35:16,516 agent_views 41032 4180 Rendering dashboard with 0 employees
+INFO 2025-05-09 13:35:17,084 agent_views 41032 45664 Loading dashboard for user: admin
+INFO 2025-05-09 13:35:17,085 planfix_service 41032 45664 Requesting employees from Planfix API: https://deventky.planfix.ru/rest/employee/list
+INFO 2025-05-09 13:35:17,085 planfix_service 41032 45664 Using API token: 0b372...5f05c
+INFO 2025-05-09 13:35:17,236 planfix_service 41032 45664 Planfix API response status: 404
+INFO 2025-05-09 13:35:17,237 planfix_service 41032 45664 Response headers: {'Server': 'openresty', 'Date': 'Fri, 09 May 2025 07:35:17 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Vary': 'Accept-Encoding', 'Cache-Control': 'must-revalidate,no-cache,no-store', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'accept, origin, if-none-match, if-modified-since, authorization, content-type', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, DELETE', 'Access-Control-Expose-Headers': 'Etag, Last-Modified', 'Content-Encoding': 'gzip'}
+ERROR 2025-05-09 13:35:17,237 planfix_service 41032 45664 Error getting employees from Planfix API: 404
+ERROR 2025-05-09 13:35:17,237 planfix_service 41032 45664 Response content: {
+"message":"Not Found",
+"url":"http://deventky.planfix.ru/rest/employee/list?account=deventky",
+"status":"404"
+}
+INFO 2025-05-09 13:35:17,238 agent_views 41032 45664 Retrieved 0 employees from Planfix
+INFO 2025-05-09 13:35:17,239 agent_views 41032 45664 Retrieved stats: {"total_tasks": 1277, "active_tasks": 691, "completed_tasks": 586, "overdue_tasks": 92, "tasks_due_this_week": 92, "completion_rate": 45.89, "total_projects": 10, "avg_tasks_per_project": 127.7, "status_counts": {"В работе": 306, "Завершенная": 549, "Черновик": 206, "Выполненная": 37, "Новая": 161, "Отложенная": 1, "Отклоненная": 1, " Подписание договора": 2, "Отмененная": 2, "Доработка инициатором": 3, "Действующий ": 1, "Принято к исполнению": 3, "Главный бухгалтер": 1, "Финансовый директор": 3, "Утверждение результатов": 1}, "cache_updated_at": "2025-05-09T13:34:23.165607", "cache_age_minutes": 0.005441693464914957}
+INFO 2025-05-09 13:35:17,240 agent_views 41032 45664 Rendering dashboard with 0 employees
+INFO 2025-05-09 13:35:36,111 agent_views 41032 4180 Loading dashboard for user: admin
+INFO 2025-05-09 13:35:36,112 planfix_service 41032 4180 Requesting employees from Planfix API: https://deventky.planfix.ru/rest/employee/list
+INFO 2025-05-09 13:35:36,113 planfix_service 41032 4180 Using API token: 0b372...5f05c
+INFO 2025-05-09 13:35:36,261 planfix_service 41032 4180 Planfix API response status: 404
+INFO 2025-05-09 13:35:36,261 planfix_service 41032 4180 Response headers: {'Server': 'openresty', 'Date': 'Fri, 09 May 2025 07:35:36 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Vary': 'Accept-Encoding', 'Cache-Control': 'must-revalidate,no-cache,no-store', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'accept, origin, if-none-match, if-modified-since, authorization, content-type', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, DELETE', 'Access-Control-Expose-Headers': 'Etag, Last-Modified', 'Content-Encoding': 'gzip'}
+ERROR 2025-05-09 13:35:36,262 planfix_service 41032 4180 Error getting employees from Planfix API: 404
+ERROR 2025-05-09 13:35:36,262 planfix_service 41032 4180 Response content: {
+"message":"Not Found",
+"url":"http://deventky.planfix.ru/rest/employee/list?account=deventky",
+"status":"404"
+}
+INFO 2025-05-09 13:35:36,263 agent_views 41032 4180 Retrieved 0 employees from Planfix
+INFO 2025-05-09 13:35:36,263 agent_views 41032 4180 Retrieved stats: {"total_tasks": 1277, "active_tasks": 691, "completed_tasks": 586, "overdue_tasks": 92, "tasks_due_this_week": 92, "completion_rate": 45.89, "total_projects": 10, "avg_tasks_per_project": 127.7, "status_counts": {"В работе": 306, "Завершенная": 549, "Черновик": 206, "Выполненная": 37, "Новая": 161, "Отложенная": 1, "Отклоненная": 1, " Подписание договора": 2, "Отмененная": 2, "Доработка инициатором": 3, "Действующий ": 1, "Принято к исполнению": 3, "Главный бухгалтер": 1, "Финансовый директор": 3, "Утверждение результатов": 1}, "cache_updated_at": "2025-05-09T13:34:23.165607", "cache_age_minutes": 0.005441693464914957}
+INFO 2025-05-09 13:35:36,264 agent_views 41032 4180 Rendering dashboard with 0 employees

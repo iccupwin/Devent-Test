@@ -7,6 +7,8 @@ from datetime import timedelta
 import json
 from django.contrib import messages
 from django.utils.translation import gettext_lazy as _
+from django.http import JsonResponse
+import os
 
 from .models import (
     User, Conversation, Message, AIModel,
@@ -302,3 +304,42 @@ def user_edit(request, user_id):
     }
     
     return render(request, 'admin/users/user_edit.html', context)
+
+@staff_member_required
+def employees_view(request):
+    """
+    Представление для отображения списка сотрудников
+    """
+    employees = User.objects.filter(is_active=True).order_by('username')
+    
+    context = {
+        'employees': employees
+    }
+    
+    return render(request, 'admin/employees.html', context)
+
+def employee_active_tasks(request, employee_id):
+    """
+    Возвращает список активных задач для сотрудника по его Planfix id (user:4 и т.д.)
+    """
+    cache_path = os.path.join(os.path.dirname(__file__), 'cache', 'active_tasks.json')
+    try:
+        with open(cache_path, 'r', encoding='utf-8') as f:
+            tasks = json.load(f)
+        filtered = [task for task in tasks if task.get('assignees') and task['assignees'].get('users') and any(u['id'] == employee_id for u in task['assignees']['users'])]
+        return JsonResponse({'tasks': filtered})
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+def employee_completed_tasks(request, employee_id):
+    """
+    Возвращает список завершённых задач для сотрудника по его Planfix id (user:4 и т.д.)
+    """
+    cache_path = os.path.join(os.path.dirname(__file__), 'cache', 'completed_tasks.json')
+    try:
+        with open(cache_path, 'r', encoding='utf-8') as f:
+            tasks = json.load(f)
+        filtered = [task for task in tasks if task.get('assignees') and task['assignees'].get('users') and any(u['id'] == employee_id for u in task['assignees']['users'])]
+        return JsonResponse({'tasks': filtered})
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)

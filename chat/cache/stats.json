@@ -1,15 +1,15 @@
 {
-  "total_tasks": 1277,
+  "total_tasks": 1278,
   "active_tasks": 692,
-  "completed_tasks": 585,
+  "completed_tasks": 586,
   "overdue_tasks": 93,
   "tasks_due_this_week": 93,
-  "completion_rate": 45.81,
+  "completion_rate": 45.85,
   "total_projects": 10,
-  "avg_tasks_per_project": 127.7,
+  "avg_tasks_per_project": 127.8,
   "status_counts": {
     "В работе": 306,
-    "Завершенная": 548,
+    "Завершенная": 549,
     "Черновик": 206,
     "Выполненная": 37,
     "Новая": 162,
@@ -24,6 +24,6 @@
     "Финансовый директор": 3,
     "Утверждение результатов": 1
   },
-  "cache_updated_at": "2025-05-09T01:28:54.243378",
-  "cache_age_minutes": 0.0031537771224975585
+  "cache_updated_at": "2025-05-09T15:24:38.745899",
+  "cache_age_minutes": 0.0041036844253540036
 }

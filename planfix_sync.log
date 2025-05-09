@@ -1,0 +1,80 @@
+2025-05-09 13:35:08,378 - chat.agent_views - INFO - Loading dashboard for user: admin
+2025-05-09 13:35:08,379 - chat.planfix_service - INFO - Requesting employees from Planfix API: https://deventky.planfix.com/rest/employee/list
+2025-05-09 13:35:08,380 - chat.planfix_service - INFO - Using API token: 0b372...5f05c
+2025-05-09 13:35:08,648 - chat.planfix_service - INFO - Planfix API response status: 404
+2025-05-09 13:35:08,649 - chat.planfix_service - INFO - Response headers: {'Server': 'openresty', 'Date': 'Fri, 09 May 2025 07:35:08 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Vary': 'Accept-Encoding', 'Cache-Control': 'must-revalidate,no-cache,no-store', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'accept, origin, if-none-match, if-modified-since, authorization, content-type', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, DELETE', 'Access-Control-Expose-Headers': 'Etag, Last-Modified', 'Content-Encoding': 'gzip'}
+2025-05-09 13:35:08,650 - chat.planfix_service - ERROR - Error getting employees from Planfix API: 404
+2025-05-09 13:35:08,650 - chat.planfix_service - ERROR - Response content: {
+"message":"Not Found",
+"url":"http://deventky.planfix.com/rest/employee/list?account=deventky",
+"status":"404"
+}
+2025-05-09 13:35:08,651 - chat.agent_views - INFO - Retrieved 0 employees from Planfix
+2025-05-09 13:35:08,651 - chat.agent_views - INFO - Retrieved stats: {"total_tasks": 1277, "active_tasks": 691, "completed_tasks": 586, "overdue_tasks": 92, "tasks_due_this_week": 92, "completion_rate": 45.89, "total_projects": 10, "avg_tasks_per_project": 127.7, "status_counts": {"В работе": 306, "Завершенная": 549, "Черновик": 206, "Выполненная": 37, "Новая": 161, "Отложенная": 1, "Отклоненная": 1, " Подписание договора": 2, "Отмененная": 2, "Доработка инициатором": 3, "Действующий ": 1, "Принято к исполнению": 3, "Главный бухгалтер": 1, "Финансовый директор": 3, "Утверждение результатов": 1}, "cache_updated_at": "2025-05-09T13:34:23.165607", "cache_age_minutes": 0.005441693464914957}
+2025-05-09 13:35:08,652 - chat.agent_views - INFO - Rendering dashboard with 0 employees
+2025-05-09 13:35:09,147 - django.request - WARNING - Not Found: /favicon.ico
+2025-05-09 13:35:13,990 - django.utils.autoreload - INFO - F:\Dev\123123\РАБОЧАЯ ВЕРСИЯ _ 1\111\Devent-Test\chat\planfix_config.py changed, reloading.
+2025-05-09 13:35:14,883 - chat.planfix_config - INFO - Planfix API Configuration:
+2025-05-09 13:35:14,883 - chat.planfix_config - INFO - Account: deventky
+2025-05-09 13:35:14,883 - chat.planfix_config - INFO - API Base URL: https://deventky.planfix.ru/rest
+2025-05-09 13:35:14,883 - chat.planfix_config - INFO - API Token: 0b372...5f05c
+2025-05-09 13:35:15,150 - chat.agent_views - INFO - Loading dashboard for user: admin
+2025-05-09 13:35:15,151 - chat.planfix_service - INFO - Requesting employees from Planfix API: https://deventky.planfix.ru/rest/employee/list
+2025-05-09 13:35:15,151 - chat.planfix_service - INFO - Using API token: 0b372...5f05c
+2025-05-09 13:35:15,382 - chat.planfix_service - INFO - Planfix API response status: 404
+2025-05-09 13:35:15,383 - chat.planfix_service - INFO - Response headers: {'Server': 'openresty', 'Date': 'Fri, 09 May 2025 07:35:15 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Vary': 'Accept-Encoding', 'Cache-Control': 'must-revalidate,no-cache,no-store', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'accept, origin, if-none-match, if-modified-since, authorization, content-type', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, DELETE', 'Access-Control-Expose-Headers': 'Etag, Last-Modified', 'Content-Encoding': 'gzip'}
+2025-05-09 13:35:15,383 - chat.planfix_service - ERROR - Error getting employees from Planfix API: 404
+2025-05-09 13:35:15,383 - chat.planfix_service - ERROR - Response content: {
+"message":"Not Found",
+"url":"http://deventky.planfix.ru/rest/employee/list?account=deventky",
+"status":"404"
+}
+2025-05-09 13:35:15,384 - chat.agent_views - INFO - Retrieved 0 employees from Planfix
+2025-05-09 13:35:15,385 - chat.agent_views - INFO - Retrieved stats: {"total_tasks": 1277, "active_tasks": 691, "completed_tasks": 586, "overdue_tasks": 92, "tasks_due_this_week": 92, "completion_rate": 45.89, "total_projects": 10, "avg_tasks_per_project": 127.7, "status_counts": {"В работе": 306, "Завершенная": 549, "Черновик": 206, "Выполненная": 37, "Новая": 161, "Отложенная": 1, "Отклоненная": 1, " Подписание договора": 2, "Отмененная": 2, "Доработка инициатором": 3, "Действующий ": 1, "Принято к исполнению": 3, "Главный бухгалтер": 1, "Финансовый директор": 3, "Утверждение результатов": 1}, "cache_updated_at": "2025-05-09T13:34:23.165607", "cache_age_minutes": 0.005441693464914957}
+2025-05-09 13:35:15,386 - chat.agent_views - INFO - Rendering dashboard with 0 employees
+2025-05-09 13:35:15,874 - django.request - WARNING - Not Found: /favicon.ico
+2025-05-09 13:35:16,360 - chat.agent_views - INFO - Loading dashboard for user: admin
+2025-05-09 13:35:16,360 - chat.planfix_service - INFO - Requesting employees from Planfix API: https://deventky.planfix.ru/rest/employee/list
+2025-05-09 13:35:16,360 - chat.planfix_service - INFO - Using API token: 0b372...5f05c
+2025-05-09 13:35:16,513 - chat.planfix_service - INFO - Planfix API response status: 404
+2025-05-09 13:35:16,514 - chat.planfix_service - INFO - Response headers: {'Server': 'openresty', 'Date': 'Fri, 09 May 2025 07:35:16 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Vary': 'Accept-Encoding', 'Cache-Control': 'must-revalidate,no-cache,no-store', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'accept, origin, if-none-match, if-modified-since, authorization, content-type', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, DELETE', 'Access-Control-Expose-Headers': 'Etag, Last-Modified', 'Content-Encoding': 'gzip'}
+2025-05-09 13:35:16,514 - chat.planfix_service - ERROR - Error getting employees from Planfix API: 404
+2025-05-09 13:35:16,514 - chat.planfix_service - ERROR - Response content: {
+"message":"Not Found",
+"url":"http://deventky.planfix.ru/rest/employee/list?account=deventky",
+"status":"404"
+}
+2025-05-09 13:35:16,514 - chat.agent_views - INFO - Retrieved 0 employees from Planfix
+2025-05-09 13:35:16,515 - chat.agent_views - INFO - Retrieved stats: {"total_tasks": 1277, "active_tasks": 691, "completed_tasks": 586, "overdue_tasks": 92, "tasks_due_this_week": 92, "completion_rate": 45.89, "total_projects": 10, "avg_tasks_per_project": 127.7, "status_counts": {"В работе": 306, "Завершенная": 549, "Черновик": 206, "Выполненная": 37, "Новая": 161, "Отложенная": 1, "Отклоненная": 1, " Подписание договора": 2, "Отмененная": 2, "Доработка инициатором": 3, "Действующий ": 1, "Принято к исполнению": 3, "Главный бухгалтер": 1, "Финансовый директор": 3, "Утверждение результатов": 1}, "cache_updated_at": "2025-05-09T13:34:23.165607", "cache_age_minutes": 0.005441693464914957}
+2025-05-09 13:35:16,516 - chat.agent_views - INFO - Rendering dashboard with 0 employees
+2025-05-09 13:35:16,902 - django.request - WARNING - Not Found: /favicon.ico
+2025-05-09 13:35:17,084 - chat.agent_views - INFO - Loading dashboard for user: admin
+2025-05-09 13:35:17,085 - chat.planfix_service - INFO - Requesting employees from Planfix API: https://deventky.planfix.ru/rest/employee/list
+2025-05-09 13:35:17,085 - chat.planfix_service - INFO - Using API token: 0b372...5f05c
+2025-05-09 13:35:17,236 - chat.planfix_service - INFO - Planfix API response status: 404
+2025-05-09 13:35:17,237 - chat.planfix_service - INFO - Response headers: {'Server': 'openresty', 'Date': 'Fri, 09 May 2025 07:35:17 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Vary': 'Accept-Encoding', 'Cache-Control': 'must-revalidate,no-cache,no-store', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'accept, origin, if-none-match, if-modified-since, authorization, content-type', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, DELETE', 'Access-Control-Expose-Headers': 'Etag, Last-Modified', 'Content-Encoding': 'gzip'}
+2025-05-09 13:35:17,237 - chat.planfix_service - ERROR - Error getting employees from Planfix API: 404
+2025-05-09 13:35:17,237 - chat.planfix_service - ERROR - Response content: {
+"message":"Not Found",
+"url":"http://deventky.planfix.ru/rest/employee/list?account=deventky",
+"status":"404"
+}
+2025-05-09 13:35:17,238 - chat.agent_views - INFO - Retrieved 0 employees from Planfix
+2025-05-09 13:35:17,239 - chat.agent_views - INFO - Retrieved stats: {"total_tasks": 1277, "active_tasks": 691, "completed_tasks": 586, "overdue_tasks": 92, "tasks_due_this_week": 92, "completion_rate": 45.89, "total_projects": 10, "avg_tasks_per_project": 127.7, "status_counts": {"В работе": 306, "Завершенная": 549, "Черновик": 206, "Выполненная": 37, "Новая": 161, "Отложенная": 1, "Отклоненная": 1, " Подписание договора": 2, "Отмененная": 2, "Доработка инициатором": 3, "Действующий ": 1, "Принято к исполнению": 3, "Главный бухгалтер": 1, "Финансовый директор": 3, "Утверждение результатов": 1}, "cache_updated_at": "2025-05-09T13:34:23.165607", "cache_age_minutes": 0.005441693464914957}
+2025-05-09 13:35:17,240 - chat.agent_views - INFO - Rendering dashboard with 0 employees
+2025-05-09 13:35:17,620 - django.request - WARNING - Not Found: /favicon.ico
+2025-05-09 13:35:36,111 - chat.agent_views - INFO - Loading dashboard for user: admin
+2025-05-09 13:35:36,112 - chat.planfix_service - INFO - Requesting employees from Planfix API: https://deventky.planfix.ru/rest/employee/list
+2025-05-09 13:35:36,113 - chat.planfix_service - INFO - Using API token: 0b372...5f05c
+2025-05-09 13:35:36,261 - chat.planfix_service - INFO - Planfix API response status: 404
+2025-05-09 13:35:36,261 - chat.planfix_service - INFO - Response headers: {'Server': 'openresty', 'Date': 'Fri, 09 May 2025 07:35:36 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Vary': 'Accept-Encoding', 'Cache-Control': 'must-revalidate,no-cache,no-store', 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Headers': 'accept, origin, if-none-match, if-modified-since, authorization, content-type', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, DELETE', 'Access-Control-Expose-Headers': 'Etag, Last-Modified', 'Content-Encoding': 'gzip'}
+2025-05-09 13:35:36,262 - chat.planfix_service - ERROR - Error getting employees from Planfix API: 404
+2025-05-09 13:35:36,262 - chat.planfix_service - ERROR - Response content: {
+"message":"Not Found",
+"url":"http://deventky.planfix.ru/rest/employee/list?account=deventky",
+"status":"404"
+}
+2025-05-09 13:35:36,263 - chat.agent_views - INFO - Retrieved 0 employees from Planfix
+2025-05-09 13:35:36,263 - chat.agent_views - INFO - Retrieved stats: {"total_tasks": 1277, "active_tasks": 691, "completed_tasks": 586, "overdue_tasks": 92, "tasks_due_this_week": 92, "completion_rate": 45.89, "total_projects": 10, "avg_tasks_per_project": 127.7, "status_counts": {"В работе": 306, "Завершенная": 549, "Черновик": 206, "Выполненная": 37, "Новая": 161, "Отложенная": 1, "Отклоненная": 1, " Подписание договора": 2, "Отмененная": 2, "Доработка инициатором": 3, "Действующий ": 1, "Принято к исполнению": 3, "Главный бухгалтер": 1, "Финансовый директор": 3, "Утверждение результатов": 1}, "cache_updated_at": "2025-05-09T13:34:23.165607", "cache_age_minutes": 0.005441693464914957}
+2025-05-09 13:35:36,264 - chat.agent_views - INFO - Rendering dashboard with 0 employees
+2025-05-09 13:35:36,465 - django.utils.autoreload - INFO - F:\Dev\123123\РАБОЧАЯ ВЕРСИЯ _ 1\111\Devent-Test\claude_chat\settings.py changed, reloading.
