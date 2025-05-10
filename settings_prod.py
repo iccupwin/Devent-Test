@@ -4,7 +4,7 @@ from .settings import *
 DEBUG = False
 
 # Разрешенные хосты (пример)
-ALLOWED_HOSTS = ['your-domain.com', 'www.your-domain.com']
+ALLOWED_HOSTS = ['your-domain.com', 'www.your-domain.com', 'localhost', '127.0.0.1']
 
 # База данных (пример для PostgreSQL)
 DATABASES = {

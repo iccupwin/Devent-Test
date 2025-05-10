@@ -1,21 +1,4 @@
-#!/bin/bash
-
-# Активируем виртуальное окружение
-source venv/bin/activate
-
-# Устанавливаем переменные окружения
-export DJANGO_ENV=production
-
-# Собираем статические файлы
+#!/bin/sh
+python manage.py migrate --noinput
 python manage.py collectstatic --noinput
-
-# Запускаем Gunicorn
-gunicorn claude_chat.wsgi:application \
-    --bind 0.0.0.0:8000 \
-    --workers 3 \
-    --log-level=info \
-    --log-file=logs/gunicorn.log \
-    --access-logfile=logs/access.log \
-    --error-logfile=logs/error.log \
-    --capture-output \
-    --daemon
+exec gunicorn --bind 0.0.0.0:8000 wsgi:application 
