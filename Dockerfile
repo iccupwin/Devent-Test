@@ -6,6 +6,7 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y \
     build-essential \
     libpq-dev \
+    netcat-traditional \
     && rm -rf /var/lib/apt/lists/*
 
 # Копирование файлов зависимостей
@@ -16,12 +17,19 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Копирование проекта
 COPY . .
-COPY start_gunicorn.sh .
-RUN chmod +x start_gunicorn.sh
+
+# Создание директорий и установка прав
+RUN mkdir -p /app/logs /app/staticfiles && \
+    chmod +x start_gunicorn.sh entrypoint.sh && \
+    chmod -R 777 /app/logs /app/staticfiles && \
+    chown -R root:root /app
 
 # Создание непривилегированного пользователя
-RUN useradd -m appuser && chown -R appuser:appuser /app
-USER appuser
+RUN useradd -m appuser && \
+    chown -R appuser:appuser /app/logs /app/staticfiles && \
+    chmod -R 777 /app/logs /app/staticfiles
+
+# USER appuser
 
 # Запуск приложения
-CMD ["./start_gunicorn.sh"] 
+ENTRYPOINT ["sh", "./entrypoint.sh"] 
