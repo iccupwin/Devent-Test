@@ -1884,51 +1884,6 @@
     }
   },
   {
-    "id": 2128,
-    "name": "Подписать договор с инвесторами по I-TOWN",
-    "description": "<h3><strong>Задача ставится согласно Процессу постановки, контроля и выполнения задач. </strong></h3>\n<h3><strong>Просьба ознакомиться:&nbsp;</strong><a href=\"https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy\">https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy</a></h3>\n<p>&nbsp;</p>",
-    "status": {
-      "id": 2,
-      "name": "В работе",
-      "color": "#3377C3",
-      "isActive": true,
-      "hasDeadline": true,
-      "isAppliedIndividually": false,
-      "texts": [
-        {
-          "lang": "Ru",
-          "name": "В работе"
-        },
-        {
-          "lang": "En",
-          "name": "In progress"
-        }
-      ]
-    },
-    "assigner": {
-      "id": "user:5",
-      "name": "Алексей Шульга"
-    },
-    "project": {
-      "id": 23,
-      "name": "Общие вопросы компании"
-    },
-    "endDateTime": {
-      "date": "09-05-2025",
-      "time": "00:00",
-      "datetime": "2025-05-09T00:00Z"
-    },
-    "assignees": {
-      "users": [
-        {
-          "id": "user:1",
-          "name": "Константин Осипов"
-        }
-      ],
-      "groups": []
-    }
-  },
-  {
     "id": 2133,
     "name": "Коммерческое предложение от АПБ - Основа",
     "description": "<h3>&nbsp;</h3>\n<p>&nbsp;</p>",

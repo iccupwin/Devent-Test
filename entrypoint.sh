@@ -1,8 +1,10 @@
 #!/bin/sh
 set -e
 
-# Исправляем права на volume
+# Создаем директорию для логов и устанавливаем права
+mkdir -p /app/logs
 chown -R appuser:appuser /app/logs
+chmod -R 777 /app/logs
 
 # Ждем доступности базы данных
 echo "Waiting for database..."

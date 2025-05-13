@@ -29,7 +29,14 @@ CSRF_COOKIE_SECURE = False  # Отключаем для IP
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Статические файлы
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = '/app/staticfiles'
+STATICFILES_DIRS = [
+    '/app/static',
+]
+
+# Создаем директории для статических файлов
+os.makedirs(STATIC_ROOT, exist_ok=True)
+os.makedirs(STATICFILES_DIRS[0], exist_ok=True)
 
 # Логирование
 LOGGING = {
@@ -58,7 +65,5 @@ LOGGING = {
     },
 }
 
-# Создаем директорию для логов, если она не существует
-logs_dir = '/app/logs'
-if not os.path.exists(logs_dir):
-    os.makedirs(logs_dir, exist_ok=True)
+# Создаем директорию для логов
+os.makedirs('/app/logs', exist_ok=True)

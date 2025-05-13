@@ -2,8 +2,8 @@
   "total_tasks": 1296,
   "active_tasks": 702,
   "completed_tasks": 594,
-  "overdue_tasks": 92,
-  "tasks_due_this_week": 92,
+  "overdue_tasks": 91,
+  "tasks_due_this_week": 91,
   "completion_rate": 45.83,
   "total_projects": 10,
   "avg_tasks_per_project": 129.6,
@@ -24,6 +24,6 @@
     "Финансовый директор": 3,
     "Утверждение результатов": 1
   },
-  "cache_updated_at": "2025-05-09T21:33:59.094742",
-  "cache_age_minutes": 0.00546273390452067
+  "cache_updated_at": "2025-05-10T23:31:01.130994",
+  "cache_age_minutes": 0.008057260513305664
 }
