@@ -2,66 +2,66 @@
   {
     "id": 4,
     "name": "Planfix: обучение и поддержка",
-    "task_count": 29,
-    "active_tasks": 7,
+    "task_count": 30,
+    "active_tasks": 8,
     "completed_tasks": 22,
     "overdue_tasks": 0
   },
   {
     "id": 116,
     "name": "Маркетинг",
-    "task_count": 104,
-    "active_tasks": 61,
-    "completed_tasks": 43,
-    "overdue_tasks": 8
+    "task_count": 116,
+    "active_tasks": 70,
+    "completed_tasks": 46,
+    "overdue_tasks": 9
   },
   {
     "id": 23,
     "name": "Общие вопросы компании",
-    "task_count": 182,
-    "active_tasks": 76,
-    "completed_tasks": 106,
+    "task_count": 184,
+    "active_tasks": 77,
+    "completed_tasks": 107,
     "overdue_tasks": 10
   },
   {
     "id": 12,
     "name": "Polaris Иссык-Куль",
-    "task_count": 172,
-    "active_tasks": 73,
-    "completed_tasks": 99,
-    "overdue_tasks": 23
+    "task_count": 177,
+    "active_tasks": 74,
+    "completed_tasks": 103,
+    "overdue_tasks": 20
   },
   {
     "id": 29,
     "name": "Автовокзал",
-    "task_count": 308,
-    "active_tasks": 96,
-    "completed_tasks": 212,
-    "overdue_tasks": 39
+    "task_count": 323,
+    "active_tasks": 100,
+    "completed_tasks": 223,
+    "overdue_tasks": 33
   },
   {
     "id": 1647,
     "name": "Elysium Иссык-Куль",
-    "task_count": 165,
-    "active_tasks": 108,
-    "completed_tasks": 57,
-    "overdue_tasks": 10
+    "task_count": 181,
+    "active_tasks": 120,
+    "completed_tasks": 61,
+    "overdue_tasks": 18
   },
   {
     "id": 1310,
     "name": "Строительство Тазалыка №1",
-    "task_count": 95,
-    "active_tasks": 76,
-    "completed_tasks": 19,
-    "overdue_tasks": 14
+    "task_count": 100,
+    "active_tasks": 79,
+    "completed_tasks": 21,
+    "overdue_tasks": 13
   },
   {
     "id": 1462,
     "name": "Благоустройство парка \"Молодежный\" и \"40 лет Октября\"",
     "task_count": 95,
-    "active_tasks": 91,
-    "completed_tasks": 4,
-    "overdue_tasks": 5
+    "active_tasks": 90,
+    "completed_tasks": 5,
+    "overdue_tasks": 4
   },
   {
     "id": 236,
@@ -91,9 +91,9 @@
     "id": 1386,
     "name": "Строительство Тазалыка №2",
     "task_count": 2,
-    "active_tasks": 2,
-    "completed_tasks": 0,
-    "overdue_tasks": 1
+    "active_tasks": 1,
+    "completed_tasks": 1,
+    "overdue_tasks": 0
   },
   {
     "id": 2354,

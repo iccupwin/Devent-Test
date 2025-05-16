@@ -712,56 +712,6 @@
     }
   },
   {
-    "id": 38,
-    "name": "Заключить договора с необходимыми подрядными организациями",
-    "description": "",
-    "status": {
-      "id": 3,
-      "name": "Завершенная",
-      "color": "#85878E",
-      "isActive": false,
-      "hasDeadline": false,
-      "isAppliedIndividually": false,
-      "texts": [
-        {
-          "lang": "Ru",
-          "name": "Завершенная"
-        },
-        {
-          "lang": "En",
-          "name": "Completed"
-        }
-      ]
-    },
-    "assigner": {
-      "id": "user:5",
-      "name": "Алексей Шульга"
-    },
-    "project": {
-      "id": 12,
-      "name": "Polaris Иссык-Куль"
-    },
-    "startDateTime": {
-      "date": "21-01-2025",
-      "time": "00:00",
-      "datetime": "2025-01-21T00:00Z"
-    },
-    "endDateTime": {
-      "date": "16-05-2025",
-      "time": "00:00",
-      "datetime": "2025-05-16T00:00Z"
-    },
-    "assignees": {
-      "users": [
-        {
-          "id": "user:4",
-          "name": "Назарий Шевченко"
-        }
-      ],
-      "groups": []
-    }
-  },
-  {
     "id": 39,
     "name": "Заключить договор с Юридической компанией для ведения и аудита всех договоров",
     "description": "",
@@ -2376,6 +2326,68 @@
     }
   },
   {
+    "id": 104,
+    "name": "Провести тендер на концепцию Elysium",
+    "description": "",
+    "status": {
+      "id": 6,
+      "name": "Выполненная",
+      "color": "#30AB50",
+      "isActive": true,
+      "hasDeadline": false,
+      "isAppliedIndividually": true,
+      "texts": [
+        {
+          "lang": "Ru",
+          "name": "Выполненная"
+        },
+        {
+          "lang": "En",
+          "name": "Ready for review"
+        }
+      ]
+    },
+    "assigner": {
+      "id": "user:1",
+      "name": "Константин Осипов"
+    },
+    "project": {
+      "id": 1647,
+      "name": "Elysium Иссык-Куль"
+    },
+    "startDateTime": {
+      "date": "10-03-2025",
+      "time": "00:00",
+      "datetime": "2025-03-10T00:00Z"
+    },
+    "endDateTime": {
+      "date": "31-05-2025",
+      "time": "00:00",
+      "datetime": "2025-05-31T00:00Z"
+    },
+    "assignees": {
+      "users": [
+        {
+          "id": "user:5",
+          "name": "Алексей Шульга"
+        },
+        {
+          "id": "user:1",
+          "name": "Константин Осипов"
+        },
+        {
+          "id": "user:4",
+          "name": "Назарий Шевченко"
+        },
+        {
+          "id": "user:6",
+          "name": "Марлен Замиров"
+        }
+      ],
+      "groups": []
+    }
+  },
+  {
     "id": 109,
     "name": "Выбрать подрядчика на эскизный проект Elysium и заключить договор",
     "description": "",
@@ -2581,9 +2593,9 @@
       "datetime": "2025-02-19T00:00Z"
     },
     "endDateTime": {
-      "date": "14-05-2025",
+      "date": "16-05-2025",
       "time": "00:00",
-      "datetime": "2025-05-14T00:00Z"
+      "datetime": "2025-05-16T00:00Z"
     },
     "assignees": {
       "users": [
@@ -4533,9 +4545,9 @@
       "datetime": "2025-02-04T00:00Z"
     },
     "endDateTime": {
-      "date": "08-05-2025",
+      "date": "30-05-2025",
       "time": "00:00",
-      "datetime": "2025-05-08T00:00Z"
+      "datetime": "2025-05-30T00:00Z"
     }
   },
   {
@@ -4643,20 +4655,20 @@
     "name": "Подписание АВР (акт выполненных работ)",
     "description": "",
     "status": {
-      "id": 6,
-      "name": "Выполненная",
-      "color": "#30AB50",
-      "isActive": true,
+      "id": 3,
+      "name": "Завершенная",
+      "color": "#85878E",
+      "isActive": false,
       "hasDeadline": false,
-      "isAppliedIndividually": true,
+      "isAppliedIndividually": false,
       "texts": [
         {
           "lang": "Ru",
-          "name": "Выполненная"
+          "name": "Завершенная"
         },
         {
           "lang": "En",
-          "name": "Ready for review"
+          "name": "Completed"
         }
       ]
     },
@@ -16072,6 +16084,46 @@
     }
   },
   {
+    "id": 1554,
+    "name": "Получить план демонтажа",
+    "description": "",
+    "status": {
+      "id": 3,
+      "name": "Завершенная",
+      "color": "#85878E",
+      "isActive": false,
+      "hasDeadline": false,
+      "isAppliedIndividually": false,
+      "texts": [
+        {
+          "lang": "Ru",
+          "name": "Завершенная"
+        },
+        {
+          "lang": "En",
+          "name": "Completed"
+        }
+      ]
+    },
+    "assigner": {
+      "id": "user:5",
+      "name": "Алексей Шульга"
+    },
+    "project": {
+      "id": 29,
+      "name": "Автовокзал"
+    },
+    "assignees": {
+      "users": [
+        {
+          "id": "user:5",
+          "name": "Алексей Шульга"
+        }
+      ],
+      "groups": []
+    }
+  },
+  {
     "id": 1555,
     "name": "Создать ТЗ на демонтаж конструкций",
     "description": "",
@@ -20813,20 +20865,20 @@
     "name": "разработка документов о мат. ответственности",
     "description": "",
     "status": {
-      "id": 6,
-      "name": "Выполненная",
-      "color": "#30AB50",
-      "isActive": true,
+      "id": 3,
+      "name": "Завершенная",
+      "color": "#85878E",
+      "isActive": false,
       "hasDeadline": false,
-      "isAppliedIndividually": true,
+      "isAppliedIndividually": false,
       "texts": [
         {
           "lang": "Ru",
-          "name": "Выполненная"
+          "name": "Завершенная"
         },
         {
           "lang": "En",
-          "name": "Ready for review"
+          "name": "Completed"
         }
       ]
     },
@@ -26504,20 +26556,20 @@
     "name": "Оплата по Договору топосъемке",
     "description": "<h3>&nbsp;</h3>\n<p>&nbsp;</p>",
     "status": {
-      "id": 6,
-      "name": "Выполненная",
-      "color": "#30AB50",
-      "isActive": true,
+      "id": 3,
+      "name": "Завершенная",
+      "color": "#85878E",
+      "isActive": false,
       "hasDeadline": false,
-      "isAppliedIndividually": true,
+      "isAppliedIndividually": false,
       "texts": [
         {
           "lang": "Ru",
-          "name": "Выполненная"
+          "name": "Завершенная"
         },
         {
           "lang": "En",
-          "name": "Ready for review"
+          "name": "Completed"
         }
       ]
     },
@@ -28799,6 +28851,51 @@
     }
   },
   {
+    "id": 2282,
+    "name": "Согласование договора на выполнение проектных работ с Арзы групп",
+    "description": "<p>Задача ставится согласно процесса согласования договоров:&nbsp;<a href=\"https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.vxrme5dn4xrw\">https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.vxrme5dn4xrw</a></p>",
+    "status": {
+      "id": 3,
+      "name": "Завершенная",
+      "color": "#85878E",
+      "isActive": false,
+      "hasDeadline": false,
+      "isAppliedIndividually": false,
+      "texts": [
+        {
+          "lang": "Ru",
+          "name": "Завершенная"
+        },
+        {
+          "lang": "En",
+          "name": "Completed"
+        }
+      ]
+    },
+    "assigner": {
+      "id": "user:20",
+      "name": "Канатбек Аскаров"
+    },
+    "project": {
+      "id": 12,
+      "name": "Polaris Иссык-Куль"
+    },
+    "endDateTime": {
+      "date": "14-05-2025",
+      "time": "16:28",
+      "datetime": "2025-05-14T16:28Z"
+    },
+    "assignees": {
+      "users": [
+        {
+          "id": "user:12",
+          "name": "Данияр Сулайманов"
+        }
+      ],
+      "groups": []
+    }
+  },
+  {
     "id": 2283,
     "name": "Установочная встреча с ИНД и Pitch",
     "description": "<p>Понедельник, 5 мая · 2:30–3:30PM<br>Часовой пояс: Europe/Moscow<br>Контактная информация для встречи в Google Meet<br>Ссылка на видеовстречу: <a href=\"https://meet.google.com/jnj-jugb-ifq\">https://meet.google.com/jnj-jugb-ifq</a>&nbsp;</p>",
@@ -28914,6 +29011,60 @@
           "id": "user:20",
           "name": "Канатбек Аскаров"
         },
+        {
+          "id": "user:5",
+          "name": "Алексей Шульга"
+        },
+        {
+          "id": "user:1",
+          "name": "Константин Осипов"
+        }
+      ],
+      "groups": []
+    }
+  },
+  {
+    "id": 2286,
+    "name": "Создать все договора с Инвесторами",
+    "description": "<h3><strong>Задача ставится согласно Процессу постановки, контроля и выполнения задач. </strong></h3>\n<h3><strong>Просьба ознакомиться:&nbsp;</strong><a href=\"https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy\">https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy</a></h3>\n<p>&nbsp;</p>",
+    "status": {
+      "id": 3,
+      "name": "Завершенная",
+      "color": "#85878E",
+      "isActive": false,
+      "hasDeadline": false,
+      "isAppliedIndividually": false,
+      "texts": [
+        {
+          "lang": "Ru",
+          "name": "Завершенная"
+        },
+        {
+          "lang": "En",
+          "name": "Completed"
+        }
+      ]
+    },
+    "assigner": {
+      "id": "user:5",
+      "name": "Алексей Шульга"
+    },
+    "project": {
+      "id": 23,
+      "name": "Общие вопросы компании"
+    },
+    "startDateTime": {
+      "date": "05-05-2025",
+      "time": "00:00",
+      "datetime": "2025-05-05T00:00Z"
+    },
+    "endDateTime": {
+      "date": "18-05-2025",
+      "time": "00:00",
+      "datetime": "2025-05-18T00:00Z"
+    },
+    "assignees": {
+      "users": [
         {
           "id": "user:5",
           "name": "Алексей Шульга"
@@ -29222,6 +29373,110 @@
     }
   },
   {
+    "id": 2305,
+    "name": "Получить график разрешительной документации",
+    "description": "<h3><strong>Задача ставится согласно Процессу постановки, контроля и выполнения задач. </strong></h3>\n<h3><strong>Просьба ознакомиться:&nbsp;</strong><a href=\"https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy\">https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy</a></h3>\n<p>&nbsp;</p>",
+    "status": {
+      "id": 3,
+      "name": "Завершенная",
+      "color": "#85878E",
+      "isActive": false,
+      "hasDeadline": false,
+      "isAppliedIndividually": false,
+      "texts": [
+        {
+          "lang": "Ru",
+          "name": "Завершенная"
+        },
+        {
+          "lang": "En",
+          "name": "Completed"
+        }
+      ]
+    },
+    "assigner": {
+      "id": "user:5",
+      "name": "Алексей Шульга"
+    },
+    "project": {
+      "id": 29,
+      "name": "Автовокзал"
+    },
+    "startDateTime": {
+      "date": "07-05-2025",
+      "time": "00:00",
+      "datetime": "2025-05-07T00:00Z"
+    },
+    "endDateTime": {
+      "date": "14-05-2025",
+      "time": "00:00",
+      "datetime": "2025-05-14T00:00Z"
+    },
+    "assignees": {
+      "users": [
+        {
+          "id": "user:20",
+          "name": "Канатбек Аскаров"
+        }
+      ],
+      "groups": []
+    }
+  },
+  {
+    "id": 2316,
+    "name": "Создать диаграмму Ганта по проекту",
+    "description": "<h3><strong>Задача ставится согласно Процессу постановки, контроля и выполнения задач. </strong></h3>\n<h3><strong>Просьба ознакомиться:&nbsp;</strong><a href=\"https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy\">https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy</a></h3>\n<p>&nbsp;</p>",
+    "status": {
+      "id": 3,
+      "name": "Завершенная",
+      "color": "#85878E",
+      "isActive": false,
+      "hasDeadline": false,
+      "isAppliedIndividually": false,
+      "texts": [
+        {
+          "lang": "Ru",
+          "name": "Завершенная"
+        },
+        {
+          "lang": "En",
+          "name": "Completed"
+        }
+      ]
+    },
+    "assigner": {
+      "id": "user:5",
+      "name": "Алексей Шульга"
+    },
+    "project": {
+      "id": 12,
+      "name": "Polaris Иссык-Куль"
+    },
+    "startDateTime": {
+      "date": "07-05-2025",
+      "time": "00:00",
+      "datetime": "2025-05-07T00:00Z"
+    },
+    "endDateTime": {
+      "date": "14-05-2025",
+      "time": "00:00",
+      "datetime": "2025-05-14T00:00Z"
+    },
+    "assignees": {
+      "users": [
+        {
+          "id": "user:20",
+          "name": "Канатбек Аскаров"
+        },
+        {
+          "id": "user:5",
+          "name": "Алексей Шульга"
+        }
+      ],
+      "groups": []
+    }
+  },
+  {
     "id": 2324,
     "name": "Узнать у Алексея Губарева как лучше доставлять авто в помещения музея, какие требования по хранению и ремонту",
     "description": "<h3><strong>Задача ставится согласно Процессу постановки, контроля и выполнения задач. </strong></h3>\n<h3><strong>Просьба ознакомиться:&nbsp;</strong><a href=\"https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy\">https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy</a></h3>\n<p>&nbsp;</p>",
@@ -29266,6 +29521,46 @@
         {
           "id": "user:1",
           "name": "Константин Осипов"
+        }
+      ],
+      "groups": []
+    }
+  },
+  {
+    "id": 2325,
+    "name": "Уточнить как автомобили будут транспортироватся к зданию Автовокзала",
+    "description": "<h3><strong>Задача ставится согласно Процессу постановки, контроля и выполнения задач. </strong></h3>\n<h3><strong>Просьба ознакомиться:&nbsp;</strong><a href=\"https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy\">https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy</a></h3>\n<p>&nbsp;</p>",
+    "status": {
+      "id": 3,
+      "name": "Завершенная",
+      "color": "#85878E",
+      "isActive": false,
+      "hasDeadline": false,
+      "isAppliedIndividually": false,
+      "texts": [
+        {
+          "lang": "Ru",
+          "name": "Завершенная"
+        },
+        {
+          "lang": "En",
+          "name": "Completed"
+        }
+      ]
+    },
+    "assigner": {
+      "id": "user:5",
+      "name": "Алексей Шульга"
+    },
+    "project": {
+      "id": 29,
+      "name": "Автовокзал"
+    },
+    "assignees": {
+      "users": [
+        {
+          "id": "user:11",
+          "name": "Данияр Мусуралиев"
         }
       ],
       "groups": []
@@ -29626,6 +29921,435 @@
     }
   },
   {
+    "id": 2391,
+    "name": "Согласование Договора с ОсОО «Прогресс Ком»",
+    "description": "<p>Задача ставится согласно процесса согласования договоров:&nbsp;<a href=\"https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.vxrme5dn4xrw\">https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.vxrme5dn4xrw</a></p>",
+    "status": {
+      "id": 3,
+      "name": "Завершенная",
+      "color": "#85878E",
+      "isActive": false,
+      "hasDeadline": false,
+      "isAppliedIndividually": false,
+      "texts": [
+        {
+          "lang": "Ru",
+          "name": "Завершенная"
+        },
+        {
+          "lang": "En",
+          "name": "Completed"
+        }
+      ]
+    },
+    "assigner": {
+      "id": "user:20",
+      "name": "Канатбек Аскаров"
+    },
+    "project": {
+      "id": 29,
+      "name": "Автовокзал"
+    },
+    "endDateTime": {
+      "date": "14-05-2025",
+      "time": "16:18",
+      "datetime": "2025-05-14T16:18Z"
+    },
+    "assignees": {
+      "users": [
+        {
+          "id": "user:12",
+          "name": "Данияр Сулайманов"
+        }
+      ],
+      "groups": []
+    }
+  },
+  {
+    "id": 2405,
+    "name": "Встреча с Архиматикой (Александр Попов) по поводу мастер плана.",
+    "description": "<p>Встреча с потенциальным подрядчиком по разработке Мастер Плана.&nbsp;</p><p>На данный момент предложение Архиматики наилучшее. Мы ужали по цене почти в 2 раза, при почти том же объеме работ. Предлагаю участникам тендерного комитета пристутствовать и задать интересующие их вопросы.</p>",
+    "status": {
+      "id": 3,
+      "name": "Завершенная",
+      "color": "#85878E",
+      "isActive": false,
+      "hasDeadline": false,
+      "isAppliedIndividually": false,
+      "texts": [
+        {
+          "lang": "Ru",
+          "name": "Завершенная"
+        },
+        {
+          "lang": "En",
+          "name": "Completed"
+        }
+      ]
+    },
+    "assigner": {
+      "id": "user:1",
+      "name": "Константин Осипов"
+    },
+    "project": {
+      "id": 1462,
+      "name": "Благоустройство парка \"Молодежный\" и \"40 лет Октября\""
+    },
+    "startDateTime": {
+      "date": "13-05-2025",
+      "time": "10:00",
+      "datetime": "2025-05-13T10:00Z"
+    },
+    "endDateTime": {
+      "date": "13-05-2025",
+      "time": "11:00",
+      "datetime": "2025-05-13T11:00Z"
+    },
+    "assignees": {
+      "users": [
+        {
+          "id": "user:11",
+          "name": "Данияр Мусуралиев"
+        },
+        {
+          "id": "user:10",
+          "name": "Сергей Храпунов"
+        },
+        {
+          "id": "user:5",
+          "name": "Алексей Шульга"
+        },
+        {
+          "id": "user:1",
+          "name": "Константин Осипов"
+        },
+        {
+          "id": "user:7",
+          "name": "Оксана Янковская"
+        }
+      ],
+      "groups": []
+    }
+  },
+  {
+    "id": 2409,
+    "name": "Связаться с братом Нуржигита. Получить КП на забор",
+    "description": "<h3><strong>Задача ставится согласно Процессу постановки, контроля и выполнения задач. </strong></h3>\n<h3><strong>Просьба ознакомиться:&nbsp;</strong><a href=\"https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy\">https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy</a></h3>\n<p>&nbsp;</p>",
+    "status": {
+      "id": 3,
+      "name": "Завершенная",
+      "color": "#85878E",
+      "isActive": false,
+      "hasDeadline": false,
+      "isAppliedIndividually": false,
+      "texts": [
+        {
+          "lang": "Ru",
+          "name": "Завершенная"
+        },
+        {
+          "lang": "En",
+          "name": "Completed"
+        }
+      ]
+    },
+    "assigner": {
+      "id": "user:5",
+      "name": "Алексей Шульга"
+    },
+    "project": {
+      "id": 1310,
+      "name": "Строительство Тазалыка №1"
+    },
+    "startDateTime": {
+      "date": "12-05-2025",
+      "time": "00:00",
+      "datetime": "2025-05-12T00:00Z"
+    },
+    "endDateTime": {
+      "date": "31-05-2025",
+      "time": "00:00",
+      "datetime": "2025-05-31T00:00Z"
+    },
+    "assignees": {
+      "users": [
+        {
+          "id": "user:20",
+          "name": "Канатбек Аскаров"
+        },
+        {
+          "id": "user:5",
+          "name": "Алексей Шульга"
+        }
+      ],
+      "groups": []
+    }
+  },
+  {
+    "id": 2410,
+    "name": "Встреча с Тазалыком",
+    "description": "<p>Встреча по вопросам всех трех новых участков Тазалыка.</p>",
+    "status": {
+      "id": 3,
+      "name": "Завершенная",
+      "color": "#85878E",
+      "isActive": false,
+      "hasDeadline": false,
+      "isAppliedIndividually": false,
+      "texts": [
+        {
+          "lang": "Ru",
+          "name": "Завершенная"
+        },
+        {
+          "lang": "En",
+          "name": "Completed"
+        }
+      ]
+    },
+    "assigner": {
+      "id": "user:20",
+      "name": "Канатбек Аскаров"
+    },
+    "project": {
+      "id": 1310,
+      "name": "Строительство Тазалыка №1"
+    },
+    "startDateTime": {
+      "date": "14-05-2025",
+      "time": "10:00",
+      "datetime": "2025-05-14T10:00Z"
+    },
+    "endDateTime": {
+      "date": "14-05-2025",
+      "time": "11:00",
+      "datetime": "2025-05-14T11:00Z"
+    },
+    "assignees": {
+      "users": [
+        {
+          "id": "user:19",
+          "name": "Михаил Бодан"
+        },
+        {
+          "id": "user:20",
+          "name": "Канатбек Аскаров"
+        },
+        {
+          "id": "user:5",
+          "name": "Алексей Шульга"
+        },
+        {
+          "id": "user:1",
+          "name": "Константин Осипов"
+        },
+        {
+          "id": "user:7",
+          "name": "Оксана Янковская"
+        }
+      ],
+      "groups": []
+    }
+  },
+  {
+    "id": 2412,
+    "name": "Встреча с подрядчиками по Автовокзалу",
+    "description": "<p>Встреча по обсуждению календарного графика и проектной документации.&nbsp;</p>",
+    "status": {
+      "id": 3,
+      "name": "Завершенная",
+      "color": "#85878E",
+      "isActive": false,
+      "hasDeadline": false,
+      "isAppliedIndividually": false,
+      "texts": [
+        {
+          "lang": "Ru",
+          "name": "Завершенная"
+        },
+        {
+          "lang": "En",
+          "name": "Completed"
+        }
+      ]
+    },
+    "assigner": {
+      "id": "user:20",
+      "name": "Канатбек Аскаров"
+    },
+    "project": {
+      "id": 29,
+      "name": "Автовокзал"
+    },
+    "startDateTime": {
+      "date": "14-05-2025",
+      "time": "11:00",
+      "datetime": "2025-05-14T11:00Z"
+    },
+    "endDateTime": {
+      "date": "14-05-2025",
+      "time": "12:00",
+      "datetime": "2025-05-14T12:00Z"
+    },
+    "assignees": {
+      "users": [
+        {
+          "id": "user:20",
+          "name": "Канатбек Аскаров"
+        },
+        {
+          "id": "user:5",
+          "name": "Алексей Шульга"
+        },
+        {
+          "id": "user:1",
+          "name": "Константин Осипов"
+        },
+        {
+          "id": "user:7",
+          "name": "Оксана Янковская"
+        }
+      ],
+      "groups": []
+    }
+  },
+  {
+    "id": 2429,
+    "name": "Тендер на видеонаблюдение",
+    "description": "<h3><strong>Задача ставится согласно Процессу постановки, контроля и выполнения задач. </strong></h3>\n<h3><strong>Просьба ознакомиться:&nbsp;</strong><a href=\"https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy\">https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy</a></h3>\n<p>&nbsp;</p>",
+    "status": {
+      "id": 3,
+      "name": "Завершенная",
+      "color": "#85878E",
+      "isActive": false,
+      "hasDeadline": false,
+      "isAppliedIndividually": false,
+      "texts": [
+        {
+          "lang": "Ru",
+          "name": "Завершенная"
+        },
+        {
+          "lang": "En",
+          "name": "Completed"
+        }
+      ]
+    },
+    "assigner": {
+      "id": "user:5",
+      "name": "Алексей Шульга"
+    },
+    "project": {
+      "id": 29,
+      "name": "Автовокзал"
+    },
+    "startDateTime": {
+      "date": "13-05-2025",
+      "time": "00:00",
+      "datetime": "2025-05-13T00:00Z"
+    },
+    "endDateTime": {
+      "date": "16-05-2025",
+      "time": "00:00",
+      "datetime": "2025-05-16T00:00Z"
+    },
+    "assignees": {
+      "users": [
+        {
+          "id": "user:20",
+          "name": "Канатбек Аскаров"
+        }
+      ],
+      "groups": []
+    }
+  },
+  {
+    "id": 2438,
+    "name": "Утвердить с директором Тазалыка участок",
+    "description": "<h3><strong>Задача ставится согласно Процессу постановки, контроля и выполнения задач. </strong></h3>\n<h3><strong>Просьба ознакомиться:&nbsp;</strong><a href=\"https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy\">https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy</a></h3>\n<p>&nbsp;</p>",
+    "status": {
+      "id": 3,
+      "name": "Завершенная",
+      "color": "#85878E",
+      "isActive": false,
+      "hasDeadline": false,
+      "isAppliedIndividually": false,
+      "texts": [
+        {
+          "lang": "Ru",
+          "name": "Завершенная"
+        },
+        {
+          "lang": "En",
+          "name": "Completed"
+        }
+      ]
+    },
+    "assigner": {
+      "id": "user:5",
+      "name": "Алексей Шульга"
+    },
+    "project": {
+      "id": 1386,
+      "name": "Строительство Тазалыка №2"
+    },
+    "startDateTime": {
+      "date": "13-05-2025",
+      "time": "00:00",
+      "datetime": "2025-05-13T00:00Z"
+    },
+    "endDateTime": {
+      "date": "16-05-2025",
+      "time": "00:00",
+      "datetime": "2025-05-16T00:00Z"
+    },
+    "assignees": {
+      "users": [
+        {
+          "id": "user:7",
+          "name": "Оксана Янковская"
+        }
+      ],
+      "groups": []
+    }
+  },
+  {
+    "id": 2460,
+    "name": "Тендер на установку видеонаблюдения на объекте Автовокзал",
+    "description": "<p><span style=\"color: rgb(52, 52, 52); font-family: -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;, roboto, &quot;Helvetica Neue&quot;, helvetica, arial, sans-serif; font-size: 16px; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; text-align: start; ; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: normal; background-color: rgb(255, 255, 255); text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; display: inline !important\">Задача ставится согласно процесса проведения тендера:&nbsp;</span><a href=\"https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.tb52epwccm61\">https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.tb52epwccm61</a></p>",
+    "status": {
+      "id": 3,
+      "name": "Завершенная",
+      "color": "#85878E",
+      "isActive": false,
+      "hasDeadline": false,
+      "isAppliedIndividually": false,
+      "texts": [
+        {
+          "lang": "Ru",
+          "name": "Завершенная"
+        },
+        {
+          "lang": "En",
+          "name": "Completed"
+        }
+      ]
+    },
+    "assigner": {
+      "id": "user:20",
+      "name": "Канатбек Аскаров"
+    },
+    "project": {
+      "id": 29,
+      "name": "Автовокзал"
+    },
+    "endDateTime": {
+      "date": "14-05-2025",
+      "time": "12:55",
+      "datetime": "2025-05-14T12:55Z"
+    }
+  },
+  {
     "id": 2463,
     "name": "Встреча с Поповым (SSS)",
     "description": "<h3>&nbsp;</h3>\n<p>&nbsp;</p>",
@@ -29660,6 +30384,694 @@
         {
           "id": "user:4",
           "name": "Назарий Шевченко"
+        }
+      ],
+      "groups": []
+    }
+  },
+  {
+    "id": 2465,
+    "name": "Ганта по Кыргызтаны",
+    "description": "<h3><strong>Задача ставится согласно Процессу постановки, контроля и выполнения задач. </strong></h3>\n<h3><strong>Просьба ознакомиться: </strong><a href=\"https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy\">https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy</a></h3>\n<p>&nbsp;</p>",
+    "status": {
+      "id": 3,
+      "name": "Завершенная",
+      "color": "#85878E",
+      "isActive": false,
+      "hasDeadline": false,
+      "isAppliedIndividually": false,
+      "texts": [
+        {
+          "lang": "Ru",
+          "name": "Завершенная"
+        },
+        {
+          "lang": "En",
+          "name": "Completed"
+        }
+      ]
+    },
+    "assigner": {
+      "id": "user:5",
+      "name": "Алексей Шульга"
+    }
+  },
+  {
+    "id": 2474,
+    "name": "Встреча по сайту (пн)",
+    "description": "",
+    "status": {
+      "id": 3,
+      "name": "Завершенная",
+      "color": "#85878E",
+      "isActive": false,
+      "hasDeadline": false,
+      "isAppliedIndividually": false,
+      "texts": [
+        {
+          "lang": "Ru",
+          "name": "Завершенная"
+        },
+        {
+          "lang": "En",
+          "name": "Completed"
+        }
+      ]
+    },
+    "assigner": {
+      "id": "user:3",
+      "name": "Вячеслав Фоменко"
+    },
+    "project": {
+      "id": 116,
+      "name": "Маркетинг"
+    },
+    "startDateTime": {
+      "date": "12-05-2025",
+      "time": "15:00",
+      "datetime": "2025-05-12T15:00Z"
+    },
+    "endDateTime": {
+      "date": "12-05-2025",
+      "time": "16:00",
+      "datetime": "2025-05-12T16:00Z"
+    },
+    "assignees": {
+      "users": [
+        {
+          "id": "user:3",
+          "name": "Вячеслав Фоменко"
+        },
+        {
+          "id": "user:4",
+          "name": "Назарий Шевченко"
+        }
+      ],
+      "groups": []
+    }
+  },
+  {
+    "id": 2477,
+    "name": "Оплата за фактически выполненные работы по устройству ограждения",
+    "description": "<p>Задача ставится согласно процесса проведения оплаты:&nbsp;<a href=\"https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.esmrt0f8nx6u\">https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.esmrt0f8nx6u</a></p>",
+    "status": {
+      "id": 3,
+      "name": "Завершенная",
+      "color": "#85878E",
+      "isActive": false,
+      "hasDeadline": false,
+      "isAppliedIndividually": false,
+      "texts": [
+        {
+          "lang": "Ru",
+          "name": "Завершенная"
+        },
+        {
+          "lang": "En",
+          "name": "Completed"
+        }
+      ]
+    },
+    "assigner": {
+      "id": "user:7",
+      "name": "Оксана Янковская"
+    },
+    "project": {
+      "id": 29,
+      "name": "Автовокзал"
+    },
+    "endDateTime": {
+      "date": "15-05-2025",
+      "time": "00:00",
+      "datetime": "2025-05-15T00:00Z"
+    },
+    "assignees": {
+      "users": [
+        {
+          "id": "user:7",
+          "name": "Оксана Янковская"
+        }
+      ],
+      "groups": []
+    }
+  },
+  {
+    "id": 2487,
+    "name": "Оплата за изготовление брендовой продукции",
+    "description": "<p>Задача ставится согласно процесса проведения оплаты:&nbsp;<a href=\"https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.esmrt0f8nx6u\">https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.esmrt0f8nx6u</a></p>",
+    "status": {
+      "id": 3,
+      "name": "Завершенная",
+      "color": "#85878E",
+      "isActive": false,
+      "hasDeadline": false,
+      "isAppliedIndividually": false,
+      "texts": [
+        {
+          "lang": "Ru",
+          "name": "Завершенная"
+        },
+        {
+          "lang": "En",
+          "name": "Completed"
+        }
+      ]
+    },
+    "assigner": {
+      "id": "user:9",
+      "name": "Бахтияр Ибрагимов"
+    },
+    "project": {
+      "id": 116,
+      "name": "Маркетинг"
+    },
+    "assignees": {
+      "users": [
+        {
+          "id": "user:9",
+          "name": "Бахтияр Ибрагимов"
+        }
+      ],
+      "groups": []
+    }
+  },
+  {
+    "id": 2490,
+    "name": "Купить sim карту для регистрации аккаунта Meta",
+    "description": "<h3>Для регистрации аккаунта Meta нужно приобрести sim карту с телефонным номером мобильного оператора. Регистрация номера если нужно будет на Константина Осипова.</h3>\n<p>&nbsp;</p>",
+    "status": {
+      "id": 3,
+      "name": "Завершенная",
+      "color": "#85878E",
+      "isActive": false,
+      "hasDeadline": false,
+      "isAppliedIndividually": false,
+      "texts": [
+        {
+          "lang": "Ru",
+          "name": "Завершенная"
+        },
+        {
+          "lang": "En",
+          "name": "Completed"
+        }
+      ]
+    },
+    "assigner": {
+      "id": "user:3",
+      "name": "Вячеслав Фоменко"
+    },
+    "project": {
+      "id": 116,
+      "name": "Маркетинг"
+    },
+    "endDateTime": {
+      "date": "15-05-2025",
+      "time": "00:00",
+      "datetime": "2025-05-15T00:00Z"
+    },
+    "assignees": {
+      "users": [
+        {
+          "id": "user:9",
+          "name": "Бахтияр Ибрагимов"
+        }
+      ],
+      "groups": []
+    }
+  },
+  {
+    "id": 2494,
+    "name": "Предоплата по договору Генподряда",
+    "description": "<h3><strong>Задача ставится согласно Процессу постановки, контроля и выполнения задач. </strong></h3>\n<h3><strong>Просьба ознакомиться:&nbsp;</strong><a href=\"https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy\">https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy</a></h3>\n<p>&nbsp;</p>",
+    "status": {
+      "id": 3,
+      "name": "Завершенная",
+      "color": "#85878E",
+      "isActive": false,
+      "hasDeadline": false,
+      "isAppliedIndividually": false,
+      "texts": [
+        {
+          "lang": "Ru",
+          "name": "Завершенная"
+        },
+        {
+          "lang": "En",
+          "name": "Completed"
+        }
+      ]
+    },
+    "assigner": {
+      "id": "user:7",
+      "name": "Оксана Янковская"
+    },
+    "project": {
+      "id": 29,
+      "name": "Автовокзал"
+    },
+    "startDateTime": {
+      "date": "16-05-2025",
+      "time": "00:00",
+      "datetime": "2025-05-16T00:00Z"
+    },
+    "endDateTime": {
+      "date": "16-05-2025",
+      "time": "06:00",
+      "datetime": "2025-05-16T06:00Z"
+    },
+    "assignees": {
+      "users": [
+        {
+          "id": "user:7",
+          "name": "Оксана Янковская"
+        }
+      ],
+      "groups": []
+    }
+  },
+  {
+    "id": 2495,
+    "name": "Провести установочную встречу с Asadov",
+    "description": "<h3>Встреча с Asadov</h3>\n<p>Четверг, 15 мая - 12:30 (15:30 по Бишкеку)</p>\n<p>Часовой пояс: Европ/Москва</p>\n<p>&nbsp;</p>",
+    "status": {
+      "id": 3,
+      "name": "Завершенная",
+      "color": "#85878E",
+      "isActive": false,
+      "hasDeadline": false,
+      "isAppliedIndividually": false,
+      "texts": [
+        {
+          "lang": "Ru",
+          "name": "Завершенная"
+        },
+        {
+          "lang": "En",
+          "name": "Completed"
+        }
+      ]
+    },
+    "assigner": {
+      "id": "user:4",
+      "name": "Назарий Шевченко"
+    },
+    "project": {
+      "id": 1647,
+      "name": "Elysium Иссык-Куль"
+    },
+    "startDateTime": {
+      "date": "15-05-2025",
+      "time": "09:30",
+      "datetime": "2025-05-15T09:30Z"
+    },
+    "endDateTime": {
+      "date": "15-05-2025",
+      "time": "10:30",
+      "datetime": "2025-05-15T10:30Z"
+    },
+    "assignees": {
+      "users": [
+        {
+          "id": "user:11",
+          "name": "Данияр Мусуралиев"
+        },
+        {
+          "id": "user:20",
+          "name": "Канатбек Аскаров"
+        },
+        {
+          "id": "user:3",
+          "name": "Вячеслав Фоменко"
+        },
+        {
+          "id": "user:10",
+          "name": "Сергей Храпунов"
+        },
+        {
+          "id": "user:5",
+          "name": "Алексей Шульга"
+        },
+        {
+          "id": "user:1",
+          "name": "Константин Осипов"
+        },
+        {
+          "id": "user:4",
+          "name": "Назарий Шевченко"
+        },
+        {
+          "id": "user:7",
+          "name": "Оксана Янковская"
+        }
+      ],
+      "groups": []
+    }
+  },
+  {
+    "id": 2498,
+    "name": "Создать протокол от 14.05.2025",
+    "description": "<h3><strong>Задача ставится согласно Процессу постановки, контроля и выполнения задач. </strong></h3>\n<h3><strong>Просьба ознакомиться:&nbsp;</strong><a href=\"https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy\">https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy</a></h3>\n<p>&nbsp;</p>",
+    "status": {
+      "id": 3,
+      "name": "Завершенная",
+      "color": "#85878E",
+      "isActive": false,
+      "hasDeadline": false,
+      "isAppliedIndividually": false,
+      "texts": [
+        {
+          "lang": "Ru",
+          "name": "Завершенная"
+        },
+        {
+          "lang": "En",
+          "name": "Completed"
+        }
+      ]
+    },
+    "assigner": {
+      "id": "user:5",
+      "name": "Алексей Шульга"
+    },
+    "project": {
+      "id": 29,
+      "name": "Автовокзал"
+    },
+    "startDateTime": {
+      "date": "15-05-2025",
+      "time": "00:00",
+      "datetime": "2025-05-15T00:00Z"
+    },
+    "endDateTime": {
+      "date": "15-05-2025",
+      "time": "06:00",
+      "datetime": "2025-05-15T06:00Z"
+    },
+    "assignees": {
+      "users": [
+        {
+          "id": "user:20",
+          "name": "Канатбек Аскаров"
+        }
+      ],
+      "groups": []
+    }
+  },
+  {
+    "id": 2499,
+    "name": "Нанести существующую 100 метровую зону на топосъёмку",
+    "description": "<h3><strong>Задача ставится согласно Процессу постановки, контроля и выполнения задач. </strong></h3>\n<h3><strong>Просьба ознакомиться:&nbsp;</strong><a href=\"https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy\">https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy</a></h3>\n<p>&nbsp;</p>",
+    "status": {
+      "id": 3,
+      "name": "Завершенная",
+      "color": "#85878E",
+      "isActive": false,
+      "hasDeadline": false,
+      "isAppliedIndividually": false,
+      "texts": [
+        {
+          "lang": "Ru",
+          "name": "Завершенная"
+        },
+        {
+          "lang": "En",
+          "name": "Completed"
+        }
+      ]
+    },
+    "assigner": {
+      "id": "user:5",
+      "name": "Алексей Шульга"
+    },
+    "project": {
+      "id": 12,
+      "name": "Polaris Иссык-Куль"
+    },
+    "startDateTime": {
+      "date": "15-05-2025",
+      "time": "00:00",
+      "datetime": "2025-05-15T00:00Z"
+    },
+    "endDateTime": {
+      "date": "15-05-2025",
+      "time": "00:00",
+      "datetime": "2025-05-15T00:00Z"
+    },
+    "assignees": {
+      "users": [
+        {
+          "id": "user:20",
+          "name": "Канатбек Аскаров"
+        }
+      ],
+      "groups": []
+    }
+  },
+  {
+    "id": 2500,
+    "name": "Отмерять 100м. от уреза воды, дать фото и размеры для нанесения на топосъёмку",
+    "description": "<h3><strong>Задача ставится согласно Процессу постановки, контроля и выполнения задач. </strong></h3>\n<h3><strong>Просьба ознакомиться:&nbsp;</strong><a href=\"https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy\">https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy</a></h3>\n<p>&nbsp;</p>",
+    "status": {
+      "id": 3,
+      "name": "Завершенная",
+      "color": "#85878E",
+      "isActive": false,
+      "hasDeadline": false,
+      "isAppliedIndividually": false,
+      "texts": [
+        {
+          "lang": "Ru",
+          "name": "Завершенная"
+        },
+        {
+          "lang": "En",
+          "name": "Completed"
+        }
+      ]
+    },
+    "assigner": {
+      "id": "user:5",
+      "name": "Алексей Шульга"
+    },
+    "project": {
+      "id": 12,
+      "name": "Polaris Иссык-Куль"
+    },
+    "startDateTime": {
+      "date": "15-05-2025",
+      "time": "00:00",
+      "datetime": "2025-05-15T00:00Z"
+    },
+    "endDateTime": {
+      "date": "16-05-2025",
+      "time": "00:00",
+      "datetime": "2025-05-16T00:00Z"
+    },
+    "assignees": {
+      "users": [
+        {
+          "id": "user:20",
+          "name": "Канатбек Аскаров"
+        }
+      ],
+      "groups": []
+    }
+  },
+  {
+    "id": 2502,
+    "name": "Провести анализ механизма переноса защитной зоны",
+    "description": "<h3><strong>Задача ставится согласно Процессу постановки, контроля и выполнения задач. </strong></h3>\n<h3><strong>Просьба ознакомиться:&nbsp;</strong><a href=\"https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy\">https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy</a></h3>\n<p>&nbsp;</p>",
+    "status": {
+      "id": 3,
+      "name": "Завершенная",
+      "color": "#85878E",
+      "isActive": false,
+      "hasDeadline": false,
+      "isAppliedIndividually": false,
+      "texts": [
+        {
+          "lang": "Ru",
+          "name": "Завершенная"
+        },
+        {
+          "lang": "En",
+          "name": "Completed"
+        }
+      ]
+    },
+    "assigner": {
+      "id": "user:5",
+      "name": "Алексей Шульга"
+    },
+    "project": {
+      "id": 12,
+      "name": "Polaris Иссык-Куль"
+    },
+    "startDateTime": {
+      "date": "15-05-2025",
+      "time": "00:00",
+      "datetime": "2025-05-15T00:00Z"
+    },
+    "endDateTime": {
+      "date": "16-05-2025",
+      "time": "00:00",
+      "datetime": "2025-05-16T00:00Z"
+    },
+    "assignees": {
+      "users": [
+        {
+          "id": "user:6",
+          "name": "Марлен Замиров"
+        }
+      ],
+      "groups": []
+    }
+  },
+  {
+    "id": 2504,
+    "name": "Оплата налога на землю",
+    "description": "<p>Задача ставится согласно процесса проведения оплаты:&nbsp;<a href=\"https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.esmrt0f8nx6u\">https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.esmrt0f8nx6u</a></p>",
+    "status": {
+      "id": 3,
+      "name": "Завершенная",
+      "color": "#85878E",
+      "isActive": false,
+      "hasDeadline": false,
+      "isAppliedIndividually": false,
+      "texts": [
+        {
+          "lang": "Ru",
+          "name": "Завершенная"
+        },
+        {
+          "lang": "En",
+          "name": "Completed"
+        }
+      ]
+    },
+    "assigner": {
+      "id": "user:16",
+      "name": "Аида Насирова"
+    },
+    "project": {
+      "id": 1647,
+      "name": "Elysium Иссык-Куль"
+    },
+    "startDateTime": {
+      "date": "15-05-2025",
+      "time": "23:59",
+      "datetime": "2025-05-15T23:59Z"
+    },
+    "endDateTime": {
+      "date": "16-05-2025",
+      "time": "06:00",
+      "datetime": "2025-05-16T06:00Z"
+    },
+    "assignees": {
+      "users": [
+        {
+          "id": "user:16",
+          "name": "Аида Насирова"
+        }
+      ],
+      "groups": []
+    }
+  },
+  {
+    "id": 2517,
+    "name": "Решить покупку участка под парковку",
+    "description": "<h3><strong>Задача ставится согласно Процессу постановки, контроля и выполнения задач. </strong></h3>\n<h3><strong>Просьба ознакомиться:&nbsp;</strong><a href=\"https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy\">https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy</a></h3>\n<p>&nbsp;</p>",
+    "status": {
+      "id": 6,
+      "name": "Выполненная",
+      "color": "#30AB50",
+      "isActive": true,
+      "hasDeadline": false,
+      "isAppliedIndividually": true,
+      "texts": [
+        {
+          "lang": "Ru",
+          "name": "Выполненная"
+        },
+        {
+          "lang": "En",
+          "name": "Ready for review"
+        }
+      ]
+    },
+    "assigner": {
+      "id": "user:5",
+      "name": "Алексей Шульга"
+    },
+    "project": {
+      "id": 1647,
+      "name": "Elysium Иссык-Куль"
+    },
+    "startDateTime": {
+      "date": "15-05-2025",
+      "time": "00:00",
+      "datetime": "2025-05-15T00:00Z"
+    },
+    "endDateTime": {
+      "date": "29-05-2025",
+      "time": "00:00",
+      "datetime": "2025-05-29T00:00Z"
+    },
+    "assignees": {
+      "users": [
+        {
+          "id": "user:1",
+          "name": "Константин Осипов"
+        }
+      ],
+      "groups": []
+    }
+  },
+  {
+    "id": 2536,
+    "name": "Предоставить предварительные 3-д модели проекта для формирования эскизного проекта",
+    "description": "<h3><strong>Задача ставится согласно Процессу постановки, контроля и выполнения задач. </strong></h3>\n<h3><strong>Просьба ознакомиться:&nbsp;</strong><a href=\"https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy\">https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy</a></h3>\n<p>&nbsp;</p>",
+    "status": {
+      "id": 6,
+      "name": "Выполненная",
+      "color": "#30AB50",
+      "isActive": true,
+      "hasDeadline": false,
+      "isAppliedIndividually": true,
+      "texts": [
+        {
+          "lang": "Ru",
+          "name": "Выполненная"
+        },
+        {
+          "lang": "En",
+          "name": "Ready for review"
+        }
+      ]
+    },
+    "assigner": {
+      "id": "user:20",
+      "name": "Канатбек Аскаров"
+    },
+    "project": {
+      "id": 29,
+      "name": "Автовокзал"
+    },
+    "endDateTime": {
+      "date": "21-05-2025",
+      "time": "00:00",
+      "datetime": "2025-05-21T00:00Z"
+    },
+    "assignees": {
+      "users": [
+        {
+          "id": "user:20",
+          "name": "Канатбек Аскаров"
+        },
+        {
+          "id": "user:5",
+          "name": "Алексей Шульга"
         }
       ],
       "groups": []
