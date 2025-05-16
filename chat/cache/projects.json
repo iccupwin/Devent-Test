@@ -10,8 +10,13 @@
   {
     "id": 116,
     "name": "Маркетинг",
+<<<<<<< HEAD
     "task_count": 117,
     "active_tasks": 71,
+=======
+    "task_count": 116,
+    "active_tasks": 70,
+>>>>>>> 9942f43be8da1cf1caa5ba204ac5a58c4db5ab97
     "completed_tasks": 46,
     "overdue_tasks": 9
   },
@@ -34,10 +39,17 @@
   {
     "id": 29,
     "name": "Автовокзал",
+<<<<<<< HEAD
     "task_count": 324,
     "active_tasks": 101,
     "completed_tasks": 223,
     "overdue_tasks": 34
+=======
+    "task_count": 323,
+    "active_tasks": 100,
+    "completed_tasks": 223,
+    "overdue_tasks": 33
+>>>>>>> 9942f43be8da1cf1caa5ba204ac5a58c4db5ab97
   },
   {
     "id": 1647,

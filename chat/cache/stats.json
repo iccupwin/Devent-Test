@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
   "total_tasks": 1355,
   "active_tasks": 686,
   "completed_tasks": 669,
@@ -7,6 +8,16 @@
   "completion_rate": 49.37,
   "total_projects": 13,
   "avg_tasks_per_project": 104.23,
+=======
+  "total_tasks": 1353,
+  "active_tasks": 684,
+  "completed_tasks": 669,
+  "overdue_tasks": 114,
+  "tasks_due_this_week": 114,
+  "completion_rate": 49.45,
+  "total_projects": 13,
+  "avg_tasks_per_project": 104.08,
+>>>>>>> 9942f43be8da1cf1caa5ba204ac5a58c4db5ab97
   "status_counts": {
     "В работе": 340,
     "Завершенная": 634,
@@ -23,10 +34,18 @@
     "Принято к исполнению": 2,
     " Скан и передача в архив": 1,
     "Финансовый директор": 3,
+<<<<<<< HEAD
     "Доработка инициатором": 3,
     "Время встречи назначено": 1,
     "Управляющая компания": 1
   },
   "cache_updated_at": "2025-05-16T16:46:00.866060",
   "cache_age_minutes": 0.0030841588973999023
+=======
+    "Доработка инициатором": 2,
+    "Время встречи назначено": 1
+  },
+  "cache_updated_at": "2025-05-16T16:01:15.791026",
+  "cache_age_minutes": 0.0039020895957946776
+>>>>>>> 9942f43be8da1cf1caa5ba204ac5a58c4db5ab97
 }
