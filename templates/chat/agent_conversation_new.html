@@ -449,8 +449,12 @@ document.addEventListener('DOMContentLoaded', function() {
                         typingIndicator.remove();
                     }
                     
+                    // Get current model name
+                    const selectedOption = modelSelect.options[modelSelect.selectedIndex];
+                    const modelName = selectedOption ? selectedOption.text : null;
+                    
                     // Add agent response to chat
-                    addMessageToChat('assistant', response.message);
+                    addMessageToChat('assistant', response.message, modelName);
                     
                     // Update conversation ID if new
                     if (response.conversation_id && !currentConversationId) {
@@ -473,14 +477,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     }
                     
                     // Show error message
-                    addMessageToChat('assistant', 'Sorry, there was an error processing your request. Please try again later or contact the administrator if the problem persists.');
+                    addMessageToChat('assistant', 'Извините, произошла ошибка при обработке вашего запроса. Пожалуйста, попробуйте позже или обратитесь к администратору, если проблема сохраняется.');
                     scrollToBottom();
                 });
         });
     }
     
     // Add message to chat
-    function addMessageToChat(role, content) {
+    function addMessageToChat(role, content, modelName = null) {
         // Remove welcome message if present
         const welcomeMessage = document.querySelector('.welcome-message');
         if (welcomeMessage) {
@@ -493,10 +497,11 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Different structure based on role
         if (role === 'assistant') {
+            const modelDisplay = modelName ? ` (${modelName})` : '';
             messageElement.innerHTML = `
                 <div class="assistant-avatar">A</div>
                 <div class="message-content-wrapper">
-                    <div class="message-role">Planfix Agent</div>
+                    <div class="message-role">Planfix Agent${modelDisplay}</div>
                     <div class="message-content">${formatMessageContent(content)}</div>
                 </div>
             `;
@@ -542,24 +547,18 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Send message to agent API
     async function sendMessageToAgent(message) {
-        const payload = {
-            message: message,
-            conversation_id: currentConversationId
-        };
-        // Если это новая беседа, добавляем выбранную модель
-        if (!currentConversationId) {
-            const select = document.getElementById('aiModelSelect');
-            if (select) {
-                payload.model_id = select.value;
-            }
-        }
+        const selectedModelId = modelSelect.value;
         const response = await fetch('/api/agent/message/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCookie('csrftoken')
             },
-            body: JSON.stringify(payload)
+            body: JSON.stringify({
+                message: message,
+                conversation_id: currentConversationId,
+                model_id: selectedModelId
+            })
         });
         
         if (!response.ok) {

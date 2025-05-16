@@ -49,9 +49,14 @@ def agent_message_api(request):
             selected_model = None
             if model_id:
                 try:
+                    # Сначала пробуем как id
                     selected_model = AIModel.objects.get(id=model_id)
-                except AIModel.DoesNotExist:
-                    pass
+                except (AIModel.DoesNotExist, ValueError):
+                    # Если не id, пробуем как имя
+                    selected_model, _ = AIModel.objects.get_or_create(name=model_id.lower())
+            else:
+                # Если model_id не передан, используем claude по умолчанию
+                selected_model, _ = AIModel.objects.get_or_create(name='claude')
             conversation = Conversation.objects.create(
                 user=user,
                 title=title,
@@ -88,7 +93,7 @@ def agent_message_api(request):
         
         user_metrics.save()
         
-        # Get previous messages for context (limit to last 10 for simplicity)
+        # Get previous messages for context
         previous_messages = Message.objects.filter(conversation=conversation).order_by('created_at')
         
         # Format messages for agent
@@ -101,41 +106,26 @@ def agent_message_api(request):
         
         # Получаем выбранную модель ИИ для беседы
         ai_model = conversation.ai_model
-        response = ""
-        if not ai_model:
-            response = "Модель ИИ не выбрана для этой беседы."
+        
+        # Обрабатываем запрос с помощью выбранной модели
+        if ai_model and ai_model.name.lower() == 'gemini':
+            response = agent.process_query(message_text, conversation_history, ai_model='gemini')
         else:
-            try:
-                if ai_model.model_type == 'claude':
-                    ai_response = claude_ai.process_query(message_text, conversation_history)
-                    response = ai_response.get('message', str(ai_response)) if isinstance(ai_response, dict) else str(ai_response)
-                elif ai_model.model_type == 'gpt':
-                    ai_response = openai_ai.process_query(message_text, conversation_history, model_name=ai_model.version)
-                    response = ai_response.get('message', str(ai_response)) if isinstance(ai_response, dict) else str(ai_response)
-                elif ai_model.model_type == 'gemini':
-                    ai_response = gemini_ai.process_query(message_text, conversation_history)
-                    response = ai_response.get('message', str(ai_response)) if isinstance(ai_response, dict) else str(ai_response)
-                else:
-                    response = f"Неизвестный тип модели: {ai_model.model_type}"
-            except Exception as e:
-                logger.error(f"Error processing query with {ai_model.model_type}: {e}", exc_info=True)
-                response = f"Ошибка при обработке запроса через {ai_model.name}: {str(e)}"
+            response = agent.process_query(message_text, conversation_history, ai_model='claude')
         
-        # Save agent's response
-        assistant_message = Message.objects.create(
-            conversation=conversation,
-            role='assistant',
-            content=response,
-            ai_model_used=ai_model
-        )
+        # Сохраняем ответ ассистента
+        if response.get('response_type') == 'ai_response':
+            assistant_message = Message.objects.create(
+                conversation=conversation,
+                role='assistant',
+                content=response['message'],
+                ai_model_used=ai_model
+            )
         
-        # Update conversation's updated_at timestamp
-        conversation.save()
-        
-        # Return response
         return JsonResponse({
-            'message': response,
-            'conversation_id': conversation.id
+            'message': response.get('message', ''),
+            'conversation_id': conversation.id,
+            'response_type': response.get('response_type', 'ai_response')
         })
         
     except json.JSONDecodeError as e:

@@ -25,6 +25,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'chat',  # Наше приложение для чата с Claude
+    'posthog',
 ]
 
 # Custom User Model

@@ -9,6 +9,10 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'claude_chat.settings')
 # Создание экземпляра Celery
 app = Celery('claude_chat')
 
+# Настройка брокера и бэкенда
+app.conf.broker_url = 'redis://localhost:6379/0'
+app.conf.result_backend = 'redis://localhost:6379/0'
+
 # Загрузка настроек из settings.py
 app.config_from_object('django.conf:settings', namespace='CELERY')
 

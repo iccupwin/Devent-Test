@@ -1,13 +1,13 @@
-import requests
+import os
+import posthog
+from dotenv import load_dotenv
 
-API_KEY = ""
-url = "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-pro:generateContent"
-headers = {"Content-Type": "application/json"}
-data = {
-    "contents": [
-        {"parts": [{"text": "Привет, Gemini!"}]}
-    ]
-}
-params = {"key": API_KEY}
-resp = requests.post(url, headers=headers, params=params, json=data)
-print(resp.status_code, resp.text)
+# Load environment variables from .env file
+load_dotenv()
+
+# Initialize PostHog
+posthog.api_key = os.getenv('POSTHOG_API_KEY')
+posthog.host = os.getenv('POSTHOG_HOST', 'https://app.posthog.com')
+
+# Capture test event
+posthog.capture('test-id', 'test-event')

@@ -4,6 +4,8 @@ import re
 from typing import Dict, List, Any, Optional, Tuple
 from .planfix_cache_service import planfix_cache
 from .claude_ai_service import claude_ai
+from .gemini_ai_service import GeminiAIService
+from django.conf import settings
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -16,14 +18,17 @@ class AgentQueryProcessor:
     def __init__(self):
         """Initialize the processor"""
         logger.info("Initializing Agent Query Processor")
+        self.gemini_ai = GeminiAIService()
     
-    def process_query(self, user_query: str, conversation_history: Optional[List[Dict[str, str]]] = None) -> Dict[str, Any]:
+    def process_query(self, user_query: str, conversation_history: Optional[List[Dict[str, str]]] = None,
+                     ai_model: str = None) -> Dict[str, Any]:
         """
         Process a user query about Planfix data and return the appropriate response
         
         Args:
             user_query: The user's query text
             conversation_history: Optional list of previous messages
+            ai_model: Optional AI model to use ('claude' or 'gemini')
         
         Returns:
             Dictionary with response data
@@ -43,9 +48,17 @@ class AgentQueryProcessor:
         if self._is_system_query(user_query):
             return self._handle_system_query(user_query)
         
-        # Process query using Claude AI
+        # Determine which AI model to use
+        if ai_model is None:
+            # Use default model from settings or fallback to Claude
+            ai_model = getattr(settings, 'DEFAULT_AI_MODEL', 'claude')
+        
+        # Process query using selected AI model
         try:
-            ai_response = claude_ai.process_query(user_query, conversation_history)
+            if ai_model.lower() == 'gemini':
+                ai_response = self.gemini_ai.process_query(user_query, conversation_history)
+            else:  # Default to Claude
+                ai_response = claude_ai.process_query(user_query, conversation_history)
             
             # If ai_response is already a dictionary with response_type and message, return it
             if isinstance(ai_response, dict) and 'response_type' in ai_response and 'message' in ai_response:
@@ -57,7 +70,7 @@ class AgentQueryProcessor:
                 'message': str(ai_response)
             }
         except Exception as e:
-            logger.error(f"Error processing query with Claude AI: {e}", exc_info=True)
+            logger.error(f"Error processing query with {ai_model} AI: {e}", exc_info=True)
             return {
                 'response_type': 'error',
                 'message': f"Sorry, there was an error processing your query: {str(e)}"

@@ -62,3 +62,20 @@ def cleanup_old_data():
     logger.info("Old analytics data cleanup completed")
     
     return "Old data cleaned up successfully"
+
+# === ВНИЗУ ФАЙЛА ===
+from .vector_service import upsert_message
+
+@shared_task
+def vectorize_message(message_id: int):
+    """
+    Векторизует новое сообщение и складывает в Qdrant
+    """
+    from .models import Message  # локальный импорт, чтобы избежать круговой зависимости
+    msg = Message.objects.select_related('conversation').get(pk=message_id)
+    meta = {
+        "conversation_id": msg.conversation_id,
+        "role": msg.role,
+        "created_at": msg.created_at.isoformat()
+    }
+    upsert_message(msg.id, msg.content, meta)

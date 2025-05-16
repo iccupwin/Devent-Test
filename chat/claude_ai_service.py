@@ -6,6 +6,7 @@ from django.conf import settings
 import requests
 from .planfix_cache_service import planfix_cache
 from .analytics_service import AnalyticsService
+from .vector_service import search
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -16,6 +17,24 @@ class ClaudeAIService:
     for processing Planfix data and answering user queries
     """
     
+
+
+    def build_prompt(user_query: str, history: list[dict]) -> str:
+        similar = search(user_query, limit=5)
+        context = "\n\n".join(f"[{hit.id}] {hit.payload.get('role')}:\n{hit.payload.get('text','')}"
+                            for hit in similar)
+        prompt = f"""
+    Ты ассистент. Используй информацию из контекста, если она релевантна.
+
+    Контекст:
+    {context}
+
+    Вопрос:
+    {user_query}
+    """
+        return prompt
+
+
     def __init__(self):
         """Initialize Claude AI service with API configuration"""
         self.api_key = settings.CLAUDE_API_KEY
@@ -602,3 +621,4 @@ class ClaudeAIService:
 
 # Singleton instance
 claude_ai = ClaudeAIService()
+

@@ -1,11 +1,25 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv
-print("CLAUDE_API_KEY:", os.environ.get('CLAUDE_API_KEY'))
-# Загрузка переменных окружения
-load_dotenv()
 
+# Определяем путь к файлу .env
 BASE_DIR = Path(__file__).resolve().parent.parent
+ENV_FILE = BASE_DIR / '.env'
+
+# Загрузка переменных окружения
+load_dotenv(ENV_FILE)
+
+# Проверка и установка значений по умолчанию для API ключей
+if not os.environ.get('GEMINI_API_KEY'):
+    print("WARNING: GEMINI_API_KEY not found in environment variables")
+    os.environ['GEMINI_API_KEY'] = 'AIzaSyBXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+
+if not os.environ.get('CLAUDE_API_KEY'):
+    print("WARNING: CLAUDE_API_KEY not found in environment variables")
+    os.environ['CLAUDE_API_KEY'] = ''
+
+print("CLAUDE_API_KEY:", os.environ.get('CLAUDE_API_KEY'))
+print("GEMINI_API_KEY:", os.environ.get('GEMINI_API_KEY'))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-default-key-change-in-prod')
@@ -136,6 +150,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Claude API настройки
 CLAUDE_API_KEY = os.environ.get('CLAUDE_API_KEY', '')
 CLAUDE_API_URL = os.environ.get('CLAUDE_API_URL', 'https://api.anthropic.com/v1/messages')
+
+# Gemini API настройки
+GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', '')
+GEMINI_API_MODEL = os.environ.get('GEMINI_API_MODEL', 'gemini-pro')
+
+# Default AI model to use
+DEFAULT_AI_MODEL = os.environ.get('DEFAULT_AI_MODEL', 'claude')
 
 # Логирование
 LOGGING = {
