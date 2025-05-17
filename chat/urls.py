@@ -91,4 +91,7 @@ urlpatterns = [
 
     # Изменение модели ИИ в беседе
     path('conversation/<int:conversation_id>/change-model/', views.change_conversation_model, name='change_conversation_model'),
+
+    path('vector-visualization/', views.vector_visualization, name='vector_visualization'),
+    path('vector-visualization/refresh/', views.refresh_vector_data, name='refresh_vector_data'),
 ]

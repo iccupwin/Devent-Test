@@ -5,6 +5,7 @@ from typing import Dict, List, Any, Optional, Tuple
 from .planfix_cache_service import planfix_cache
 from .claude_ai_service import claude_ai
 from .gemini_ai_service import GeminiAIService
+from .openai_service import openai_ai
 from django.conf import settings
 
 # Configure logging
@@ -28,12 +29,24 @@ class AgentQueryProcessor:
         Args:
             user_query: The user's query text
             conversation_history: Optional list of previous messages
-            ai_model: Optional AI model to use ('claude' or 'gemini')
+            ai_model: Optional AI model to use ('claude', 'gpt', or 'gemini')
         
         Returns:
             Dictionary with response data
         """
         logger.info(f"Processing user query: {user_query[:50]}...")
+        logger.info(f"Selected AI model: {ai_model}")
+        
+        # Проверяем, является ли это первым сообщением после переключения модели
+        if conversation_history and len(conversation_history) > 0:
+            last_message = conversation_history[-1]
+            if last_message.get('role') == 'assistant' and 'model_switched' in last_message.get('content', ''):
+                # Если это первое сообщение после переключения, добавляем подтверждение
+                welcome_message = {
+                    'response_type': 'ai_response',
+                    'message': f"Я {ai_model.upper()} AI. Чем могу помочь?"
+                }
+                return welcome_message
         
         # Check if cache needs refreshing
         if not planfix_cache.is_cache_valid(max_age_minutes=60):
@@ -55,16 +68,29 @@ class AgentQueryProcessor:
         
         # Process query using selected AI model
         try:
-            if ai_model.lower() == 'gemini':
+            ai_model = ai_model.lower()
+            logger.info(f"Processing with AI model: {ai_model}")
+            
+            if ai_model == 'gemini':
+                logger.info("Using Gemini AI for processing")
                 ai_response = self.gemini_ai.process_query(user_query, conversation_history)
+                logger.info("Received response from Gemini AI")
+            elif ai_model == 'gpt':
+                logger.info("Using ChatGPT for processing")
+                ai_response = openai_ai.process_query(user_query, conversation_history)
+                logger.info("Received response from ChatGPT")
             else:  # Default to Claude
+                logger.info("Using Claude AI for processing")
                 ai_response = claude_ai.process_query(user_query, conversation_history)
+                logger.info("Received response from Claude AI")
             
             # If ai_response is already a dictionary with response_type and message, return it
             if isinstance(ai_response, dict) and 'response_type' in ai_response and 'message' in ai_response:
+                logger.info(f"Returning response from {ai_model} AI")
                 return ai_response
             
             # Otherwise, wrap the response in our standard format
+            logger.info(f"Wrapping response from {ai_model} AI in standard format")
             return {
                 'response_type': 'ai_response',
                 'message': str(ai_response)

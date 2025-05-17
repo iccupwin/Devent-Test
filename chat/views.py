@@ -8,6 +8,7 @@ from .planfix_cache_service import planfix_cache
 import logging
 from django.utils import timezone
 import json
+from .vector_visualization import vector_visualization as vector_vis, create_vector_dataframe, save_vector_cache
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -225,3 +226,28 @@ def change_conversation_model(request, conversation_id):
             'success': False,
             'error': str(e)
         }, status=400)
+
+def vector_visualization(request):
+    """
+    Представление для визуализации векторных данных
+    """
+    return vector_vis(request)
+
+@csrf_exempt
+@require_http_methods(["GET", "POST"])
+def refresh_vector_data(request):
+    """Обновляет данные для векторной визуализации (GET или POST)"""
+    try:
+        df = create_vector_dataframe()
+        save_vector_cache(df)
+        data = {
+            'success': True,
+            'data': df.to_dict(orient='records'),
+            'columns': df.columns.tolist()
+        }
+        return JsonResponse(data)
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        }, status=500)

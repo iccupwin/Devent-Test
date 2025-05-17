@@ -13,10 +13,14 @@ load_dotenv(ENV_FILE)
 if not os.environ.get('GEMINI_API_KEY'):
     print("WARNING: GEMINI_API_KEY not found in environment variables")
     os.environ['GEMINI_API_KEY'] = 'AIzaSyBXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+else:
+    print("GEMINI_API_KEY successfully loaded from .env file")
 
 if not os.environ.get('CLAUDE_API_KEY'):
     print("WARNING: CLAUDE_API_KEY not found in environment variables")
     os.environ['CLAUDE_API_KEY'] = ''
+else:
+    print("CLAUDE_API_KEY successfully loaded from .env file")
 
 print("CLAUDE_API_KEY:", os.environ.get('CLAUDE_API_KEY'))
 print("GEMINI_API_KEY:", os.environ.get('GEMINI_API_KEY'))
@@ -152,8 +156,15 @@ CLAUDE_API_KEY = os.environ.get('CLAUDE_API_KEY', '')
 CLAUDE_API_URL = os.environ.get('CLAUDE_API_URL', 'https://api.anthropic.com/v1/messages')
 
 # Gemini API настройки
-GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', '')
-GEMINI_API_MODEL = os.environ.get('GEMINI_API_MODEL', 'gemini-pro')
+GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY', 'AIzaSyAgrYahxXLFVJOIw55LUoSme5Js_wVfIzI')
+GEMINI_API_MODEL = os.environ.get('GEMINI_API_MODEL', 'models/gemini-1.5-pro-002')
+
+# Проверяем и выводим информацию о API ключе
+print("\n=== Gemini API Configuration ===")
+print(f"GEMINI_API_KEY loaded: {'Yes' if GEMINI_API_KEY else 'No'}")
+print(f"GEMINI_API_KEY first 10 chars: {GEMINI_API_KEY[:10] if GEMINI_API_KEY else 'None'}...")
+print(f"GEMINI_API_MODEL: {GEMINI_API_MODEL}")
+print("===============================\n")
 
 # Default AI model to use
 DEFAULT_AI_MODEL = os.environ.get('DEFAULT_AI_MODEL', 'claude')

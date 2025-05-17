@@ -129,22 +129,23 @@ def new_agent_conversation(request):
     """
     # Get or create anonymous user
     user, created = User.objects.get_or_create(username='anonymous')
-
-    ai_models = AIModel.objects.filter(is_active=True).order_by('name')
-    default_model = ai_models.first() if ai_models.exists() else None
-
-    if request.method == 'POST':
-        # Создаем новую беседу с моделью по умолчанию
-        conversation = Conversation.objects.create(user=user, title='Новая беседа', ai_model=default_model)
-        return redirect('chat:agent_conversation', conversation_id=conversation.id)
-
+    
     # Get list of conversations
     conversations = Conversation.objects.filter(user=user).order_by('-updated_at')
+    
     # Get agent statistics
     stats = planfix_cache.get_stats()
+    
+    # Get available AI models
+    ai_models = AIModel.objects.filter(is_active=True).order_by('name')
+    
+    # Get default model
+    default_model = ai_models.first()
+    
     return render(request, 'chat/agent_conversation_new.html', {
         'conversations': conversations,
         'stats': stats,
         'cache_valid': planfix_cache.is_cache_valid(max_age_minutes=60),
         'ai_models': ai_models,
+        'default_model': default_model
     })

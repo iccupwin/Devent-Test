@@ -1412,6 +1412,42 @@
     }
   },
   {
+    "id": 74,
+    "name": "Снести здания на участке проекта Elysium",
+    "description": "",
+    "status": {
+      "id": 6,
+      "name": "Выполненная",
+      "color": "#30AB50",
+      "isActive": true,
+      "hasDeadline": false,
+      "isAppliedIndividually": true,
+      "texts": [
+        {
+          "lang": "Ru",
+          "name": "Выполненная"
+        },
+        {
+          "lang": "En",
+          "name": "Ready for review"
+        }
+      ]
+    },
+    "assigner": {
+      "id": "user:5",
+      "name": "Алексей Шульга"
+    },
+    "project": {
+      "id": 1647,
+      "name": "Elysium Иссык-Куль"
+    },
+    "endDateTime": {
+      "date": "16-05-2025",
+      "time": "00:00",
+      "datetime": "2025-05-16T00:00Z"
+    }
+  },
+  {
     "id": 76,
     "name": "Подобрать 3-4 компании занимающихся демонтажем зданий и выбрать одну",
     "description": "",
@@ -27622,6 +27658,51 @@
     }
   },
   {
+    "id": 2177,
+    "name": "Провести тендер на выбор подрядчика по созданию Мастер Плана проекта \"I town\"",
+    "description": "<h3>После подписания инвестиционного соглашения самой важной задачей в проекте - это согласование Проекта Застройки (Мастер Плана). Поэтому наша задача как можно быстрее выбрать подрядчика, который качественно и в сжатые сроки сделает мастер план вместе с нами. ТЗ разослано компаниям которые с нами работают, и которые на наш взгляд являются наиболее подходящими. Мы будем публиковать тут КП от них.</h3>\n<h3>&nbsp;</h3>\n<h3>Распоряжение от <a target=\"_blank\" style=\"color: var(--task-status-color-active, #1b7FE8); text-decoration: none\" href=\"https://docs.google.com/document/d/1_F3K--P1akPLNykeIBUOkjquMILX8XpZbNhcVc0O07g/edit?usp=sharing\">Осипов Константин Михайлович</a>, оформленное в рамках регламента: <a target=\"_blank\" style=\"color: var(--task-status-color-active, #1b7FE8); text-decoration: none\" href=\"https://docs.google.com/document/d/1_F3K--P1akPLNykeIBUOkjquMILX8XpZbNhcVc0O07g/edit?usp=sharing\">https://docs.google.com/document/d/1_F3K--P1akPLNykeIBUOkjquMILX8XpZbNhcVc0O07g/edit?usp=sharing</a>&nbsp;</h3>\n<p>&nbsp;</p>",
+    "status": {
+      "id": 3,
+      "name": "Завершенная",
+      "color": "#85878E",
+      "isActive": false,
+      "hasDeadline": false,
+      "isAppliedIndividually": false,
+      "texts": [
+        {
+          "lang": "Ru",
+          "name": "Завершенная"
+        },
+        {
+          "lang": "En",
+          "name": "Completed"
+        }
+      ]
+    },
+    "assigner": {
+      "id": "user:1",
+      "name": "Константин Осипов"
+    },
+    "project": {
+      "id": 1462,
+      "name": "Благоустройство парка \"Молодежный\" и \"40 лет Октября\""
+    },
+    "endDateTime": {
+      "date": "17-05-2025",
+      "time": "08:55",
+      "datetime": "2025-05-17T08:55Z"
+    },
+    "assignees": {
+      "users": [
+        {
+          "id": "user:5",
+          "name": "Алексей Шульга"
+        }
+      ],
+      "groups": []
+    }
+  },
+  {
     "id": 2178,
     "name": "Зум с Асадовым",
     "description": "<p>Зум для знакомства с предполагаемым генпроетировщиком на Эллизиум.</p>",
@@ -30471,6 +30552,51 @@
     }
   },
   {
+    "id": 2476,
+    "name": "Оплата компенсационных расходов на вынос границ в натуру ул. Товарная,1,3",
+    "description": "<p>Задача ставится согласно процесса проведения оплаты:&nbsp;<a href=\"https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.esmrt0f8nx6u\">https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.esmrt0f8nx6u</a></p>",
+    "status": {
+      "id": 3,
+      "name": "Завершенная",
+      "color": "#85878E",
+      "isActive": false,
+      "hasDeadline": false,
+      "isAppliedIndividually": false,
+      "texts": [
+        {
+          "lang": "Ru",
+          "name": "Завершенная"
+        },
+        {
+          "lang": "En",
+          "name": "Completed"
+        }
+      ]
+    },
+    "assigner": {
+      "id": "user:7",
+      "name": "Оксана Янковская"
+    },
+    "project": {
+      "id": 1310,
+      "name": "Строительство Тазалыка №1"
+    },
+    "endDateTime": {
+      "date": "16-05-2025",
+      "time": "00:00",
+      "datetime": "2025-05-16T00:00Z"
+    },
+    "assignees": {
+      "users": [
+        {
+          "id": "user:7",
+          "name": "Оксана Янковская"
+        }
+      ],
+      "groups": []
+    }
+  },
+  {
     "id": 2477,
     "name": "Оплата за фактически выполненные работы по устройству ограждения",
     "description": "<p>Задача ставится согласно процесса проведения оплаты:&nbsp;<a href=\"https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.esmrt0f8nx6u\">https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.esmrt0f8nx6u</a></p>",
@@ -31029,24 +31155,78 @@
     }
   },
   {
+    "id": 2529,
+    "name": "Встреча по сайту (пт)",
+    "description": "",
+    "status": {
+      "id": 3,
+      "name": "Завершенная",
+      "color": "#85878E",
+      "isActive": false,
+      "hasDeadline": false,
+      "isAppliedIndividually": false,
+      "texts": [
+        {
+          "lang": "Ru",
+          "name": "Завершенная"
+        },
+        {
+          "lang": "En",
+          "name": "Completed"
+        }
+      ]
+    },
+    "assigner": {
+      "id": "user:3",
+      "name": "Вячеслав Фоменко"
+    },
+    "project": {
+      "id": 116,
+      "name": "Маркетинг"
+    },
+    "startDateTime": {
+      "date": "16-05-2025",
+      "time": "14:30",
+      "datetime": "2025-05-16T14:30Z"
+    },
+    "endDateTime": {
+      "date": "16-05-2025",
+      "time": "15:30",
+      "datetime": "2025-05-16T15:30Z"
+    },
+    "assignees": {
+      "users": [
+        {
+          "id": "user:3",
+          "name": "Вячеслав Фоменко"
+        },
+        {
+          "id": "user:4",
+          "name": "Назарий Шевченко"
+        }
+      ],
+      "groups": []
+    }
+  },
+  {
     "id": 2536,
     "name": "Предоставить предварительные 3-д модели проекта для формирования эскизного проекта",
     "description": "<h3><strong>Задача ставится согласно Процессу постановки, контроля и выполнения задач. </strong></h3>\n<h3><strong>Просьба ознакомиться:&nbsp;</strong><a href=\"https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy\">https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy</a></h3>\n<p>&nbsp;</p>",
     "status": {
-      "id": 6,
-      "name": "Выполненная",
-      "color": "#30AB50",
-      "isActive": true,
+      "id": 3,
+      "name": "Завершенная",
+      "color": "#85878E",
+      "isActive": false,
       "hasDeadline": false,
-      "isAppliedIndividually": true,
+      "isAppliedIndividually": false,
       "texts": [
         {
           "lang": "Ru",
-          "name": "Выполненная"
+          "name": "Завершенная"
         },
         {
           "lang": "En",
-          "name": "Ready for review"
+          "name": "Completed"
         }
       ]
     },

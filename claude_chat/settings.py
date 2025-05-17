@@ -1,6 +1,8 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
 
 
 # Загрузка переменных окружения
@@ -131,3 +133,30 @@ LOGGING = {
         },
     },
 }
+
+# Sentry configuration
+SENTRY_DSN = os.getenv('SENTRY_DSN')
+if SENTRY_DSN:
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        integrations=[
+            DjangoIntegration(),
+        ],
+        # Enable performance monitoring
+        enable_tracing=True,
+        # Set traces_sample_rate to 1.0 to capture 100% of transactions for performance monitoring.
+        # We recommend adjusting this value in production.
+        traces_sample_rate=1.0,
+        # Set profiles_sample_rate to 1.0 to profile 100% of transactions.
+        # We recommend adjusting this value in production.
+        profiles_sample_rate=1.0,
+        # If you wish to associate users to errors (assuming you are using
+        # django.contrib.auth) you may enable sending PII data.
+        send_default_pii=True,
+        # By default the SDK will try to use the SENTRY_RELEASE
+        # environment variable, or infer a git commit
+        # SHA as release, however you may want to set
+        # something more human-readable.
+        # release="myapp@1.0.0",
+        environment=os.getenv('DJANGO_ENV', 'development'),
+    )

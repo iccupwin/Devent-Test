@@ -11,6 +11,7 @@ from .models import (
 )
 from .planfix_cache_service import PlanfixCacheService
 from .analytics_service import AnalyticsService
+from .vector_service import upsert_message, upsert_planfix_task
 
 logger = logging.getLogger(__name__)
 
@@ -64,7 +65,6 @@ def cleanup_old_data():
     return "Old data cleaned up successfully"
 
 # === ВНИЗУ ФАЙЛА ===
-from .vector_service import upsert_message
 
 @shared_task
 def vectorize_message(message_id: int):
@@ -79,3 +79,23 @@ def vectorize_message(message_id: int):
         "created_at": msg.created_at.isoformat()
     }
     upsert_message(msg.id, msg.content, meta)
+
+@shared_task
+def update_planfix_vector_store():
+    """
+    Периодическая задача для обновления данных Planfix в векторном хранилище.
+    Запускается каждые 5 минут.
+    """
+    try:
+        # Получаем все активные задачи из Planfix
+        planfix_tasks = planfix_cache.get_all_tasks()
+        
+        # Обновляем каждую задачу в векторном хранилище
+        for task in planfix_tasks:
+            upsert_planfix_task(task['id'], task)
+            
+        logger.info(f"Successfully updated {len(planfix_tasks)} tasks in vector store")
+        
+    except Exception as e:
+        logger.error(f"Error updating Planfix vector store: {str(e)}")
+        raise

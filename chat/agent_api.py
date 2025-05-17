@@ -12,10 +12,13 @@ from .planfix_cache_service import planfix_cache
 from .planfix_service import update_tasks_cache
 from .claude_ai_service import claude_ai
 from .openai_service import openai_ai
-from .gemini_service import gemini_ai
+from .gemini_ai_service import GeminiAIService
 
 # Configure logging
 logger = logging.getLogger(__name__)
+
+# Initialize Gemini AI service
+gemini_ai = GeminiAIService()
 
 @csrf_exempt
 @require_http_methods(["POST"])
@@ -53,10 +56,28 @@ def agent_message_api(request):
                     selected_model = AIModel.objects.get(id=model_id)
                 except (AIModel.DoesNotExist, ValueError):
                     # Если не id, пробуем как имя
-                    selected_model, _ = AIModel.objects.get_or_create(name=model_id.lower())
+                    model_name = model_id.lower()
+                    model_type = 'gemini' if model_name == 'gemini' else model_name
+                    selected_model, _ = AIModel.objects.get_or_create(
+                        name=model_name,
+                        defaults={
+                            'model_type': model_type,
+                            'version': '1.0',
+                            'api_base_url': f'https://api.{model_name}.com/v1',
+                            'is_active': True
+                        }
+                    )
             else:
                 # Если model_id не передан, используем claude по умолчанию
-                selected_model, _ = AIModel.objects.get_or_create(name='claude')
+                selected_model, _ = AIModel.objects.get_or_create(
+                    name='claude',
+                    defaults={
+                        'model_type': 'claude',
+                        'version': '1.0',
+                        'api_base_url': 'https://api.anthropic.com/v1',
+                        'is_active': True
+                    }
+                )
             conversation = Conversation.objects.create(
                 user=user,
                 title=title,
@@ -106,15 +127,34 @@ def agent_message_api(request):
         
         # Получаем выбранную модель ИИ для беседы
         ai_model = conversation.ai_model
+        if not ai_model:
+            # Если модель не выбрана, используем модель по умолчанию
+            ai_model = AIModel.objects.filter(is_active=True).first()
+            if ai_model:
+                conversation.ai_model = ai_model
+                conversation.save()
+                logger.info(f"Установлена модель по умолчанию: {ai_model.name}")
+        
+        logger.info(f"Текущая модель в беседе: {ai_model.name if ai_model else 'None'}")
+        logger.info(f"Тип модели: {ai_model.model_type if ai_model else 'None'}")
         
         # Обрабатываем запрос с помощью выбранной модели
-        if ai_model and ai_model.name.lower() == 'gemini':
-            response = agent.process_query(message_text, conversation_history, ai_model='gemini')
+        if ai_model:
+            model_name = ai_model.model_type.lower()  # Используем model_type вместо name
+            logger.info(f"Выбранная модель для обработки: {model_name}")
+            if model_name in ['claude', 'gpt', 'gemini']:
+                logger.info(f"Отправляю запрос в модель: {model_name}")
+                response = agent.process_query(message_text, conversation_history, ai_model=model_name)
+            else:
+                logger.warning(f"Неизвестная модель {model_name}, использую Claude по умолчанию")
+                response = agent.process_query(message_text, conversation_history, ai_model='claude')
         else:
+            logger.warning("Модель не выбрана, использую Claude по умолчанию")
             response = agent.process_query(message_text, conversation_history, ai_model='claude')
         
         # Сохраняем ответ ассистента
         if response.get('response_type') == 'ai_response':
+            logger.info(f"Сохраняю ответ от модели: {ai_model.name if ai_model else 'Unknown'}")
             assistant_message = Message.objects.create(
                 conversation=conversation,
                 role='assistant',
@@ -217,11 +257,35 @@ def change_conversation_model(request, conversation_id):
         if not model_id:
             logger.warning(f"Model ID not provided for conversation {conversation_id}")
             return JsonResponse({'success': False, 'error': 'Model ID is required'})
-        model = get_object_or_404(AIModel, id=model_id)
+        
+        try:
+            # Сначала пробуем найти модель по ID
+            model = AIModel.objects.get(id=model_id)
+        except (AIModel.DoesNotExist, ValueError):
+            # Если не нашли по ID, создаем новую модель
+            model_name = model_id.lower()
+            model_type = 'gemini' if model_name == 'gemini' else model_name
+            model, _ = AIModel.objects.get_or_create(
+                name=model_name,
+                defaults={
+                    'model_type': model_type,
+                    'version': '1.0',
+                    'api_base_url': f'https://api.{model_name}.com/v1',
+                    'is_active': True
+                }
+            )
+        
+        old_model = conversation.ai_model
         conversation.ai_model = model
         conversation.save()
-        logger.info(f"Устанавливаю модель {model} для беседы {conversation.id}")
-        return JsonResponse({'success': True, 'model_name': model.name})
+        
+        logger.info(f"Устанавливаю модель {model.name} (тип: {model.model_type}) для беседы {conversation.id}")
+        return JsonResponse({
+            'success': True, 
+            'model_name': model.name,
+            'model_type': model.model_type,
+            'message': f'Модель успешно переключена на {model.name}'
+        })
     except Exception as e:
         logger.error(f"Ошибка при смене модели: {e}")
         return JsonResponse({'success': False, 'error': str(e)}, status=400)

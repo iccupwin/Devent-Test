@@ -14,11 +14,11 @@ import time
 from datetime import datetime
 
 # Configure paths and add project to PYTHONPATH
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, BASE_DIR)
 
 # Set up Django environment
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'claude_chat.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings')
 
 # Configure logging
 logging.basicConfig(

@@ -171,32 +171,110 @@
         background-color: rgba(10, 132, 255, 0.3);
     }
 
-    .model-selector {
-        margin: 20px 0 10px 20px;
+    .model-switch-button {
+        width: 40px;
+        height: 40px;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        border-radius: 12px;
+        background: white;
+        color: #0071e3;
+        cursor: pointer;
         display: flex;
         align-items: center;
-        gap: 10px;
+        justify-content: center;
+        transition: all 0.2s ease;
+        position: relative;
     }
-    .model-select {
-        padding: 8px 35px 8px 15px;
-        border: 2px solid #0071e3;
-        border-radius: 8px;
-        background-color: white;
-        color: #0071e3;
-        font-size: 14px;
-        font-weight: 500;
-        cursor: pointer;
-        min-width: 180px;
-        appearance: none;
+
+    .model-switch-button:hover {
+        background: #f5f5f7;
+        border-color: #0071e3;
     }
-    .model-select-arrow {
+
+    .model-dropdown {
         position: absolute;
-        right: 12px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #0071e3;
-        pointer-events: none;
-        font-size: 12px;
+        bottom: 100%;
+        right: 0;
+        margin-bottom: 8px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        padding: 8px;
+        min-width: 200px;
+        display: none;
+        z-index: 1000;
+    }
+
+    .model-dropdown.show {
+        display: block;
+    }
+
+    .model-dropdown-item {
+        padding: 8px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #1d1d1f;
+        transition: all 0.2s ease;
+    }
+
+    .model-dropdown-item:hover {
+        background: #f5f5f7;
+    }
+
+    .model-dropdown-item.active {
+        background: #0071e3;
+        color: white;
+    }
+
+    .model-dropdown-item.active:hover {
+        background: #0077ed;
+    }
+
+    .model-dropdown-item .model-icon {
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .model-dropdown-item .model-name {
+        flex: 1;
+        font-size: 14px;
+    }
+
+    .model-dropdown-item .check-icon {
+        opacity: 0;
+        transition: opacity 0.2s ease;
+    }
+
+    .model-dropdown-item.active .check-icon {
+        opacity: 1;
+    }
+
+    /* Dark theme adjustments */
+    body.dark-theme .model-dropdown {
+        background: #2c2c2e;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    body.dark-theme .model-dropdown-item {
+        color: #f5f5f7;
+    }
+
+    body.dark-theme .model-dropdown-item:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    body.dark-theme .model-dropdown-item.active {
+        background: #0a84ff;
+    }
+
+    body.dark-theme .model-dropdown-item.active:hover {
+        background: #0a8cff;
     }
 </style>
 {% endblock %}
@@ -271,19 +349,6 @@
     </div>
     
     <div class="content">
-        <div class="model-selector">
-            <div style="position:relative;">
-                <select id="aiModelSelect" class="model-select">
-                    {% for model in ai_models %}
-                    <option value="{{ model.id }}" {% if forloop.first %}selected{% endif %}>{{ model.name }}</option>
-                    {% endfor %}
-                </select>
-                <div class="model-select-arrow">▼</div>
-            </div>
-            <span id="currentModelName" style="margin-left: 16px; color: #0071e3; font-weight: bold;">
-                Текущая модель: {{ ai_models.0.name }}
-            </span>
-        </div>
         <div class="chat-container">
             <div class="chat-messages" id="chatMessages">
                 <div class="welcome-message">
@@ -310,8 +375,36 @@
                         rows="1"
                         autocomplete="off"
                     ></textarea>
-                    <button type="submit" class="send-button">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <div style="position: relative;">
+                        <button type="button" class="model-switch-button" id="modelSwitchButton" title="Сменить модель">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                                <path d="M3 3v5h5"/>
+                                <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/>
+                                <path d="M16 21h5v-5"/>
+                            </svg>
+                        </button>
+                        <div class="model-dropdown" id="modelDropdown">
+                            {% for model in ai_models %}
+                            <div class="model-dropdown-item {% if model.id == selected_model.id %}active{% endif %}" data-model-id="{{ model.id }}">
+                                <div class="model-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                                        <path d="M3 3v5h5"/>
+                                        <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/>
+                                        <path d="M16 21h5v-5"/>
+                                    </svg>
+                                </div>
+                                <span class="model-name">{{ model.name }}</span>
+                                <svg class="check-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <button type="submit" class="send-button" title="Отправить сообщение">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M22 2L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                             <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
@@ -332,8 +425,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const dashboardButton = document.getElementById('dashboardButton');
     const refreshCacheLink = document.getElementById('refresh-cache-link');
     const suggestionChips = document.querySelectorAll('.suggestion-chip');
-    const modelSelect = document.getElementById('aiModelSelect');
-    const label = document.getElementById('currentModelName');
     
     // Current conversation ID (null for new conversation)
     let currentConversationId = null;
@@ -399,9 +490,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Show success message
                 this.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> Cache refreshed';
                 
-                // Add system message about cache refresh
-                addMessageToChat('assistant', 'I\'ve refreshed the Planfix data cache. Now I\'m working with the latest information.');
-                
                 // Reset link text after 3 seconds
                 setTimeout(() => {
                     this.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"></path><path d="M1 20v-6h6"></path><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg> Refresh cache';
@@ -411,9 +499,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Show error message
                 this.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg> Error refreshing';
                 console.error('Error:', error);
-                
-                // Add system message about cache refresh error
-                addMessageToChat('assistant', 'I encountered an error while trying to refresh the Planfix data cache. Please try again later or contact the administrator if the problem persists.');
                 
                 // Reset link text after 3 seconds
                 setTimeout(() => {
@@ -449,12 +534,8 @@ document.addEventListener('DOMContentLoaded', function() {
                         typingIndicator.remove();
                     }
                     
-                    // Get current model name
-                    const selectedOption = modelSelect.options[modelSelect.selectedIndex];
-                    const modelName = selectedOption ? selectedOption.text : null;
-                    
                     // Add agent response to chat
-                    addMessageToChat('assistant', response.message, modelName);
+                    addMessageToChat('assistant', response.message);
                     
                     // Update conversation ID if new
                     if (response.conversation_id && !currentConversationId) {
@@ -484,7 +565,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Add message to chat
-    function addMessageToChat(role, content, modelName = null) {
+    function addMessageToChat(role, content) {
         // Remove welcome message if present
         const welcomeMessage = document.querySelector('.welcome-message');
         if (welcomeMessage) {
@@ -497,11 +578,10 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Different structure based on role
         if (role === 'assistant') {
-            const modelDisplay = modelName ? ` (${modelName})` : '';
             messageElement.innerHTML = `
                 <div class="assistant-avatar">A</div>
                 <div class="message-content-wrapper">
-                    <div class="message-role">Planfix Agent${modelDisplay}</div>
+                    <div class="message-role">Planfix Agent</div>
                     <div class="message-content">${formatMessageContent(content)}</div>
                 </div>
             `;
@@ -547,7 +627,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Send message to agent API
     async function sendMessageToAgent(message) {
-        const selectedModelId = modelSelect.value;
         const response = await fetch('/api/agent/message/', {
             method: 'POST',
             headers: {
@@ -556,8 +635,7 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             body: JSON.stringify({
                 message: message,
-                conversation_id: currentConversationId,
-                model_id: selectedModelId
+                conversation_id: currentConversationId
             })
         });
         
@@ -595,32 +673,44 @@ document.addEventListener('DOMContentLoaded', function() {
         return cookieValue;
     }
 
-    // Здесь можно добавить обработчик выбора модели для новой беседы
-    if (modelSelect && label) {
-        modelSelect.addEventListener('change', function() {
-            label.textContent = 'Текущая модель: ' + this.options[this.selectedIndex].text;
-            // Если беседа уже создана, отправляем запрос на смену модели
-            if (currentConversationId) {
-                const selectedModelId = this.value;
-                fetch(`/chat/conversation/${currentConversationId}/change-model/`, {
+    // Model switch button and dropdown handler
+    const modelSwitchButton = document.getElementById('modelSwitchButton');
+    const modelDropdown = document.getElementById('modelDropdown');
+    
+    if (modelSwitchButton && modelDropdown) {
+        // Toggle dropdown
+        modelSwitchButton.addEventListener('click', function(e) {
+            e.stopPropagation();
+            modelDropdown.classList.toggle('show');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!modelDropdown.contains(e.target) && !modelSwitchButton.contains(e.target)) {
+                modelDropdown.classList.remove('show');
+            }
+        });
+
+        // Handle model selection
+        const modelItems = modelDropdown.querySelectorAll('.model-dropdown-item');
+        modelItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const modelId = this.dataset.modelId;
+                fetch(`/agent/conversation/new/change-model/`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                         'X-CSRFToken': getCookie('csrftoken')
                     },
-                    body: JSON.stringify({
-                        model_id: selectedModelId
-                    })
+                    body: JSON.stringify({ model_id: modelId })
                 })
                 .then(response => response.json())
                 .then(data => {
-                    // Можно обновить надпись или показать уведомление
                     if (data.success) {
-                        label.textContent = 'Текущая модель: ' + modelSelect.options[modelSelect.selectedIndex].text;
+                        location.reload();
                     }
-                })
-                .catch(error => console.error('Ошибка при смене модели:', error));
-            }
+                });
+            });
         });
     }
 });

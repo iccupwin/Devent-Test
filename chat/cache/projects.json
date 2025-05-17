@@ -10,21 +10,16 @@
   {
     "id": 116,
     "name": "Маркетинг",
-<<<<<<< HEAD
     "task_count": 117,
-    "active_tasks": 71,
-=======
-    "task_count": 116,
     "active_tasks": 70,
->>>>>>> 9942f43be8da1cf1caa5ba204ac5a58c4db5ab97
-    "completed_tasks": 46,
-    "overdue_tasks": 9
+    "completed_tasks": 47,
+    "overdue_tasks": 8
   },
   {
     "id": 23,
     "name": "Общие вопросы компании",
-    "task_count": 184,
-    "active_tasks": 77,
+    "task_count": 185,
+    "active_tasks": 78,
     "completed_tasks": 107,
     "overdue_tasks": 10
   },
@@ -39,41 +34,34 @@
   {
     "id": 29,
     "name": "Автовокзал",
-<<<<<<< HEAD
-    "task_count": 324,
-    "active_tasks": 101,
+    "task_count": 330,
+    "active_tasks": 107,
     "completed_tasks": 223,
-    "overdue_tasks": 34
-=======
-    "task_count": 323,
-    "active_tasks": 100,
-    "completed_tasks": 223,
-    "overdue_tasks": 33
->>>>>>> 9942f43be8da1cf1caa5ba204ac5a58c4db5ab97
+    "overdue_tasks": 35
   },
   {
     "id": 1647,
     "name": "Elysium Иссык-Куль",
     "task_count": 181,
-    "active_tasks": 120,
-    "completed_tasks": 61,
-    "overdue_tasks": 18
+    "active_tasks": 119,
+    "completed_tasks": 62,
+    "overdue_tasks": 17
   },
   {
     "id": 1310,
     "name": "Строительство Тазалыка №1",
     "task_count": 100,
-    "active_tasks": 79,
-    "completed_tasks": 21,
-    "overdue_tasks": 13
+    "active_tasks": 78,
+    "completed_tasks": 22,
+    "overdue_tasks": 12
   },
   {
     "id": 1462,
     "name": "Благоустройство парка \"Молодежный\" и \"40 лет Октября\"",
-    "task_count": 95,
+    "task_count": 96,
     "active_tasks": 90,
-    "completed_tasks": 5,
-    "overdue_tasks": 4
+    "completed_tasks": 6,
+    "overdue_tasks": 3
   },
   {
     "id": 236,
@@ -113,6 +101,6 @@
     "task_count": 11,
     "active_tasks": 11,
     "completed_tasks": 0,
-    "overdue_tasks": 4
+    "overdue_tasks": 2
   }
 ]

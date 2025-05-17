@@ -1,8 +1,105 @@
+# Environment variables
 .env
-*.pyc
+.env.*
+!.env.example
+
+# Python
 __pycache__/
-db.sqlite3
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+# Python bytecode
+*.pyc
+*.pyo
+*.pyd
+.Python
+**/*.pyc
+**/__pycache__/
+**/*.pyc
+
+# Virtual Environment
 venv/
+env/
+ENV/
+
+# IDE
 .idea/
 .vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Django
 *.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
+
+# Sentry
+.sentry/
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# Coverage
+.coverage
+htmlcov/
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local development settings
+local_settings.py
+local.py
+
+# Database backups
+*.dump
+*.sql
+*.sqlite3
+
+# Cache files
+chat/cache/*.json
+chat/cache/*.txt
+!chat/cache/.gitkeep
+
+# Test files
+test.py
+check_*.py
+*_test.py
+*_tests.py
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.swp
+*~

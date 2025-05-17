@@ -6,7 +6,8 @@ from django.conf import settings
 import requests
 from .planfix_cache_service import planfix_cache
 from .analytics_service import AnalyticsService
-from .vector_service import search
+from .vector_service import search, search_planfix_tasks
+from functools import lru_cache
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -17,23 +18,120 @@ class ClaudeAIService:
     for processing Planfix data and answering user queries
     """
     
+    # Кэш для результатов vector search
+    _vector_cache = {}
+    _vector_cache_ttl = 300  # 5 минут
 
+    @lru_cache(maxsize=100)
+    def _get_vector_search_results(self, query: str, limit: int = 5) -> List[Any]:
+        """
+        Получает результаты векторного поиска с кэшированием
+        """
+        cache_key = f"{query}:{limit}"
+        current_time = time.time()
+        
+        # Проверяем кэш
+        if cache_key in self._vector_cache:
+            cache_time, cache_data = self._vector_cache[cache_key]
+            if current_time - cache_time < self._vector_cache_ttl:
+                return cache_data
+        
+        # Получаем новые результаты
+        try:
+            # Поиск в истории сообщений
+            message_results = search(query, limit=limit)
+            
+            # Поиск в задачах Planfix
+            task_results = search_planfix_tasks(query, limit=limit)
+            
+            # Объединяем и сортируем результаты
+            all_results = []
+            
+            # Добавляем сообщения
+            for hit in message_results:
+                all_results.append({
+                    'type': 'message',
+                    'id': hit.id,
+                    'score': hit.score,
+                    'content': hit.payload.get('text', ''),
+                    'role': hit.payload.get('role', '')
+                })
+            
+            # Добавляем задачи
+            for hit in task_results:
+                task_data = hit.payload.get('data', {})
+                all_results.append({
+                    'type': 'task',
+                    'id': hit.payload.get('task_id'),
+                    'score': hit.score,
+                    'title': task_data.get('title', ''),
+                    'status': task_data.get('status', ''),
+                    'priority': task_data.get('priority', ''),
+                    'assignee': task_data.get('assignee', ''),
+                    'deadline': task_data.get('deadline', '')
+                })
+            
+            # Сортируем по релевантности
+            all_results.sort(key=lambda x: x['score'], reverse=True)
+            
+            # Обновляем кэш
+            self._vector_cache[cache_key] = (current_time, all_results)
+            
+            return all_results
+            
+        except Exception as e:
+            logger.error(f"Error in vector search: {str(e)}")
+            return []
 
-    def build_prompt(user_query: str, history: list[dict]) -> str:
-        similar = search(user_query, limit=5)
-        context = "\n\n".join(f"[{hit.id}] {hit.payload.get('role')}:\n{hit.payload.get('text','')}"
-                            for hit in similar)
-        prompt = f"""
-    Ты ассистент. Используй информацию из контекста, если она релевантна.
-
+    def _enrich_query_with_context(self, query: str) -> str:
+        """
+        Обогащает запрос контекстом из векторного хранилища
+        """
+        try:
+            # Получаем релевантные результаты
+            results = self._get_vector_search_results(query)
+            
+            if not results:
+                return query
+            
+            # Формируем контекст
+            context_parts = []
+            
+            # Добавляем сообщения
+            messages = [r for r in results if r['type'] == 'message']
+            if messages:
+                context_parts.append("Релевантные сообщения из истории:")
+                for msg in messages[:3]:  # Берем топ-3 сообщения
+                    context_parts.append(f"[{msg['role']}]: {msg['content']}")
+            
+            # Добавляем задачи
+            tasks = [r for r in results if r['type'] == 'task']
+            if tasks:
+                context_parts.append("\nРелевантные задачи:")
+                for task in tasks[:3]:  # Берем топ-3 задачи
+                    context_parts.append(
+                        f"Задача {task['id']}:\n"
+                        f"Название: {task['title']}\n"
+                        f"Статус: {task['status']}\n"
+                        f"Приоритет: {task['priority']}\n"
+                        f"Ответственный: {task['assignee']}\n"
+                        f"Срок: {task['deadline']}"
+                    )
+            
+            # Формируем финальный контекст
+            context = "\n\n".join(context_parts)
+            
+            return f"""
     Контекст:
     {context}
 
-    Вопрос:
-    {user_query}
+Запрос пользователя:
+{query}
     """
-        return prompt
 
+        except Exception as e:
+            logger.error(f"Error enriching query with context: {str(e)}")
+            return query
 
     def __init__(self):
         """Initialize Claude AI service with API configuration"""
@@ -103,36 +201,24 @@ class ClaudeAIService:
             Dictionary with response data including response_type and message
         """
         try:
-            print("\n=== Starting query processing ===")
-            print(f"User query: {user_query}")
-            print(f"API Key present: {'Yes' if self.api_key else 'No'}")
-            print(f"API URL: {self.api_url}")
-            print(f"Model: {self.model}")
-            
-            # Start timing the response
+            logger.info(f"Processing query: {user_query[:50]}...")
             start_time = time.time()
             
-            # Add context from Planfix data based on the query
-            print("\n=== Enriching query with context ===")
-            query_with_context = self._enrich_query_with_context(user_query)
-            print(f"Context length: {len(query_with_context)} chars")
+            # Обогащаем запрос контекстом
+            enriched_query = self._enrich_query_with_context(user_query)
             
-            # Prepare messages for Claude API
+            # Подготавливаем сообщения для API
             messages = []
             
-            # Add system prompt
+            # Добавляем системный промпт
             system_prompt = self._get_system_prompt()
-            print("\n=== System prompt ===")
-            print(f"System prompt length: {len(system_prompt)} chars")
             messages.append({
                 "role": "system",
                 "content": system_prompt
             })
             
-            # Add conversation history if provided
+            # Добавляем историю диалога
             if conversation_history:
-                print("\n=== Adding conversation history ===")
-                print(f"History messages: {len(conversation_history)}")
                 for msg in conversation_history:
                     if isinstance(msg, dict) and 'role' in msg and 'content' in msg:
                         messages.append({
@@ -140,312 +226,36 @@ class ClaudeAIService:
                             "content": msg['content']
                         })
             
-            # Add the enriched query
+            # Добавляем обогащенный запрос
             messages.append({
                 "role": "user",
-                "content": query_with_context
+                "content": enriched_query
             })
             
-            print("\n=== Sending to Claude API ===")
-            print(f"Total messages: {len(messages)}")
-            
-            # Send to Claude API
+            # Отправляем запрос к API
             response = self.send_message(messages, user=user, conversation=conversation)
             
-            # Calculate response time
+            # Записываем аналитику
             response_time = time.time() - start_time
-            print(f"\nResponse time: {response_time:.2f} seconds")
-            
-            # Log the response time
-            logger.info(f"Claude AI response time: {response_time:.2f} seconds")
-            
-            # Record analytics if user and conversation are provided
             if user and conversation:
                 self.analytics.track_ai_response(
                     user=user,
                     message=None,
-                    ai_model=None,
+                    ai_model=self.model,
                     response_time=response_time
                 )
-                
-                # Update user metrics for new conversation
-                from .models import UserMetrics
-                from django.utils import timezone
-                
-                today = timezone.now().date()
-                if conversation.created_at.date() == today:
-                    user_metrics, _ = UserMetrics.objects.get_or_create(
-                        user=user,
-                        day=today,
-                        defaults={
-                            'messages_sent': 0,
-                            'conversations_count': 0,
-                            'tokens_used': 0,
-                            'tasks_integrated': 0,
-                            'average_response_time': 0
-                        }
-                    )
-                    user_metrics.conversations_count += 1
-                    user_metrics.save()
             
-            # Log successful query
-            self.analytics.log_ai_query(
-                query=user_query,
-                success=True,
-                user=user
-            )
-            
-            print("\n=== Query processing completed successfully ===")
-            print(f"Query logged: {user_query[:50]}...")
             return {
                 'response_type': 'ai_response',
                 'message': response
             }
+            
         except Exception as e:
-            error_msg = str(e)
-            print(f"\n=== Error in query processing ===")
-            print(f"Error type: {type(e).__name__}")
-            print(f"Error message: {error_msg}")
-            import traceback
-            print(f"Traceback: {traceback.format_exc()}")
-            
-            logger.error(f"Ошибка при обработке запроса: {error_msg}", exc_info=True)
-            
-            # Record error in analytics
-            if user:
-                self.analytics.track_error(
-                    user=user,
-                    error_message=error_msg,
-                    conversation=conversation
-                )
-            
-            # Log failed query
-            self.analytics.log_ai_query(
-                query=user_query,
-                success=False,
-                user=user,
-                error_message=error_msg
-            )
-            
+            logger.error(f"Error processing query: {str(e)}")
             return {
                 'response_type': 'error',
-                'message': f"Sorry, there was an error processing your request. Please try again later or contact the administrator if the problem persists."
+                'message': f"Sorry, there was an error processing your query: {str(e)}"
             }
-    
-    def _enrich_query_with_context(self, query: str) -> str:
-        """
-        Enrich the user query with relevant Planfix data based on the query content
-        
-        Args:
-            query: The user's original query
-        
-        Returns:
-            Enriched query with Planfix context
-        """
-        # Prepare a minimal context by default
-        context = "Here is the current Planfix data:\n"
-        
-        # Get stats for basic context
-        stats = planfix_cache.get_stats()
-        context += f"- Total tasks: {stats['total_tasks']}\n"
-        context += f"- Active tasks: {stats['active_tasks']}\n"
-        context += f"- Completed tasks: {stats['completed_tasks']}\n"
-        context += f"- Overdue tasks: {stats['overdue_tasks']}\n"
-        
-        # Add more specific data based on the query
-        query_lower = query.lower()
-        
-        # Check if query is about overdue tasks
-        if any(keyword in query_lower for keyword in ['overdue', 'late', 'просроч', 'опоздав']):
-            overdue_tasks = planfix_cache.get_overdue_tasks()
-            context += "\nOverdue tasks:\n"
-            for i, task in enumerate(overdue_tasks[:10]):  # Limit to 10 tasks
-                context += f"- {task.get('name', 'Unnamed Task')} (ID: {task.get('id', 'N/A')})"
-                
-                # Add due date if available
-                end_date = None
-                if task.get('endDateTime') and isinstance(task['endDateTime'], dict):
-                    if 'date' in task['endDateTime']:
-                        end_date = task['endDateTime']['date']
-                    elif 'dateTo' in task['endDateTime']:
-                        end_date = task['endDateTime']['dateTo']
-                elif task.get('endDateTime') and isinstance(task['endDateTime'], str):
-                    end_date = task['endDateTime']
-                elif task.get('dateEnd') and isinstance(task['dateEnd'], str):
-                    end_date = task['dateEnd']
-                
-                if end_date:
-                    context += f", due: {end_date}"
-                
-                context += "\n"
-            
-            if len(overdue_tasks) > 10:
-                context += f"...and {len(overdue_tasks) - 10} more overdue tasks\n"
-        
-        # Check if query is about upcoming tasks or this week's tasks
-        if any(keyword in query_lower for keyword in ['this week', 'upcoming', 'next week', 'следующ', 'ближайш', 'на неделе']):
-            # Get tasks due this week
-            active_tasks = planfix_cache.get_active_tasks()
-            import datetime
-            today = datetime.datetime.now().date()
-            week_end = (today + datetime.timedelta(days=7)).isoformat()
-            
-            tasks_due_this_week = []
-            for task in active_tasks:
-                end_date = None
-                if task.get('endDateTime') and isinstance(task['endDateTime'], dict):
-                    if 'date' in task['endDateTime']:
-                        end_date = task['endDateTime']['date']
-                    elif 'dateTo' in task['endDateTime']:
-                        end_date = task['endDateTime']['dateTo']
-                elif task.get('endDateTime') and isinstance(task['endDateTime'], str):
-                    end_date = task['endDateTime']
-                elif task.get('dateEnd') and isinstance(task['dateEnd'], str):
-                    end_date = task['dateEnd']
-                
-                if end_date and end_date <= week_end:
-                    tasks_due_this_week.append(task)
-            
-            context += "\nTasks due this week:\n"
-            for i, task in enumerate(tasks_due_this_week[:10]):  # Limit to 10 tasks
-                context += f"- {task.get('name', 'Unnamed Task')} (ID: {task.get('id', 'N/A')})"
-                
-                # Add due date if available
-                if end_date:
-                    context += f", due: {end_date}"
-                
-                context += "\n"
-            
-            if len(tasks_due_this_week) > 10:
-                context += f"...and {len(tasks_due_this_week) - 10} more tasks due this week\n"
-            
-        # Check if query is about specific projects
-        if any(keyword in query_lower for keyword in ['project', 'проект']):
-            # If a specific project name is mentioned, add that project's info
-            projects = planfix_cache.get_projects()
-            projects_info = []
-            
-            for project in projects:
-                project_name = project.get('name', '').lower()
-                if project_name and project_name in query_lower:
-                    projects_info.append(project)
-            
-            # If no specific project was found but they asked about projects, add top projects
-            if not projects_info and any(keyword in query_lower for keyword in ['projects', 'проекты']):
-                # Sort projects by task count and get top 5
-                projects_info = sorted(projects, key=lambda p: p.get('task_count', 0), reverse=True)[:5]
-            
-            if projects_info:
-                context += "\nProject information:\n"
-                for project in projects_info:
-                    context += f"- {project.get('name', 'Unnamed Project')} (ID: {project.get('id', 'N/A')})\n"
-                    context += f"  Total tasks: {project.get('task_count', 0)}\n"
-                    context += f"  Active tasks: {project.get('active_tasks', 0)}\n"
-                    context += f"  Completed tasks: {project.get('completed_tasks', 0)}\n"
-                    context += f"  Overdue tasks: {project.get('overdue_tasks', 0)}\n"
-        
-        # Check if query is about specific users or team members
-        if any(keyword in query_lower for keyword in ['user', 'team', 'member', 'пользовател', 'команд', 'сотрудник']):
-            users = planfix_cache.get_users()
-            users_info = []
-            
-            for user in users:
-                user_name = user.get('name', '').lower()
-                if user_name and user_name in query_lower:
-                    users_info.append(user)
-            
-            # If no specific user was found but they asked about users/team, add top users
-            if not users_info and any(keyword in query_lower for keyword in ['users', 'team', 'members', 'команда', 'сотрудники']):
-                # Sort users by assigned tasks and get top 5
-                users_info = sorted(users, key=lambda u: u.get('assigned_tasks', 0) + u.get('created_tasks', 0), reverse=True)[:5]
-            
-            if users_info:
-                context += "\nTeam information:\n"
-                for user in users_info:
-                    context += f"- {user.get('name', 'Unnamed User')} (ID: {user.get('id', 'N/A')})\n"
-                    context += f"  Assigned tasks: {user.get('assigned_tasks', 0)}\n"
-                    context += f"  Active tasks: {user.get('assigned_active', 0)}\n"
-                    context += f"  Completed tasks: {user.get('assigned_completed', 0)}\n"
-                    context += f"  Overdue tasks: {user.get('assigned_overdue', 0)}\n"
-                    context += f"  Created tasks: {user.get('created_tasks', 0)}\n"
-        
-        # Check if query is about a specific task ID
-        import re
-        task_id_match = re.search(r'(?:task|задача|#)\s*(\d+)', query_lower)
-        if task_id_match:
-            task_id = task_id_match.group(1)
-            task = planfix_cache.get_task_by_id(task_id)
-            
-            if task:
-                context += f"\nTask #{task_id} details:\n"
-                context += f"- Name: {task.get('name', 'Unnamed Task')}\n"
-                
-                # Status
-                if task.get('status') and task['status'].get('name'):
-                    context += f"- Status: {task['status']['name']}\n"
-                
-                # Project
-                if task.get('project') and task['project'].get('name'):
-                    context += f"- Project: {task['project']['name']}\n"
-                
-                # Dates
-                start_date = None
-                if task.get('startDateTime') and isinstance(task['startDateTime'], dict):
-                    if 'date' in task['startDateTime']:
-                        start_date = task['startDateTime']['date']
-                    elif 'dateFrom' in task['startDateTime']:
-                        start_date = task['startDateTime']['dateFrom']
-                elif task.get('startDateTime') and isinstance(task['startDateTime'], str):
-                    start_date = task['startDateTime']
-                elif task.get('dateBegin') and isinstance(task['dateBegin'], str):
-                    start_date = task['dateBegin']
-                
-                if start_date:
-                    context += f"- Start date: {start_date}\n"
-                
-                end_date = None
-                if task.get('endDateTime') and isinstance(task['endDateTime'], dict):
-                    if 'date' in task['endDateTime']:
-                        end_date = task['endDateTime']['date']
-                    elif 'dateTo' in task['endDateTime']:
-                        end_date = task['endDateTime']['dateTo']
-                elif task.get('endDateTime') and isinstance(task['endDateTime'], str):
-                    end_date = task['endDateTime']
-                elif task.get('dateEnd') and isinstance(task['dateEnd'], str):
-                    end_date = task['dateEnd']
-                
-                if end_date:
-                    context += f"- Due date: {end_date}\n"
-                
-                # Assignees
-                if task.get('assignees'):
-                    context += "- Assignees: "
-                    if isinstance(task['assignees'], list):
-                        assignees = task['assignees']
-                    elif isinstance(task['assignees'], dict) and task['assignees'].get('users'):
-                        assignees = task['assignees']['users']
-                    else:
-                        assignees = []
-                    
-                    assignee_names = [a.get('name', 'Unnamed') for a in assignees]
-                    context += ", ".join(assignee_names) + "\n"
-                
-                # Assigner/Creator
-                if task.get('assigner') and task['assigner'].get('name'):
-                    context += f"- Created by: {task['assigner']['name']}\n"
-                
-                # Description (shortened)
-                if task.get('description'):
-                    desc = task['description']
-                    if len(desc) > 300:
-                        desc = desc[:300] + "..."
-                    context += f"- Description: {desc}\n"
-        
-        # Add instruction for Claude on how to use this data
-        context += "\nBased on the above Planfix data, please respond to the user's query in a helpful and informative way."
-        context += f"\nOriginal user query: {query}"
-        
-        return context
     
     def send_message(self, messages: List[Dict[str, str]], user=None, conversation=None) -> str:
         """

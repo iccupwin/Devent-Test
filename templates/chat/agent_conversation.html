@@ -257,32 +257,199 @@
         color: #a1a1a6;
     }
 
-    .model-selector {
-        margin: 20px 0 10px 20px;
+    .model-selector-sidebar {
+        display: none;
+    }
+    
+    .chat-input-container {
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-top: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .message-form {
+        display: flex;
+        gap: 12px;
+        align-items: flex-end;
+    }
+
+    .message-input {
+        flex: 1;
+        min-height: 24px;
+        max-height: 200px;
+        padding: 12px 16px;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        border-radius: 12px;
+        background: white;
+        font-size: 15px;
+        line-height: 1.5;
+        resize: none;
+        transition: all 0.2s ease;
+    }
+
+    .message-input:focus {
+        outline: none;
+        border-color: #0071e3;
+        box-shadow: 0 0 0 2px rgba(0, 113, 227, 0.1);
+    }
+
+    .send-button {
+        width: 40px;
+        height: 40px;
+        border: none;
+        border-radius: 12px;
+        background: #0071e3;
+        color: white;
+        cursor: pointer;
         display: flex;
         align-items: center;
-        gap: 10px;
+        justify-content: center;
+        transition: all 0.2s ease;
     }
-    .model-select {
-        padding: 8px 35px 8px 15px;
-        border: 2px solid #0071e3;
-        border-radius: 8px;
-        background-color: white;
+
+    .send-button:hover {
+        background: #0077ed;
+        transform: translateY(-1px);
+    }
+
+    .send-button:active {
+        transform: translateY(0);
+    }
+
+    .model-switch-button {
+        width: 40px;
+        height: 40px;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        border-radius: 12px;
+        background: white;
         color: #0071e3;
-        font-size: 14px;
-        font-weight: 500;
         cursor: pointer;
-        min-width: 180px;
-        appearance: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+        position: relative;
     }
-    .model-select-arrow {
+
+    .model-switch-button:hover {
+        background: #f5f5f7;
+        border-color: #0071e3;
+    }
+
+    .model-dropdown {
         position: absolute;
-        right: 12px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #0071e3;
-        pointer-events: none;
-        font-size: 12px;
+        bottom: 100%;
+        right: 0;
+        margin-bottom: 8px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        padding: 8px;
+        min-width: 200px;
+        display: none;
+        z-index: 1000;
+    }
+
+    .model-dropdown.show {
+        display: block;
+    }
+
+    .model-dropdown-item {
+        padding: 8px 12px;
+        border-radius: 8px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: #1d1d1f;
+        transition: all 0.2s ease;
+    }
+
+    .model-dropdown-item:hover {
+        background: #f5f5f7;
+    }
+
+    .model-dropdown-item.active {
+        background: #0071e3;
+        color: white;
+    }
+
+    .model-dropdown-item.active:hover {
+        background: #0077ed;
+    }
+
+    .model-dropdown-item .model-icon {
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .model-dropdown-item .model-name {
+        flex: 1;
+        font-size: 14px;
+    }
+
+    .model-dropdown-item .check-icon {
+        opacity: 0;
+        transition: opacity 0.2s ease;
+    }
+
+    .model-dropdown-item.active .check-icon {
+        opacity: 1;
+    }
+
+    /* Dark theme adjustments */
+    body.dark-theme .model-dropdown {
+        background: #2c2c2e;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+
+    body.dark-theme .model-dropdown-item {
+        color: #f5f5f7;
+    }
+
+    body.dark-theme .model-dropdown-item:hover {
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    body.dark-theme .model-dropdown-item.active {
+        background: #0a84ff;
+    }
+
+    body.dark-theme .model-dropdown-item.active:hover {
+        background: #0a8cff;
+    }
+
+    /* Dark theme adjustments */
+    body.dark-theme .chat-input-container {
+        background: rgba(40, 40, 45, 0.8);
+        border-top-color: rgba(255, 255, 255, 0.1);
+    }
+
+    body.dark-theme .message-input {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.1);
+        color: #f5f5f7;
+    }
+
+    body.dark-theme .message-input:focus {
+        border-color: #0a84ff;
+        box-shadow: 0 0 0 2px rgba(10, 132, 255, 0.1);
+    }
+
+    body.dark-theme .model-switch-button {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.1);
+        color: #0a84ff;
+    }
+
+    body.dark-theme .model-switch-button:hover {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: #0a84ff;
     }
 </style>
 {% endblock %}
@@ -355,17 +522,6 @@
     </div>
     
     <div class="content">
-        <div class="model-selector">
-            <div style="position:relative;">
-                <select id="aiModelSelect" class="model-select">
-                    {% for model in ai_models %}
-                    <option value="{{ model.id }}" {% if model.id == conversation.ai_model.id %}selected{% endif %}>{{ model.name }}</option>
-                    {% endfor %}
-                </select>
-                <div class="model-select-arrow">▼</div>
-            </div>
-            <span style="margin-left: 16px; color: #0071e3; font-weight: bold;">Текущая модель: {{ conversation.ai_model.name|default:'(не выбрана)' }}</span>
-        </div>
         <div class="chat-container" data-conversation-id="{{ conversation.id }}">
             <div class="chat-messages" id="chatMessages">
                 {% for message in messages %}
@@ -403,8 +559,36 @@
                         rows="1"
                         autocomplete="off"
                     ></textarea>
-                    <button type="submit" class="send-button">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <div style="position: relative;">
+                        <button type="button" class="model-switch-button" id="modelSwitchButton" title="Сменить модель">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                                <path d="M3 3v5h5"/>
+                                <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/>
+                                <path d="M16 21h5v-5"/>
+                            </svg>
+                        </button>
+                        <div class="model-dropdown" id="modelDropdown">
+                            {% for model in ai_models %}
+                            <div class="model-dropdown-item {% if model.id == conversation.ai_model.id %}active{% endif %}" data-model-id="{{ model.id }}">
+                                <div class="model-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                                        <path d="M3 3v5h5"/>
+                                        <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/>
+                                        <path d="M16 21h5v-5"/>
+                                    </svg>
+                                </div>
+                                <span class="model-name">{{ model.name }}</span>
+                                <svg class="check-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <button type="submit" class="send-button" title="Отправить сообщение">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path d="M22 2L11 13" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                             <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
@@ -424,7 +608,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const chatMessages = document.getElementById('chatMessages');
     const newChatButton = document.getElementById('newChatButton');
     const refreshCacheLink = document.getElementById('refresh-cache-link');
-    const modelSelect = document.getElementById('aiModelSelect');
     const conversationId = document.querySelector('.chat-container').dataset.conversationId;
     
     // Get conversation ID from data attribute
@@ -444,11 +627,46 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Scroll chat to bottom
     function scrollToBottom() {
-        if (chatMessages) {
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+        const content = document.querySelector('.content');
+        if (content) {
+            content.scrollTop = content.scrollHeight;
+            // Force scroll after a short delay
+            setTimeout(() => {
+                content.scrollTop = content.scrollHeight;
+            }, 0);
         }
     }
-    scrollToBottom();
+    
+    // Force scroll to bottom multiple times to ensure it works
+    function forceScrollToBottom() {
+        scrollToBottom();
+        // Try multiple times with increasing delays
+        [100, 200, 500, 1000].forEach(delay => {
+            setTimeout(scrollToBottom, delay);
+        });
+    }
+    
+    // Initial scroll
+    forceScrollToBottom();
+    
+    // Also scroll when window loads
+    window.addEventListener('load', forceScrollToBottom);
+    
+    // Scroll when images load
+    document.querySelectorAll('img').forEach(img => {
+        img.addEventListener('load', forceScrollToBottom);
+    });
+    
+    // Scroll when content changes
+    const observer = new MutationObserver(forceScrollToBottom);
+    const content = document.querySelector('.content');
+    if (content) {
+        observer.observe(content, { 
+            childList: true, 
+            subtree: true,
+            characterData: true
+        });
+    }
     
     // New chat button handler
     if (newChatButton) {
@@ -682,23 +900,43 @@ document.addEventListener('DOMContentLoaded', function() {
         Prism.highlightAll();
     }
 
-    // Model select handler
-    if (modelSelect) {
-        modelSelect.addEventListener('change', function() {
-            const selectedModelId = this.value;
-            fetch(`/agent/conversation/${conversationId}/change-model/`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': getCookie('csrftoken')
-                },
-                body: JSON.stringify({ model_id: selectedModelId })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    location.reload();
-                }
+    // Model switch button and dropdown handler
+    const modelSwitchButton = document.getElementById('modelSwitchButton');
+    const modelDropdown = document.getElementById('modelDropdown');
+    
+    if (modelSwitchButton && modelDropdown) {
+        // Toggle dropdown
+        modelSwitchButton.addEventListener('click', function(e) {
+            e.stopPropagation();
+            modelDropdown.classList.toggle('show');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!modelDropdown.contains(e.target) && !modelSwitchButton.contains(e.target)) {
+                modelDropdown.classList.remove('show');
+            }
+        });
+
+        // Handle model selection
+        const modelItems = modelDropdown.querySelectorAll('.model-dropdown-item');
+        modelItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const modelId = this.dataset.modelId;
+                fetch(`/agent/conversation/${conversationId}/change-model/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify({ model_id: modelId })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    }
+                });
             });
         });
     }

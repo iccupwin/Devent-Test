@@ -8,7 +8,7 @@ class AIModel(models.Model):
     MODEL_TYPES = (
         ('claude', 'Claude AI'),
         ('gpt', 'ChatGPT'),
-        ('deepseek', 'DeepSeek'),
+        ('gemini', 'Google Gemini'),
     )
     
     name = models.CharField(max_length=50)
