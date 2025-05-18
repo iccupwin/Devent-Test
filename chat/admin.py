@@ -1,11 +1,20 @@
 # chat/admin.py
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
+from django.contrib.admin.sites import AdminSite
 from .models import (
     User, AIModel, Conversation, Message,
     PlanfixCache, PlanfixTask, AnalyticsEvent,
     UserMetrics, AIModelMetrics
 )
+
+class CustomAdminSite(AdminSite):
+    class Media:
+        css = {
+            'all': ('admin/css/custom.css',)
+        }
+
+admin.site = CustomAdminSite()
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):

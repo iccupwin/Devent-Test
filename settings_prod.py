@@ -10,12 +10,12 @@ ALLOWED_HOSTS = ['83.217.223.111', 'localhost', '127.0.0.1']
 # База данных
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.environ.get('DB_NAME', 'devent_db'),
-        'USER': os.environ.get('DB_USER', 'devent_user'),
-        'PASSWORD': os.environ.get('DB_PASSWORD', 'devent_password'),
-        'HOST': os.environ.get('DB_HOST', 'db'),
-        'PORT': os.environ.get('DB_PORT', '5432'),
+        'ENGINE': os.getenv("DB_ENGINE"),
+        'NAME': os.getenv("DB_NAME"),
+        'USER': os.getenv("DB_USER"),
+        'PASSWORD': os.getenv("DB_PASSWORD"),
+        'HOST': os.getenv("DB_HOST"),
+        'PORT': os.getenv("DB_PORT"),
     }
 }
 
@@ -29,14 +29,38 @@ CSRF_COOKIE_SECURE = False  # Отключаем для IP
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Статические файлы
-STATIC_ROOT = '/app/staticfiles'
-STATICFILES_DIRS = [
-    '/app/static',
-]
+
+
+JAZZMIN_SETTINGS = {
+    "site_title": "Devent Admin",
+    "site_header": "Администрирование Devent",
+    "welcome_sign": "Добро пожаловать в систему управления Devent",
+    "copyright": "© 2025 Devent",
+    "show_sidebar": True,
+    "navigation_expanded": True,
+    "theme": "darkly",
+    "order_with_respect_to": ["auth", "chat", "users"],
+    "custom_links": {
+        "chat": [{
+            "name": "Обновить кэш",
+            "url": "/update-cache",
+            "icon": "fas fa-sync",
+        }]
+    },
+}
+
+
+STATIC_URL = "/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, "static")  # = /opt/Devent-Test/static
+
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, "chat/static"),  # <- сюда ты кладёшь кастомный CSS
+# ]
+
 
 # Создаем директории для статических файлов
 os.makedirs(STATIC_ROOT, exist_ok=True)
-os.makedirs(STATICFILES_DIRS[0], exist_ok=True)
+# os.makedirs(STATICFILES_DIRS[0], exist_ok=True)
 
 # Логирование
 LOGGING = {

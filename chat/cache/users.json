@@ -17,18 +17,18 @@
     "assigned_tasks": 264,
     "assigned_active": 54,
     "assigned_completed": 210,
-    "assigned_overdue": 15,
-    "created_tasks": 392,
+    "assigned_overdue": 13,
+    "created_tasks": 393,
     "projects": [
+      "116",
+      "12",
       "29",
       "4",
-      "116",
-      "2354",
-      "12",
-      "1310",
       "1462",
+      "2354",
       "23",
-      "1647"
+      "1647",
+      "1310"
     ]
   },
   {
@@ -41,11 +41,11 @@
     "assigned_overdue": 7,
     "created_tasks": 123,
     "projects": [
+      "116",
+      "12",
       "29",
       "4",
       "236",
-      "116",
-      "12",
       "23",
       "1647"
     ]
@@ -60,10 +60,10 @@
     "assigned_overdue": 0,
     "created_tasks": 22,
     "projects": [
-      "29",
-      "4",
       "116",
       "12",
+      "29",
+      "4",
       "23",
       "1647"
     ]
@@ -88,21 +88,21 @@
     "assigned_tasks": 336,
     "assigned_active": 86,
     "assigned_completed": 250,
-    "assigned_overdue": 18,
-    "created_tasks": 652,
+    "assigned_overdue": 15,
+    "created_tasks": 653,
     "projects": [
-      "2363",
+      "116",
+      "12",
       "29",
       "4",
-      "2362",
       "1386",
-      "116",
-      "2354",
-      "12",
-      "1310",
       "1462",
+      "2354",
       "23",
-      "1647"
+      "1647",
+      "2363",
+      "1310",
+      "2362"
     ]
   },
   {
@@ -115,10 +115,10 @@
     "assigned_overdue": 1,
     "created_tasks": 43,
     "projects": [
-      "29",
-      "4",
       "116",
       "12",
+      "29",
+      "4",
       "23",
       "1647"
     ]
@@ -130,16 +130,16 @@
     "assigned_tasks": 94,
     "assigned_active": 60,
     "assigned_completed": 34,
-    "assigned_overdue": 17,
+    "assigned_overdue": 16,
     "created_tasks": 25,
     "projects": [
+      "12",
       "29",
       "4",
-      "12",
-      "1310",
       "1462",
       "23",
-      "1647"
+      "1647",
+      "1310"
     ]
   },
   {
@@ -152,14 +152,14 @@
     "assigned_overdue": 3,
     "created_tasks": 0,
     "projects": [
-      "29",
-      "4",
       "116",
       "12",
-      "1310",
+      "29",
+      "4",
       "1462",
       "23",
-      "1647"
+      "1647",
+      "1310"
     ]
   },
   {
@@ -172,15 +172,15 @@
     "assigned_overdue": 5,
     "created_tasks": 30,
     "projects": [
+      "12",
       "29",
       "4",
       "1386",
-      "2354",
-      "12",
-      "1310",
       "1462",
+      "2354",
       "23",
-      "1647"
+      "1647",
+      "1310"
     ]
   },
   {
@@ -193,10 +193,10 @@
     "assigned_overdue": 3,
     "created_tasks": 45,
     "projects": [
-      "29",
-      "4",
       "116",
       "12",
+      "29",
+      "4",
       "23",
       "1647"
     ]
@@ -208,16 +208,16 @@
     "assigned_tasks": 54,
     "assigned_active": 11,
     "assigned_completed": 43,
-    "assigned_overdue": 5,
+    "assigned_overdue": 4,
     "created_tasks": 6,
     "projects": [
+      "12",
       "29",
       "4",
-      "12",
-      "1310",
       "1462",
       "23",
-      "1647"
+      "1647",
+      "1310"
     ]
   },
   {
@@ -230,12 +230,12 @@
     "assigned_overdue": 1,
     "created_tasks": 0,
     "projects": [
+      "12",
       "29",
       "4",
-      "12",
-      "1310",
       "23",
-      "1647"
+      "1647",
+      "1310"
     ]
   },
   {
@@ -248,13 +248,13 @@
     "assigned_overdue": 1,
     "created_tasks": 14,
     "projects": [
-      "29",
-      "4",
       "116",
       "12",
-      "1310",
+      "29",
+      "4",
       "23",
-      "1647"
+      "1647",
+      "1310"
     ]
   },
   {
@@ -280,11 +280,11 @@
     "assigned_overdue": 2,
     "created_tasks": 1,
     "projects": [
+      "12",
       "29",
       "4",
-      "12",
-      "1310",
-      "23"
+      "23",
+      "1310"
     ]
   },
   {
@@ -297,9 +297,9 @@
     "assigned_overdue": 0,
     "created_tasks": 8,
     "projects": [
+      "12",
       "4",
       "236",
-      "12",
       "23",
       "1647"
     ]
@@ -320,6 +320,19 @@
   {
     "id": "user:24",
     "name": "Тилек Кошонов",
+    "email": "",
+    "assigned_tasks": 1,
+    "assigned_active": 1,
+    "assigned_completed": 0,
+    "assigned_overdue": 0,
+    "created_tasks": 0,
+    "projects": [
+      "4"
+    ]
+  },
+  {
+    "id": "user:25",
+    "name": "Шумкар Жолдошов",
     "email": "",
     "assigned_tasks": 1,
     "assigned_active": 1,

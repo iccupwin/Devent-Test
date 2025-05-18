@@ -239,60 +239,6 @@
     }
   },
   {
-    "id": 1297,
-    "name": "Заключить Договор с Скай Парк",
-    "description": "",
-    "status": {
-      "id": 2,
-      "name": "В работе",
-      "color": "#3377C3",
-      "isActive": true,
-      "hasDeadline": true,
-      "isAppliedIndividually": false,
-      "texts": [
-        {
-          "lang": "Ru",
-          "name": "В работе"
-        },
-        {
-          "lang": "En",
-          "name": "In progress"
-        }
-      ]
-    },
-    "assigner": {
-      "id": "user:1",
-      "name": "Константин Осипов"
-    },
-    "project": {
-      "id": 29,
-      "name": "Автовокзал"
-    },
-    "startDateTime": {
-      "date": "18-03-2025",
-      "time": "00:00",
-      "datetime": "2025-03-18T00:00Z"
-    },
-    "endDateTime": {
-      "date": "17-05-2025",
-      "time": "00:00",
-      "datetime": "2025-05-17T00:00Z"
-    },
-    "assignees": {
-      "users": [
-        {
-          "id": "user:5",
-          "name": "Алексей Шульга"
-        },
-        {
-          "id": "user:1",
-          "name": "Константин Осипов"
-        }
-      ],
-      "groups": []
-    }
-  },
-  {
     "id": 1313,
     "name": "3. ПРОЕКТНО-РАЗРЕШИТЕЛЬНАЯ ДОКУМЕНТАЦИЯ",
     "description": "",
@@ -744,47 +690,6 @@
         }
       ],
       "groups": []
-    }
-  },
-  {
-    "id": 1723,
-    "name": "Установка забора по контуру участка",
-    "description": "",
-    "status": {
-      "id": 2,
-      "name": "В работе",
-      "color": "#3377C3",
-      "isActive": true,
-      "hasDeadline": true,
-      "isAppliedIndividually": false,
-      "texts": [
-        {
-          "lang": "Ru",
-          "name": "В работе"
-        },
-        {
-          "lang": "En",
-          "name": "In progress"
-        }
-      ]
-    },
-    "assigner": {
-      "id": "user:5",
-      "name": "Алексей Шульга"
-    },
-    "project": {
-      "id": 29,
-      "name": "Автовокзал"
-    },
-    "startDateTime": {
-      "date": "16-04-2025",
-      "time": "00:00",
-      "datetime": "2025-04-16T00:00Z"
-    },
-    "endDateTime": {
-      "date": "17-05-2025",
-      "time": "00:00",
-      "datetime": "2025-05-17T00:00Z"
     }
   },
   {
@@ -2668,60 +2573,6 @@
     }
   },
   {
-    "id": 2326,
-    "name": "Утвердить генплан участка Автовокзала",
-    "description": "<h3><strong>Задача ставится согласно Процессу постановки, контроля и выполнения задач. </strong></h3>\n<h3><strong>Просьба ознакомиться:&nbsp;</strong><a href=\"https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy\">https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy</a></h3>\n<p>&nbsp;</p>",
-    "status": {
-      "id": 2,
-      "name": "В работе",
-      "color": "#3377C3",
-      "isActive": true,
-      "hasDeadline": true,
-      "isAppliedIndividually": false,
-      "texts": [
-        {
-          "lang": "Ru",
-          "name": "В работе"
-        },
-        {
-          "lang": "En",
-          "name": "In progress"
-        }
-      ]
-    },
-    "assigner": {
-      "id": "user:5",
-      "name": "Алексей Шульга"
-    },
-    "project": {
-      "id": 29,
-      "name": "Автовокзал"
-    },
-    "startDateTime": {
-      "date": "07-05-2025",
-      "time": "00:00",
-      "datetime": "2025-05-07T00:00Z"
-    },
-    "endDateTime": {
-      "date": "16-05-2025",
-      "time": "00:00",
-      "datetime": "2025-05-16T00:00Z"
-    },
-    "assignees": {
-      "users": [
-        {
-          "id": "user:5",
-          "name": "Алексей Шульга"
-        },
-        {
-          "id": "user:1",
-          "name": "Константин Осипов"
-        }
-      ],
-      "groups": []
-    }
-  },
-  {
     "id": 2327,
     "name": "Получить предложение по ресторану внутри здания",
     "description": "<h3><strong>Задача ставится согласно Процессу постановки, контроля и выполнения задач. </strong></h3>\n<h3><strong>Просьба ознакомиться:&nbsp;</strong><a href=\"https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy\">https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy</a></h3>\n<p>&nbsp;</p>",
@@ -2757,9 +2608,9 @@
       "datetime": "2025-05-07T00:00Z"
     },
     "endDateTime": {
-      "date": "16-05-2025",
+      "date": "19-05-2025",
       "time": "00:00",
-      "datetime": "2025-05-16T00:00Z"
+      "datetime": "2025-05-19T00:00Z"
     },
     "assignees": {
       "users": [
@@ -2807,9 +2658,9 @@
       "datetime": "2025-05-07T00:00Z"
     },
     "endDateTime": {
-      "date": "16-05-2025",
+      "date": "19-05-2025",
       "time": "00:00",
-      "datetime": "2025-05-16T00:00Z"
+      "datetime": "2025-05-19T00:00Z"
     },
     "assignees": {
       "users": [
@@ -3564,56 +3415,6 @@
       "date": "19-05-2025",
       "time": "00:00",
       "datetime": "2025-05-19T00:00Z"
-    }
-  },
-  {
-    "id": 2415,
-    "name": "Получить КП на установку забора",
-    "description": "<h3><strong>Задача ставится согласно Процессу постановки, контроля и выполнения задач. </strong></h3>\n<h3><strong>Просьба ознакомиться:&nbsp;</strong><a href=\"https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy\">https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy</a></h3>\n<p>&nbsp;</p>",
-    "status": {
-      "id": 2,
-      "name": "В работе",
-      "color": "#3377C3",
-      "isActive": true,
-      "hasDeadline": true,
-      "isAppliedIndividually": false,
-      "texts": [
-        {
-          "lang": "Ru",
-          "name": "В работе"
-        },
-        {
-          "lang": "En",
-          "name": "In progress"
-        }
-      ]
-    },
-    "assigner": {
-      "id": "user:5",
-      "name": "Алексей Шульга"
-    },
-    "project": {
-      "id": 1310,
-      "name": "Строительство Тазалыка №1"
-    },
-    "startDateTime": {
-      "date": "12-05-2025",
-      "time": "00:00",
-      "datetime": "2025-05-12T00:00Z"
-    },
-    "endDateTime": {
-      "date": "16-05-2025",
-      "time": "00:00",
-      "datetime": "2025-05-16T00:00Z"
-    },
-    "assignees": {
-      "users": [
-        {
-          "id": "user:20",
-          "name": "Канатбек Аскаров"
-        }
-      ],
-      "groups": []
     }
   },
   {
@@ -4571,60 +4372,6 @@
     }
   },
   {
-    "id": 2515,
-    "name": "Получить платёж за май",
-    "description": "<h3><strong>Задача ставится согласно Процессу постановки, контроля и выполнения задач. </strong></h3>\n<h3><strong>Просьба ознакомиться:&nbsp;</strong><a href=\"https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy\">https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy</a></h3>\n<p>&nbsp;</p>",
-    "status": {
-      "id": 1,
-      "name": "Новая",
-      "color": "#00b4b4",
-      "isActive": true,
-      "hasDeadline": true,
-      "isAppliedIndividually": false,
-      "texts": [
-        {
-          "lang": "Ru",
-          "name": "Новая"
-        },
-        {
-          "lang": "En",
-          "name": "New"
-        }
-      ]
-    },
-    "assigner": {
-      "id": "user:5",
-      "name": "Алексей Шульга"
-    },
-    "project": {
-      "id": 23,
-      "name": "Общие вопросы компании"
-    },
-    "startDateTime": {
-      "date": "15-05-2025",
-      "time": "00:00",
-      "datetime": "2025-05-15T00:00Z"
-    },
-    "endDateTime": {
-      "date": "17-05-2025",
-      "time": "00:00",
-      "datetime": "2025-05-17T00:00Z"
-    },
-    "assignees": {
-      "users": [
-        {
-          "id": "user:10",
-          "name": "Сергей Храпунов"
-        },
-        {
-          "id": "user:5",
-          "name": "Алексей Шульга"
-        }
-      ],
-      "groups": []
-    }
-  },
-  {
     "id": 2516,
     "name": "Дополнительное соглашение к Договору №16/04/2025 от 16.04.2025 г. с ОсОО \"ГлобалТехСтрой\"",
     "description": "<p>Задача ставится согласно процесса согласования договоров:&nbsp;<a href=\"https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.vxrme5dn4xrw\">https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.vxrme5dn4xrw</a></p>",
@@ -4919,20 +4666,20 @@
     "name": "Узнать цену и сроки поставки по газоблоку",
     "description": "<h3><strong>Задача ставится согласно Процессу постановки, контроля и выполнения задач. </strong></h3>\n<h3><strong>Просьба ознакомиться:&nbsp;</strong><a href=\"https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy\">https://docs.google.com/document/d/1TVSSYBpzzIQpYf3_ZPGk-2GY-vSurYE7w-7_DYZJB8A/edit?tab=t.0#heading=h.ly673xkjolcy</a></h3>\n<p>&nbsp;</p>\n<p>Улан ддля перегородок закладывает газоблок. Говорит что качественный только казахский. Нужно узнать цену, ассортимент и сроки поставки. Сравнить с местными аналогами.<br>Объёмы пока не знаем. Но думаю не менее 500 м.куб.</p>",
     "status": {
-      "id": 1,
-      "name": "Новая",
-      "color": "#00b4b4",
+      "id": 2,
+      "name": "В работе",
+      "color": "#3377C3",
       "isActive": true,
       "hasDeadline": true,
       "isAppliedIndividually": false,
       "texts": [
         {
           "lang": "Ru",
-          "name": "Новая"
+          "name": "В работе"
         },
         {
           "lang": "En",
-          "name": "New"
+          "name": "In progress"
         }
       ]
     },

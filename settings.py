@@ -9,6 +9,7 @@ ENV_FILE = BASE_DIR / '.env'
 # Загрузка переменных окружения
 load_dotenv(ENV_FILE)
 
+
 # Проверка и установка значений по умолчанию для API ключей
 if not os.environ.get('GEMINI_API_KEY'):
     print("WARNING: GEMINI_API_KEY not found in environment variables")
@@ -35,6 +36,7 @@ ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '127.0.0.1,localhost').split(','
 
 # Application definition
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -144,9 +146,11 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # Static files (CSS, JavaScript, Images)
-STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_URL = "/static/"
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, "assets"),
+# ]
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
