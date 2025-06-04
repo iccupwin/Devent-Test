@@ -27,3 +27,4 @@ sentry-sdk[django]>=1.40.0
 posthog
 pandas
 plotly
+django-jazzmin
